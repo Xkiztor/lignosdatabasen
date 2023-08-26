@@ -1,3 +1,9 @@
+<script setup>
+const runtimeConfig = useRuntimeConfig();
+const enteredPassword = useCookie('enteredPassword', { maxAge: 60604800 });
+</script>
+
+
 <template>
   <div class="site">
     <nav>
@@ -9,6 +15,11 @@
       <div class="link-align">
         <NuxtLink to="/">Startsidan</NuxtLink>
         <NuxtLink to="/data">Databas</NuxtLink>
+      </div>
+      <div class="account-icon" v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword">
+        <NuxtLink to="/admin">
+          <Icon name="ic:baseline-person" />
+        </NuxtLink>
       </div>
     </nav>
     <NuxtPage />
@@ -129,5 +140,17 @@ button:hover {
 
 button {
   cursor: pointer;
+}
+
+nav .account-icon {
+  margin: auto;
+  color: var(--primary-green);
+  line-height: 0;
+  font-size: 1.4em;
+}
+
+nav .account-icon svg {
+  margin: auto;
+  color: var(--primary-green);
 }
 </style>

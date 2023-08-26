@@ -7,7 +7,7 @@ const query = ref('')
 const client = useSupabaseClient()
 
 const { data: plants } = await useAsyncData('plantor', async () => {
-  const { data } = await client.from('växt-databas').select()
+  const { data } = await client.from('växt-databas').select().eq('hidden', 'FALSE')
 
   return data
 })
@@ -17,6 +17,13 @@ const filteredList = computed(() => {
 
   let newList = plants.value
   newList = newList.filter(item => queryArray.every(str => item.namn.toLowerCase().includes(str)))
+
+  newList.sort((a, b) => {
+    if (a.namn < b.namn) return -1
+    if (a.namn > b.namn) return 1
+    return 0
+  })
+
 
   return newList
 })
@@ -30,8 +37,11 @@ const filteredList = computed(() => {
       <h1>Databas</h1>
       <div class="action-grid">
         <input class="search" v-model="query" type="text" placeholder="Sök">
-        <NuxtLink v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword" to="/skapa"><button>Lägg till
-            växt</button></NuxtLink>
+        <!-- <NuxtLink v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword" to="/skapa"><button>Lägg till
+            växt</button></NuxtLink> -->
+        <button v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword" @click="navigateTo('/skapa')">
+          Lägg till växt
+        </button>
       </div>
     </div>
     <div class="data">

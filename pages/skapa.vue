@@ -1,4 +1,11 @@
 <script setup>
+const runtimeConfig = useRuntimeConfig();
+const enteredPassword = useCookie('enteredPassword', { maxAge: 60604800 });
+
+if (runtimeConfig.public.ADMIN_PASSWORD !== enteredPassword.value) {
+  navigateTo('/data')
+}
+
 const plantName = ref('')
 const description = ref('')
 const imageStrings = ref('')

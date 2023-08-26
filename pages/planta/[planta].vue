@@ -2,6 +2,7 @@
 const runtimeConfig = useRuntimeConfig();
 const enteredPassword = useCookie('enteredPassword', { maxAge: 60604800 });
 
+
 const { planta } = useRoute().params
 
 const client = useSupabaseClient()
@@ -11,6 +12,8 @@ const { data: plant } = await useAsyncData('planta', async () => {
 
   return data
 })
+
+
 
 console.log(plant.value);
 
@@ -37,18 +40,28 @@ const duplicate = async () => {
   navigateTo('/data')
 }
 
+const showHide = ref(true)
+
+if (plant.value.hidden) {
+  showHide.value = false
+} else {
+  showHide.value = true
+}
+
 const hide = async () => {
   const { error } = await client.from('växt-databas').update({ hidden: 'TRUE' }).eq('id', `${planta}`)
   if (error) {
     console.error(error)
   }
+  showHide.value = false
 }
 
 const unHide = async () => {
-  const { error } = await client.from('växt-databas').update({ hidden: 'TRUE' }).eq('id', `${planta}`)
+  const { error } = await client.from('växt-databas').update({ hidden: 'FALSE' }).eq('id', `${planta}`)
   if (error) {
     console.error(error)
   }
+  showHide.value = true
 }
 </script>
 
@@ -68,8 +81,8 @@ const unHide = async () => {
       <button>Ändra</button>
       <button @click="showDeleteModel = true">Ta bort</button>
       <button @click="duplicate()">Dublicera</button>
-      <button v-if="plant.hidden">Visa växt</button>
-      <button v-else @click="">Dölj växt</button>
+      <button v-if="showHide === false" @click="unHide()">Visa växt</button>
+      <button v-else @click="hide()">Dölj växt</button>
     </div>
     <div class="image-showcase" :style="{ gridTemplateColumns: `repeat(${plant.bilder.length}, 1fr)` }">
       <nuxt-img v-for="image in plant.bilder" :src="image" />

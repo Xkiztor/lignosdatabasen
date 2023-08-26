@@ -11,4 +11,15 @@ export default defineNuxtConfig({
       ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
     },
   },
+  app: {
+    head: {
+      title: 'Växt Databas',
+      meta: [
+        {
+          name: 'description',
+          content: 'En samlad databas med information om växter',
+        },
+      ],
+    },
+  },
 });
