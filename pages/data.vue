@@ -1,4 +1,7 @@
 <script setup>
+const runtimeConfig = useRuntimeConfig();
+const enteredPassword = useCookie('enteredPassword', { maxAge: 60604800 });
+
 const query = ref('')
 
 const client = useSupabaseClient()
@@ -27,7 +30,8 @@ const filteredList = computed(() => {
       <h1>Databas</h1>
       <div class="action-grid">
         <input class="search" v-model="query" type="text" placeholder="Sök">
-        <NuxtLink to="/skapa"><button>Lägg till växt</button></NuxtLink>
+        <NuxtLink v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword" to="/skapa"><button>Lägg till
+            växt</button></NuxtLink>
       </div>
     </div>
     <div class="data">
@@ -42,7 +46,7 @@ const filteredList = computed(() => {
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  max-width: 50rem;
+  max-width: 80rem;
   margin: 0 auto;
   width: 100%;
 }
@@ -71,7 +75,7 @@ const filteredList = computed(() => {
   padding-top: 1rem;
 
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 1rem;
 }
 
