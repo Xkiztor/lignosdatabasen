@@ -17,11 +17,18 @@ console.log(plantsInLetter.value);
 console.log(plantsInLetter.value.lenght)
 
 const showDropdown = ref(false)
+
+const outsideClickRef = ref()
+
+onClickOutside(outsideClickRef, () => {
+  showDropdown.value = false
+})
 </script>
 
 
 <template>
-  <li @mouseenter="showDropdown = plantsInLetter == 0 ? false : true" @mouseleave="showDropdown = false" class="">
+  <li @mouseenter="showDropdown = plantsInLetter == 0 ? false : true" @mouseleave="showDropdown = false"
+    @click="showDropdown = plantsInLetter == 0 ? false : !showDropdown" ref="outsideClickRef" class="">
     <p :class="{ 'muted': plantsInLetter == 0 }">
       {{ bokstav }}
     </p>
@@ -71,6 +78,7 @@ p.muted {
   left: 50%;
   transform: translate(-50%, 0);
   padding-top: 1.25rem;
+  z-index: 5;
 }
 
 .dropdown {
@@ -83,6 +91,7 @@ p.muted {
   align-items: start;
   gap: 0.75rem;
   line-height: 1;
+  z-index: 5;
 }
 
 .dark .dropdown {
@@ -92,6 +101,7 @@ p.muted {
 
 .dropdown::before {
   content: "";
+  z-index: 5;
   position: absolute;
   left: 50%;
   transform: translate(-50%, 0);

@@ -32,9 +32,10 @@ console.log(plants);
           <Icon name="ph:database" />Växtdatabasen
         </h1>
       </NuxtLink>
-      <div class="large-nav" v-if="width > 700">
-
-
+      <button @click="showMobileMenu = !showMobileMenu" v-if="width < 700" class="hamburger-menu">
+        <Icon name="ci:hamburger-md" />
+      </button>
+      <div :class="{ 'large-nav': width > 700, 'mobile-nav': width < 700 }" v-if="showMobileMenu || width > 700">
         <ul class="link-align">
           <art-bokstav :bokstav="'A'" :plants="plants" />
           <art-bokstav :bokstav="'B'" :plants="plants" />
@@ -63,25 +64,22 @@ console.log(plants);
           <art-bokstav :bokstav="'Y'" :plants="plants" />
           <art-bokstav :bokstav="'Z'" :plants="plants" />
         </ul>
-
-
+        <ThemeToggle v-if="width < 700" />
         <div class="account-icon" v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword">
           <NuxtLink to="/admin">
             <Icon name="ic:baseline-person" />
           </NuxtLink>
         </div>
       </div>
-      <button @click="showMobileMenu = !showMobileMenu" v-else class="hamburger-menu">
-        <Icon name="ci:hamburger-md" />
-      </button>
-      <ThemeToggle />
-      <nav v-if="showMobileMenu" class="mobile-menu" @click="showMobileMenu = false">
+      <ThemeToggle v-if="width > 700" />
+
+      <!-- <nav v-if="showMobileMenu" class="mobile-menu" @click="showMobileMenu = false">
         <NuxtLink to="/">Startsidan</NuxtLink>
         <NuxtLink to="/data">Databas</NuxtLink>
         <NuxtLink to="/admin" class="account-icon" v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword">
           <Icon name="ic:baseline-person" />
         </NuxtLink>
-      </nav>
+      </nav> -->
     </nav>
     <NuxtPage />
     <footer></footer>
@@ -249,11 +247,22 @@ nav {
   }
 }
 
-/* @media screen and (max-width: 900px) {
+@media screen and (max-width: 700px) {
   nav {
-    grid-template-columns: 20% 75% 5%;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr min-content;
+    padding-left: 0;
+    padding-right: 0;
   }
-} */
+
+  .title {
+    padding-left: 0.5rem;
+  }
+
+  nav button.hamburger-menu {
+    margin-right: 0.5rem;
+  }
+}
 
 
 nav .link-align {
@@ -283,7 +292,7 @@ nav .link-align>li {
 .dark nav .link-align a:hover,
 .dark .link-align .router-link-active {
   color: var(--primary-green);
-  background: var(--element-bg);
+  /* background: var(--element-bg); */
 }
 
 nav p {
@@ -352,29 +361,61 @@ nav .hamburger-menu {
   color: var(--primary-green);
 }
 
-nav .mobile-menu {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  position: absolute;
-  background: var(--bg-color);
-  border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
-  gap: 0.25rem;
-  top: 5rem;
-  right: 1rem;
+nav .mobile-nav {
+  .theme-toggle {
+    background: none;
+    padding: 0;
+    margin: auto 0.5rem auto auto;
+  }
+}
+
+nav .mobile-nav {
+  border-top: 1px solid var(--border-color);
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  display: grid;
+  grid-column: 1/3;
+  grid-template-columns: auto min-content;
+}
+
+@media screen and (max-width: 500px) {
+  nav .mobile-nav {
+    grid-template-rows: 1fr 1fr;
+  }
+
+  nav .mobile-nav .link-align {
+    grid-row: 1/3;
+    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(13, 1fr);
+  }
+
+  nav .mobile-nav .link-align li {
+    /* width: fit-content; */
+    opacity: 1 !important;
+  }
+}
+
+@media screen and (max-width: 350px) {
+  nav .mobile-nav .link-align {
+    grid-template-columns: repeat(7, 1fr);
+  }
 }
 
 
-nav .mobile-menu * {
-  color: var(--text-color);
-  text-align: start;
+nav .mobile-nav * {
+  /* color: var(--text-color); */
+  /* text-align: start; */
   text-decoration: none;
   margin: 0;
 }
 
 
-nav .mobile-menu .router-link-active {
-  color: #757575;
+nav .mobile-nav p:has(.router-link-active) {
+  color: var(--primary-green) !important;
+}
+
+nav .mobile-nav .router-link-active {
+  color: var(--mute-text) !important;
 }
 </style>

@@ -91,7 +91,7 @@ const unHide = async () => {
     </div> -->
     <h1>{{ plant.slakte }} {{ plant.art }}</h1>
     <p>{{ plant.text }}</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima nihil dolores soluta eveniet placeat tempora
+    <!-- <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima nihil dolores soluta eveniet placeat tempora
       quisquam dignissimos et nisi, dolore eaque sint omnis nam? Facere eum deserunt delectus iusto soluta alias, cumque
       ut veritatis reiciendis tempore ducimus voluptatem eligendi est culpa! Explicabo quidem natus nesciunt perferendis
       harum necessitatibus provident beatae molestias aliquid eos veniam aspernatur illo voluptatibus nisi ea recusandae,
@@ -110,7 +110,7 @@ const unHide = async () => {
       sequi, saepe tempore amet numquam alias, placeat error incidunt sunt ipsa praesentium. Nesciunt cumque delectus
       itaque voluptate deleniti velit nam, sed illo eaque. Quae recusandae iusto quaerat eveniet dignissimos laboriosam,
       illo mollitia animi eum eligendi incidunt provident vero doloremque quo beatae obcaecati error asperiores id ducimus
-      magnam nostrum dolores adipisci quisquam expedita. Enim in eveniet laborum hic.</p>
+      magnam nostrum dolores adipisci quisquam expedita. Enim in eveniet laborum hic.</p> -->
   </div>
 </template>
 
