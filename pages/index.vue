@@ -36,6 +36,10 @@
 }
 
 .index header .leaf {
-  color: var(--primary-darker);
+  color: var(--primary-green);
+}
+
+.dark .index header .leaf {
+  color: var(--primary-green);
 }
 </style>

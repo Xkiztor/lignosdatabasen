@@ -6,26 +6,33 @@ const query = ref('')
 
 const client = useSupabaseClient()
 
-const { data: plants } = await useAsyncData('plantor', async () => {
-  const { data } = await client.from('växt-databas').select().eq('hidden', 'FALSE')
+// const { data: plants } = await useAsyncData('plantor', async () => {
+//   const { data } = await client.from('växt-databas').select().eq('hidden', 'FALSE')
 
-  return data
-})
+//   return data
+// })
+
+const plants = ref()
 
 const filteredList = computed(() => {
-  let queryArray = query.value.toLowerCase().split(" ")
+  if (plants.value) {
+    let queryArray = query.value.toLowerCase().split(" ")
 
-  let newList = plants.value
-  newList = newList.filter(item => queryArray.every(str => item.namn.toLowerCase().includes(str)))
+    let newList = plants.value
+    newList = newList.filter(item => queryArray.every(str => item.namn.toLowerCase().includes(str)))
 
-  newList.sort((a, b) => {
-    if (a.namn < b.namn) return -1
-    if (a.namn > b.namn) return 1
-    return 0
-  })
+    newList.sort((a, b) => {
+      if (a.namn < b.namn) return -1
+      if (a.namn > b.namn) return 1
+      return 0
+    })
 
 
-  return newList
+    return newList
+  }
+  else {
+    return undefined
+  }
 })
 // console.log(plants.value);
 </script>
@@ -56,7 +63,7 @@ const filteredList = computed(() => {
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  max-width: 80rem;
+  max-width: 90rem;
   margin: 0 auto;
   width: 100%;
 }
@@ -78,15 +85,47 @@ const filteredList = computed(() => {
 .filter .action-grid {
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .page .data {
   padding-top: 1rem;
 
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
+}
+
+@media screen and (min-width: 550px) {
+
+  .page .data,
+  .filter .action-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (min-width: 850px) {
+
+  .page .data,
+  .filter .action-gri {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media screen and (min-width: 1200px) {
+
+  .page .data,
+  .filter .action-gri {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media screen and (min-width: 1600px) {
+
+  .page .data,
+  .filter .action-gri {
+    grid-template-columns: repeat(6, 1fr);
+  }
 }
 
 .card {

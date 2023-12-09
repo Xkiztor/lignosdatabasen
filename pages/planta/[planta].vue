@@ -7,9 +7,11 @@ const { planta } = useRoute().params
 
 const client = useSupabaseClient()
 
-const { data: plant } = await useAsyncData('planta', async () => {
-  const { data } = await client.from('växt-databas').select().eq('id', `${planta}`).single()
-
+const { data: plant } = await useAsyncData('plant-fetch', async () => {
+  const { data, error } = await client.from('växt-databas').select().eq('slakte', `${planta}`).single()
+  if (error) {
+    console.error(error);
+  }
   return data
 })
 
@@ -42,11 +44,11 @@ const duplicate = async () => {
 
 const showHide = ref(true)
 
-if (plant.value.hidden) {
-  showHide.value = false
-} else {
-  showHide.value = true
-}
+// if (plant.value.hidden) {
+//   showHide.value = false
+// } else {
+//   showHide.value = true
+// }
 
 const hide = async () => {
   const { error } = await client.from('växt-databas').update({ hidden: 'TRUE' }).eq('id', `${planta}`)
@@ -84,11 +86,11 @@ const unHide = async () => {
       <button v-if="showHide === false" @click="unHide()">Visa växt</button>
       <button v-else @click="hide()">Dölj växt</button>
     </div>
-    <div class="image-showcase" :style="{ gridTemplateColumns: `repeat(${plant.bilder.length}, 1fr)` }">
+    <!-- <div class="image-showcase" :style="{ gridTemplateColumns: `repeat(${plant.bilder.length}, 1fr)` }">
       <nuxt-img v-for="image in plant.bilder" :src="image" />
-    </div>
-    <h1>{{ plant.namn }}</h1>
-    <p>{{ plant.beskrivning }}</p>
+    </div> -->
+    <h1>{{ plant.slakte }} {{ plant.art }}</h1>
+    <p>{{ plant.text }}</p>
     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima nihil dolores soluta eveniet placeat tempora
       quisquam dignissimos et nisi, dolore eaque sint omnis nam? Facere eum deserunt delectus iusto soluta alias, cumque
       ut veritatis reiciendis tempore ducimus voluptatem eligendi est culpa! Explicabo quidem natus nesciunt perferendis
