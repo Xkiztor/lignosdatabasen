@@ -85,7 +85,13 @@ console.log(plants);
             <Icon name="ic:baseline-person" />
           </NuxtLink>
         </div>
+        <div class="add-icon" v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword">
+          <NuxtLink to="/ny">
+            <Icon name="material-symbols:add-rounded" />
+          </NuxtLink>
+        </div>
       </div>
+
       <ThemeToggle v-if="width > 700" />
 
       <!-- <nav v-if="showMobileMenu" class="mobile-menu" @click="showMobileMenu = false">
@@ -201,7 +207,11 @@ body {
 
 img {
   border-radius: 0.5rem;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 20px 3px rgba(0, 0, 0, 0.025);
+}
+
+.dark img {
+  box-shadow: 0 0 20px 3px rgba(0, 0, 0, 0.5);
 }
 
 p {
@@ -400,18 +410,24 @@ nav .large-nav {
   flex-grow: 1;
 }
 
-nav .account-icon {
+nav .account-icon,
+nav .add-icon {
   margin: auto;
   color: var(--primary-green);
   line-height: 0;
   font-size: 1.4em;
 }
 
-
-
-nav .account-icon svg {
+nav .account-icon svg,
+nav .add-icon svg {
   margin: auto;
   color: var(--primary-green);
+}
+
+nav .add-icon {
+  border-left: 2px solid var(--border-color);
+  margin-left: 5px;
+  padding-left: 5px;
 }
 
 

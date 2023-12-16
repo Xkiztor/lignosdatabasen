@@ -322,7 +322,10 @@ html:not(.dark) .sidebar li a.router-link-active {
 .main-content article p {
   max-width: 60ch;
   line-height: 1.4;
-  font-size: 1.2em;
+}
+
+.main-content article * {
+  font-size: 1.2rem;
 }
 
 .main-content article div:has(img) {
