@@ -10,7 +10,7 @@ const login = () => {
   enteredPassword.value = passwordInputValue.value;
 
   if (passwordInputValue.value === runtimeConfig.public.ADMIN_PASSWORD) {
-    navigateTo('/data');
+    navigateTo('/');
   } else {
     wrongPassword.value = true
   }
@@ -23,7 +23,7 @@ const logout = () => {
 
 
 <template>
-  <div class="admin-page" v-if="enteredPassword !== runtimeConfig.public.ADMIN_PASSWORD">
+  <div class="admin-page page" v-if="enteredPassword !== runtimeConfig.public.ADMIN_PASSWORD">
     <h1>Admin Login</h1>
     <p class="error" v-if="wrongPassword">Fel lösenord</p>
     <div class="flex">
@@ -31,9 +31,11 @@ const logout = () => {
       <button @click="login()">Login</button>
     </div>
   </div>
-  <div class="admin-page" v-else>
-    <h1>Du är inloggad</h1>
-    <button @click="logout()">Logga ut</button>
+  <div class="admin-page page" v-else>
+    <div>
+      <h1>Du är inloggad</h1>
+      <button @click="logout()">Logga ut</button>
+    </div>
   </div>
 </template>
 
@@ -42,16 +44,20 @@ const logout = () => {
 .admin-page {
   max-width: 30rem;
   width: 100%;
-  margin: 5rem auto;
-  border: 1px solid var(--border-color);
+  margin: 0 auto;
+  padding: 5rem 1rem;
+  /* border: 1px solid var(--border-color); */
   text-align: center;
   display: flex;
+  justify-content: flex-start;
+  align-items: center;
   flex-direction: column;
-  padding: 1rem;
 }
 
-.admin-page input {
+.admin-page input,
+.admin-page button {
   flex-grow: 1;
+  margin-top: 1rem;
 }
 
 .admin-page .flex {

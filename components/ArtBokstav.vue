@@ -4,12 +4,23 @@ const props = defineProps([
 ])
 console.log(props.bokstav);
 
-console.log(props.plants)
+// console.log(props.plants)
 
 const plantsInLetter = computed(() => {
-  let newList = []
-  newList = props.plants.filter(plant => plant.slakte.charAt(0) === props.bokstav)
-  return newList
+  // let newList = []
+  // newList = props.plants.filter(plant => plant.slakte.charAt(0) === props.bokstav)
+  // newList = newList.filter((value, index) => {
+  //   return newList.indexOf(value) === index;
+  // })
+  let plantString = props.plants.map(obj => obj.slakte)
+
+  let uniqueSlakteArray = plantString.filter((item, index) => plantString.indexOf(item) === index);
+
+  let correctLetter = uniqueSlakteArray.filter(plant => plant.charAt(0) === props.bokstav)
+
+  let sortedArray = correctLetter.sort()
+
+  return sortedArray
 })
 
 console.log(plantsInLetter.value);
@@ -34,7 +45,8 @@ onClickOutside(outsideClickRef, () => {
     </p>
     <div class="dropdown-spacer">
       <ul class="dropdown" v-if="showDropdown">
-        <li v-for="plant in plantsInLetter"><nuxt-link :to="'/planta/' + plant.slakte">{{ plant.slakte }}</nuxt-link></li>
+        <li v-for="plant in plantsInLetter"><nuxt-link :to="'/planta/' + plant + '/' + 'slakte' + '/'">{{
+          plant }}</nuxt-link></li>
       </ul>
     </div>
   </li>
@@ -88,7 +100,7 @@ p.muted {
   border: 1px solid var(--element-bg);
   display: flex;
   flex-direction: column;
-  align-items: start;
+  align-items: flex-start;
   gap: 0.75rem;
   line-height: 1;
   z-index: 5;

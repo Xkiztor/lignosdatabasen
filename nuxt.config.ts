@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
+  css: ['@/assets/css/styles.css'],
   // modules: ['nuxt-icon'],
   modules: ['nuxt-icon', '@nuxtjs/supabase', '@nuxt/image', '@vueuse/nuxt'],
   supabase: {

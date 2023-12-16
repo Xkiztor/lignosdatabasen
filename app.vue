@@ -20,6 +20,21 @@ const { data: plants } = await useAsyncData('plantor', async () => {
   return data
 })
 
+// -------------  Filtera bort null / mellanslag ---------------------
+// const { error } = await client.from('växt-databas').update({ art: '' }).eq('art', ' ').select()
+// if (error) {
+//   console.log(error);
+// }
+// const { error } = await client.from('växt-databas').update({ sortnamn: '' }).eq('sortnamn', ' ').select()
+// if (error) {
+//   console.log(error);
+// }
+// const { error } = await client.from('växt-databas').update({ svensktnamn: '' }).eq('svensktnamn', ' ').select()
+// if (error) {
+//   console.log(error);
+// }
+
+
 console.log(plants);
 </script>
 
@@ -37,32 +52,32 @@ console.log(plants);
       </button>
       <div :class="{ 'large-nav': width > 700, 'mobile-nav': width < 700 }" v-if="showMobileMenu || width > 700">
         <ul class="link-align">
-          <art-bokstav :bokstav="'A'" :plants="plants" />
-          <art-bokstav :bokstav="'B'" :plants="plants" />
-          <art-bokstav :bokstav="'C'" :plants="plants" />
-          <art-bokstav :bokstav="'D'" :plants="plants" />
-          <art-bokstav :bokstav="'E'" :plants="plants" />
-          <art-bokstav :bokstav="'F'" :plants="plants" />
-          <art-bokstav :bokstav="'G'" :plants="plants" />
-          <art-bokstav :bokstav="'H'" :plants="plants" />
-          <art-bokstav :bokstav="'I'" :plants="plants" />
-          <art-bokstav :bokstav="'J'" :plants="plants" />
-          <art-bokstav :bokstav="'K'" :plants="plants" />
-          <art-bokstav :bokstav="'L'" :plants="plants" />
-          <art-bokstav :bokstav="'M'" :plants="plants" />
-          <art-bokstav :bokstav="'N'" :plants="plants" />
-          <art-bokstav :bokstav="'O'" :plants="plants" />
-          <art-bokstav :bokstav="'P'" :plants="plants" />
-          <art-bokstav :bokstav="'Q'" :plants="plants" />
-          <art-bokstav :bokstav="'R'" :plants="plants" />
-          <art-bokstav :bokstav="'S'" :plants="plants" />
-          <art-bokstav :bokstav="'T'" :plants="plants" />
-          <art-bokstav :bokstav="'U'" :plants="plants" />
-          <art-bokstav :bokstav="'V'" :plants="plants" />
-          <art-bokstav :bokstav="'W'" :plants="plants" />
-          <art-bokstav :bokstav="'X'" :plants="plants" />
-          <art-bokstav :bokstav="'Y'" :plants="plants" />
-          <art-bokstav :bokstav="'Z'" :plants="plants" />
+          <ArtBokstav :bokstav="'A'" :plants="plants" />
+          <ArtBokstav :bokstav="'B'" :plants="plants" />
+          <ArtBokstav :bokstav="'C'" :plants="plants" />
+          <ArtBokstav :bokstav="'D'" :plants="plants" />
+          <ArtBokstav :bokstav="'E'" :plants="plants" />
+          <ArtBokstav :bokstav="'F'" :plants="plants" />
+          <ArtBokstav :bokstav="'G'" :plants="plants" />
+          <ArtBokstav :bokstav="'H'" :plants="plants" />
+          <ArtBokstav :bokstav="'I'" :plants="plants" />
+          <ArtBokstav :bokstav="'J'" :plants="plants" />
+          <ArtBokstav :bokstav="'K'" :plants="plants" />
+          <ArtBokstav :bokstav="'L'" :plants="plants" />
+          <ArtBokstav :bokstav="'M'" :plants="plants" />
+          <ArtBokstav :bokstav="'N'" :plants="plants" />
+          <ArtBokstav :bokstav="'O'" :plants="plants" />
+          <ArtBokstav :bokstav="'P'" :plants="plants" />
+          <ArtBokstav :bokstav="'Q'" :plants="plants" />
+          <ArtBokstav :bokstav="'R'" :plants="plants" />
+          <ArtBokstav :bokstav="'S'" :plants="plants" />
+          <ArtBokstav :bokstav="'T'" :plants="plants" />
+          <ArtBokstav :bokstav="'U'" :plants="plants" />
+          <ArtBokstav :bokstav="'V'" :plants="plants" />
+          <ArtBokstav :bokstav="'W'" :plants="plants" />
+          <ArtBokstav :bokstav="'X'" :plants="plants" />
+          <ArtBokstav :bokstav="'Y'" :plants="plants" />
+          <ArtBokstav :bokstav="'Z'" :plants="plants" />
         </ul>
         <ThemeToggle v-if="width < 700" />
         <div class="account-icon" v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword">
@@ -82,7 +97,7 @@ console.log(plants);
       </nav> -->
     </nav>
     <NuxtPage />
-    <footer></footer>
+    <Footer />
   </div>
 </template>
 
@@ -97,11 +112,11 @@ console.log(plants);
   --title-color-light: #000000;
   --title-color-dark: #fef6ec;
 
-  --text-color-light: #352a24;
+  --text-color-light: #4c392f;
   --text-color-dark: #eae0d4;
 
-  --mute-text-light: #adaba5;
-  --mute-text-dark: #959595;
+  --mute-text-light: #b0a99f;
+  --mute-text-dark: #9a9087;
 
   --bg-color-light: #edebe6;
   --bg-color-dark: #181410;
@@ -173,13 +188,50 @@ body {
   min-height: 100vh;
 }
 
+.page {
+  min-height: 100vh;
+}
+
+@media screen and (min-width: 700px) {
+  .page {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+img {
+  border-radius: 0.5rem;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+p {
+  font-size: 1.1em;
+}
+
 a {
   color: var(--text-color);
 }
 
+h1 {
+  font-weight: 700;
+}
+
+h2 {
+  font-weight: 600;
+}
+
+.muted {
+  color: var(--mute-text);
+}
+
+.bold {
+  font-weight: bold;
+}
+
 input,
 button,
-textarea {
+textarea,
+.buttonlike {
   background: var(--element-bg);
   border: 1px solid transparent;
   padding: 0.75rem;
@@ -188,14 +240,16 @@ textarea {
   transition: all 150ms;
   /* font-size: 105%; */
   font-size: 0.95em;
+  cursor: pointer;
 }
 
-.dark input,
-.dark button,
-.darf textarea {
-  background: var(--element-bg);
-  /* border-color: var(--border-color); */
-  color: var(--text-color);
+input,
+textarea {
+  cursor: text;
+}
+
+.buttonlike {
+  cursor: inherit;
 }
 
 input:hover,
@@ -226,12 +280,27 @@ button:hover {
   border-color: var(--primary-green);
 }
 
-button {
-  cursor: pointer;
+button.cta {
+  background: var(--primary-green);
+  color: var(--text-color-light);
 }
 
+::selection,
+::-moz-selection {
+  background: var(--primary-green);
+}
+
+.dark ::selection,
+.dark ::-moz-selection {
+  color: var(--text-color-light);
+}
 
 nav {
+  position: sticky;
+  top: 0;
+  background: var(--bg-color);
+  z-index: 2;
+  width: 100vw;
   /* flex-grow: 1; */
   display: grid;
   grid-template-columns: 20% 60% 20%;

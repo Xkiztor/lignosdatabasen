@@ -16,11 +16,11 @@
 
 <style>
 .page {
-  display: flex;
+  /* display: flex; */
 }
 
 .index header {
-  flex-grow: 1;
+  /* flex-grow: 1; */
   display: grid;
   place-items: center;
   margin-top: 5rem;
