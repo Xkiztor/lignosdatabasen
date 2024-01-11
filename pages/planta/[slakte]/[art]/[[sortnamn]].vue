@@ -148,7 +148,7 @@ const images = computed(() => {
     <!-- <div class="image-showcase" :style="{ gridTemplateColumns: `repeat(${plant.bilder.length}, 1fr)` }">
       <nuxt-img v-for="image in plant.bilder" :src="image" />
     </div> -->
-    <header class="top-bar">
+    <header class="top-bar" :class="{ 'no-image': images[0] == undefined }">
       <div class="content">
         <h1>{{ specificPlant.slakte }} {{ specificPlant.art === 'slakte' ? '' : specificPlant.art }} {{
           specificPlant.sortnamn ? `'${specificPlant.sortnamn}'` :
@@ -329,14 +329,21 @@ header h2.subtitle {
   z-index: 1;
   width: 100%;
   max-width: 70rem;
-  color: #fff;
   margin: 0 auto;
   display: grid;
+  color: #fff;
 }
 
 .page .top-bar .content * {
-  text-shadow: 0 0 13px rgba(0, 0, 0, 0.5);
   margin: 0;
+}
+
+.page .top-bar:not(.no-image) .content * {
+  text-shadow: 0 0 13px rgba(0, 0, 0, 0.5);
+}
+
+.page .top-bar.no-image {
+  background: var(--primary-green-light);
 }
 
 
