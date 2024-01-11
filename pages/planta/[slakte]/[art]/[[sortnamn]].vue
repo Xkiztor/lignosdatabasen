@@ -108,6 +108,11 @@ const unHide = async () => {
   }
   showHide.value = true
 }
+
+
+const images = computed(() => {
+  return specificPlant.value.text.split(/[\[\]]/).filter(str => str !== '' && str.includes('http'))
+})
 </script>
 
 
@@ -143,17 +148,26 @@ const unHide = async () => {
     <!-- <div class="image-showcase" :style="{ gridTemplateColumns: `repeat(${plant.bilder.length}, 1fr)` }">
       <nuxt-img v-for="image in plant.bilder" :src="image" />
     </div> -->
+    <header class="top-bar">
+      <div class="content">
+        <h1>{{ specificPlant.slakte }} {{ specificPlant.art === 'slakte' ? '' : specificPlant.art }} {{
+          specificPlant.sortnamn ? `'${specificPlant.sortnamn}'` :
+          '' }}</h1>
+        <!-- <h1>{{ $route.params.slakte }} {{ $route.params.art === 'slakte' ? '' : $route.params.art }} {{
+            $route.params.sortnamn ? `'${$route.params.sortnamn}'` :
+            '' }}</h1> -->
+        <h2 class="subtitle">{{ specificPlant.svensktnamn }}</h2>
+      </div>
+      <img :src="images[0]" alt="">
+    </header>
     <div class="center-content">
       <div class="main-content" v-if="!isEditing">
-        <header>
+        <!-- <header>
           <h1>{{ specificPlant.slakte }} {{ specificPlant.art === 'slakte' ? '' : specificPlant.art }} {{
             specificPlant.sortnamn ? `'${specificPlant.sortnamn}'` :
             '' }}</h1>
-          <!-- <h1>{{ $route.params.slakte }} {{ $route.params.art === 'slakte' ? '' : $route.params.art }} {{
-            $route.params.sortnamn ? `'${$route.params.sortnamn}'` :
-            '' }}</h1> -->
           <h2 class="subtitle">{{ specificPlant.svensktnamn }}</h2>
-        </header>
+        </header> -->
         <article>
           <RichText :plant="specificPlant" />
         </article>
@@ -182,10 +196,10 @@ const unHide = async () => {
             <h2>Text</h2>
             <textarea type="text" v-model="editablePlant.text" />
           </div>
-          <div>
+          <!-- <div>
             <h2>Id</h2>
             <div class="buttonlike muted">{{ specificPlant.id }}</div>
-          </div>
+          </div> -->
           <div>
             <div></div>
             <button class="bold" @click="editPlant()">Updatera</button>
@@ -208,7 +222,7 @@ const unHide = async () => {
         <ul>
           <li class="slakte"><nuxt-link :to="`/planta/${$route.params.slakte}/slakte`">Släkte: {{ $route.params.slakte
           }}</nuxt-link></li>
-          <li v-for="plant in sortedPlantsInSlakte">
+          <li v-for="plant in sortedPlantsInSlakte" :class="{ 'muted': plant.text === 'Ingen info' }">
             <nuxt-link v-if="!plant.hidden || runtimeConfig.public.ADMIN_PASSWORD === enteredPassword"
               :to="`/planta/${plant.slakte}/${plant.art}/${plant.sortnamn}`">
               {{ plant.slakte }} {{ plant.art }} {{ plant.sortnamn ? `'${plant.sortnamn}'` : '' }}{{ plant.hidden ? ` -
@@ -224,6 +238,10 @@ const unHide = async () => {
 
 
 <style>
+.page.plant {
+  padding: 0;
+}
+
 .center-content {
   max-width: 70rem;
   width: 100%;
@@ -261,21 +279,78 @@ const unHide = async () => {
 }
 
 .page.plant h1 {
-  font-size: 3rem;
+  font-size: 2rem;
   margin: 0;
   margin-top: 1rem;
 }
 
-.main-content header {
-  margin-bottom: 2rem;
+header h2.subtitle {
+  font-size: 1.2em;
 }
 
-header h2.subtitle {
-  font-size: 1.4em;
+@media screen and (min-width: 700px) {
+  .page.plant h1 {
+    font-size: 3rem;
+  }
+
+  header h2.subtitle {
+    font-size: 1.4rem;
+  }
 }
+
+.page.plant header {
+  margin-bottom: .5rem;
+}
+
+
+
+.page .top-bar {
+  width: 100%;
+  height: 12rem;
+  overflow: hidden;
+  position: relative;
+  /* border-radius: 1rem; */
+}
+
+.page .top-bar img {
+  width: 100%;
+  object-fit: cover;
+  height: 12rem;
+  filter: blur(10px) brightness(80%);
+  transform: scale(110%);
+}
+
+.page .top-bar .content {
+  padding-left: 1rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  width: 100%;
+  max-width: 70rem;
+  color: #fff;
+  margin: 0 auto;
+  display: grid;
+}
+
+.page .top-bar .content * {
+  text-shadow: 0 0 13px rgba(0, 0, 0, 0.5);
+  margin: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 .sidebar {
-  margin-top: 1rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   padding-left: 1rem;
@@ -309,7 +384,11 @@ html:not(.dark) .sidebar li a.router-link-active {
   }
 }
 
-.main-content article img {
+.sidebar li.muted * {
+  opacity: 0.5;
+}
+
+.main-content article div:not(.screen-cover)>img {
   max-height: 25rem;
   max-width: 100%;
   margin: 0.5rem 0;
@@ -317,6 +396,7 @@ html:not(.dark) .sidebar li a.router-link-active {
   /* width: 60ch; */
   display: inline;
   margin-right: 1rem;
+  cursor: pointer;
 }
 
 .main-content article p {
@@ -354,11 +434,17 @@ html:not(.dark) .sidebar li a.router-link-active {
 }
 
 .page.plant .admin-panel {
-  /* position: absolute; */
+  z-index: 1;
   right: 1rem;
   padding: 1rem 1rem 1rem 0;
   display: flex;
   gap: 1rem;
+}
+
+@media screen and (min-width: 700px) {
+  .page.plant .admin-panel {
+    position: absolute;
+  }
 }
 
 .page.plant .admin-panel button:has(svg) {
