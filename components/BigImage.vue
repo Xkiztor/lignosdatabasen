@@ -65,7 +65,7 @@ onClickOutside(target, () => {
 
 .main-content div .screen-cover img {
   box-shadow: 0 0 100px 5px rgba(0, 0, 0, 0.3);
-  max-height: 100%;
+  height: 100%;
 }
 
 div.main-content article div img.square {
@@ -79,8 +79,11 @@ div.main-content article div img.portrait {
 }
 
 div.main-content article div img.landscape {
-  /* max-width: calc(30ch - 1rem); */
-  max-width: 60ch;
+  max-width: calc(60ch - 1rem);
   width: 100%;
+}
+
+.main-content article img {
+  transition: none;
 }
 </style>

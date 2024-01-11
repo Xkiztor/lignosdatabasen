@@ -320,6 +320,10 @@ nav {
   height: fit-content;
 }
 
+nav * {
+  transition: all 100ms;
+}
+
 @media screen and (max-width: 1100px) {
   nav {
     grid-template-columns: min-content auto min-content;

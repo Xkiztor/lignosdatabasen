@@ -36,9 +36,7 @@ const sortedPlantsInSlakte = computed(() => {
 const { data: specificPlant } = await useAsyncData('plant-fetch', async () => {
   if (!isSlakte.value) {
     const { data, error } = await client.from('växt-databas').select().eq('slakte', `${router.params.slakte}`).eq('art', `${router.params.art}`).eq('sortnamn', `${router.params.sortnamn}`).single()
-    // const { data, error } = await client.from('växt-databas').select().eq('slakte', `${router.params.slakte}`).eq('art', `${router.params.art}`).eq('sortnamn', `${router.params.sortnamn}`).single()
-    // const { data, error } = await client.from('växt-databas').select().eq('slakte', `${router.params.slakte}`.eq('art', `${router.params.art}`).singe())
-    // const { data, error } = await client.from('växt-databas').select().eq('slakte', `${planta}`).single()
+
     if (error) {
       console.error(error);
     }
@@ -118,6 +116,7 @@ const images = computed(() => {
 
 <template>
   <div class="page plant">
+    <img class="backdrop" :src="images[0]" alt="">
     <div class="confirm model delete" v-if="showDeleteModel">
       <div class="content" ref="outsideClickTarget">
         <h1>Är du säker?</h1>
@@ -145,6 +144,7 @@ const images = computed(() => {
         <Icon name="zondicons:view-hide" />Dölj växt
       </button>
     </div>
+
     <!-- <div class="image-showcase" :style="{ gridTemplateColumns: `repeat(${plant.bilder.length}, 1fr)` }">
       <nuxt-img v-for="image in plant.bilder" :src="image" />
     </div> -->
@@ -161,62 +161,67 @@ const images = computed(() => {
       <img :src="images[0]" alt="">
     </header>
     <div class="center-content">
-      <div class="main-content" v-if="!isEditing">
-        <!-- <header>
-          <h1>{{ specificPlant.slakte }} {{ specificPlant.art === 'slakte' ? '' : specificPlant.art }} {{
+      <div>
+        <Transition name="main">
+          <div class="main-content edit" v-if="isEditing">
+            <form @submit.prevent="">
+              <div>
+                <h2>Släkte</h2>
+                <input type="text" v-model="editablePlant.slakte">
+              </div>
+              <div>
+                <h2>Art</h2>
+                <input type="text" v-model="editablePlant.art">
+              </div>
+              <div>
+                <h2>Sortnamn</h2>
+                <input type="text" v-model="editablePlant.sortnamn">
+              </div>
+              <div>
+                <h2>Svenskt Namn</h2>
+                <input type="text" v-model="editablePlant.svensktnamn">
+              </div>
+              <div>
+                <h2>Text</h2>
+                <textarea type="text" v-model="editablePlant.text" />
+              </div>
+              <!-- <div>
+            <h2>Id</h2>
+            <div class="buttonlike muted">{{ specificPlant.id }}</div>
+          </div> -->
+              <div>
+                <div></div>
+                <button class="bold" @click="editPlant()">Updatera</button>
+              </div>
+            </form>
+            <div class="forhandsgranskning">
+              <h1>Förhandsgranskning:</h1>
+            </div>
+            <!-- <header>
+              <h1>{{ editablePlant.slakte }} {{ editablePlant.art === 'slakte' ? '' : editablePlant.art }} {{
+                editablePlant.sortnamn ? `'${editablePlant.sortnamn}'` :
+                '' }}</h1>
+              <h2 class="subtitle">{{ editablePlant.svensktnamn }}</h2>
+            </header> -->
+            <article>
+              <RichText :plant="editablePlant" />
+            </article>
+          </div>
+          <div class="main-content" v-else>
+            <!-- <header>
+              <h1>{{ specificPlant.slakte }} {{ specificPlant.art === 'slakte' ? '' : specificPlant.art }} {{
             specificPlant.sortnamn ? `'${specificPlant.sortnamn}'` :
             '' }}</h1>
           <h2 class="subtitle">{{ specificPlant.svensktnamn }}</h2>
         </header> -->
-        <article>
-          <RichText :plant="specificPlant" />
-        </article>
-        <!-- <h1>{{ plant.slakte }} {{ plant.art }} <v-if v-if="plant.sortnamn">'{{ plant.sortnamn }}'</v-if></h1> -->
-        <!-- <p>{{ plant.text }}</p> -->
-      </div>
-      <div class="main-content edit" v-else>
-        <form @submit.prevent="">
-          <div>
-            <h2>Släkte</h2>
-            <input type="text" v-model="editablePlant.slakte">
+            <article>
+              <RichText :plant="specificPlant" />
+            </article>
+            <!-- <h1>{{ plant.slakte }} {{ plant.art }} <v-if v-if="plant.sortnamn">'{{ plant.sortnamn }}'</v-if></h1> -->
+            <!-- <p>{{ plant.text }}</p> -->
           </div>
-          <div>
-            <h2>Art</h2>
-            <input type="text" v-model="editablePlant.art">
-          </div>
-          <div>
-            <h2>Sortnamn</h2>
-            <input type="text" v-model="editablePlant.sortnamn">
-          </div>
-          <div>
-            <h2>Svenskt Namn</h2>
-            <input type="text" v-model="editablePlant.svensktnamn">
-          </div>
-          <div>
-            <h2>Text</h2>
-            <textarea type="text" v-model="editablePlant.text" />
-          </div>
-          <!-- <div>
-            <h2>Id</h2>
-            <div class="buttonlike muted">{{ specificPlant.id }}</div>
-          </div> -->
-          <div>
-            <div></div>
-            <button class="bold" @click="editPlant()">Updatera</button>
-          </div>
-        </form>
-        <div class="forhandsgranskning">
-          <h1>Förhandsgranskning:</h1>
-        </div>
-        <header>
-          <h1>{{ editablePlant.slakte }} {{ editablePlant.art === 'slakte' ? '' : editablePlant.art }} {{
-            editablePlant.sortnamn ? `'${editablePlant.sortnamn}'` :
-            '' }}</h1>
-          <h2 class="subtitle">{{ editablePlant.svensktnamn }}</h2>
-        </header>
-        <article>
-          <RichText :plant="editablePlant" />
-        </article>
+
+        </Transition>
       </div>
       <div class="sidebar">
         <ul>
@@ -226,13 +231,12 @@ const images = computed(() => {
             <nuxt-link v-if="!plant.hidden || runtimeConfig.public.ADMIN_PASSWORD === enteredPassword"
               :to="`/planta/${plant.slakte}/${plant.art}/${plant.sortnamn}`">
               {{ plant.slakte }} {{ plant.art }} {{ plant.sortnamn ? `'${plant.sortnamn}'` : '' }}{{ plant.hidden ? ` -
-              ( Dåld växt )` : "" }}
+              ( Dold växt )` : "" }}
             </nuxt-link>
           </li>
         </ul>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -240,6 +244,10 @@ const images = computed(() => {
 <style>
 .page.plant {
   padding: 0;
+}
+
+.page.plant {
+  transition: all 200ms;
 }
 
 .center-content {
@@ -500,6 +508,19 @@ html:not(.dark) .sidebar li a.router-link-active {
   width: 4em;
 }
 
+img.backdrop {
+  position: absolute;
+  z-index: -2;
+  width: 90%;
+  height: 60%;
+  object-fit: cover;
+  filter: blur(100px);
+  opacity: 0;
+}
+
+.dark img.backdrop {
+  opacity: 0.1;
+}
 
 
 
@@ -509,7 +530,7 @@ html:not(.dark) .sidebar li a.router-link-active {
   font-size: 2rem;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 1rem;
-  margin-bottom: 4rem;
+  margin-bottom: 0.5rem;
 }
 
 .main-content.edit form>div {
@@ -529,5 +550,41 @@ html:not(.dark) .sidebar li a.router-link-active {
   margin-top: 1rem;
   margin-bottom: 3rem;
   /* grid-column: 1/3; */
+}
+
+
+.edit-enter-active,
+.edit-leave-active {
+  transition: all 5s ease;
+}
+
+.edit-enter-from {
+  opacity: 0;
+  transform: translate(0, -100vh);
+}
+
+.edit-leave-to {
+  opacity: 0;
+  transform: translate(0, 100vh);
+}
+
+.main-enter-active,
+.main-leave-active {
+  transition: all 0.4s ease;
+  position: absolute;
+  z-index: -1;
+  max-width: 90ch;
+}
+
+.main-enter-from {
+  opacity: 0;
+  transform: translate(-50vh, 0);
+  scale: 90%;
+}
+
+.main-leave-to {
+  opacity: 0;
+  transform: translate(50vh, 0);
+  scale: 90%;
 }
 </style>

@@ -75,6 +75,10 @@ li a:hover:not(.muted) {
   color: var(--primary-green);
 }
 
+.dropdown li:has(a:hover) {
+  transform: translate(4px, 0);
+}
+
 
 p.muted {
   color: var(--mute-text);

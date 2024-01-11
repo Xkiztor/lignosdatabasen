@@ -7,7 +7,7 @@ const toggleDark = useToggle(isDark)
 <template>
   <button @click="toggleDark()" class="theme-toggle">
     <v-if v-if="isDark">
-      <Icon name="lucide:sun-medium" />
+      <Icon size="18" name="lucide:sun-medium" />
     </v-if>
     <v-if v-else>
       <Icon size="18" name="majesticons:moon" class="gray" />
