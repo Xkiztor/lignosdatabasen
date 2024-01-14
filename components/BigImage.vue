@@ -57,33 +57,57 @@ onClickOutside(target, () => {
   height: 100%;
   z-index: 5;
   background: rgba(0, 0, 0, 0.3);
-  display: grid;
-  place-items: center;
+  display: flex;
+  /* justify-content: center; */
+  /* flex-shrink: 1; */
   backdrop-filter: blur(2px);
-  padding: 6rem;
+  padding: 5rem 1rem;
+  object-fit: scale-down;
 }
 
 .main-content div .screen-cover img {
   box-shadow: 0 0 100px 5px rgba(0, 0, 0, 0.3);
-  height: 100%;
+  max-height: 100%;
+  /* height: 100%; */
+  max-width: 100%;
+  /* object-fit: cover; */
+  transition: none;
+  /* flex-shrink: 1; */
+  /* flex-grow: 1; */
+  margin: auto;
 }
 
+
 div.main-content article div img.square {
-  max-width: calc(30ch - 1rem);
   width: 100%;
 }
 
 div.main-content article div img.portrait {
-  max-width: calc(30ch - 1rem);
   width: 100%;
 }
 
 div.main-content article div img.landscape {
-  max-width: calc(60ch - 1rem);
   width: 100%;
 }
 
 .main-content article img {
   transition: none;
+}
+
+@media screen and (min-width: 700px) {
+  div.main-content article div img.square {
+    max-width: calc(30ch - 1rem);
+    width: 100%;
+  }
+
+  div.main-content article div img.portrait {
+    max-width: calc(30ch - 1rem);
+    width: 100%;
+  }
+
+  div.main-content article div img.landscape {
+    max-width: calc(60ch - 1rem);
+    width: 100%;
+  }
 }
 </style>

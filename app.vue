@@ -310,7 +310,7 @@ nav {
   top: 0;
   background: var(--bg-color);
   z-index: 2;
-  width: 100vw;
+  width: 100%;
   /* flex-grow: 1; */
   display: grid;
   grid-template-columns: 20% 60% 20%;
