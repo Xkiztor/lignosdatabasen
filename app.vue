@@ -1,4 +1,44 @@
 <script setup>
+useHead({
+  title: 'Växt Databas',
+  // or, instead:
+  // titleTemplate: (title) => `My App - ${title}`,
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=6',
+  charset: 'utf-8',
+  meta: [
+    { name: 'description', content: 'En samlad informationskälla om olika växter' },
+    // { name: 'keywords', content: 'Lista, Lindersplantskola, superlista, Växter, ovanliga växter, lista att beställa ifån, 2024' },
+    { name: 'author', content: 'Ugo Linder, Peter Linder' },
+  ],
+  bodyAttrs: {
+    // class: 'test'
+  },
+  htmlAttrs: {
+    lang: 'se',
+  },
+  link: [
+    {
+      rel: 'preconnect',
+      href: 'https://fonts.googleapis.com'
+    },
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Salsa&display=swap',
+      crossorigin: ''
+    },
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Inter&display=swap',
+      crossorigin: ''
+    },
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Playpen+Sans&display=swap',
+      crossorigin: ''
+    },
+  ]
+})
+
 const runtimeConfig = useRuntimeConfig();
 const enteredPassword = useCookie('enteredPassword', { maxAge: 60604800 });
 
@@ -111,7 +151,13 @@ console.log(plants);
 * {
   transition: all 200ms;
   box-sizing: border-box;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Helvetica, sans-serif;
+  /* font-family: 'Playpen Sans'; */
+  font-family: Salsa;
+  word-spacing: 1px;
+  letter-spacing: 0.1px;
+  /* font-family: Caveat; */
+  /* font-family: Inter; */
+  /* font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Helvetica, sans-serif; */
 }
 
 :root {
