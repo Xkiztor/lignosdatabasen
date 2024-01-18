@@ -44,10 +44,12 @@ onClickOutside(outsideClickRef, () => {
       {{ bokstav }}
     </p>
     <div class="dropdown-spacer">
-      <ul class="dropdown" v-if="showDropdown">
-        <li v-for="plant in plantsInLetter"><nuxt-link :to="'/planta/' + plant + '/' + 'slakte' + '/'">{{
-          plant }}</nuxt-link></li>
-      </ul>
+      <Transition name="dropdown">
+        <ul class="dropdown" v-if="showDropdown">
+          <li v-for="plant in plantsInLetter"><nuxt-link :to="'/planta/' + plant + '/' + 'slakte' + '/'">{{
+            plant }}</nuxt-link></li>
+        </ul>
+      </Transition>
     </div>
   </li>
 </template>
@@ -55,7 +57,7 @@ onClickOutside(outsideClickRef, () => {
 
 <style>
 li {
-  list-style: none;
+  list-style-type: none;
   position: relative;
 }
 
@@ -98,7 +100,7 @@ p.muted {
 }
 
 .dropdown {
-  padding: 0.5rem 0.5rem 0.75rem;
+  padding: 0.75rem 0.75rem 1rem;
   border-radius: 0.5rem;
   background: var(--element-bg);
   border: 1px solid var(--element-bg);
@@ -132,5 +134,20 @@ p.muted {
 
 .dark .dropdown::before {
   border-bottom-color: var(--element-bg);
+}
+
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 70ms ease;
+}
+
+.dropdown-enter-from {
+  opacity: 1;
+  transform: translate(0, -30px);
+}
+
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translate(0, 10px);
 }
 </style>

@@ -28,12 +28,12 @@ useHead({
     },
     {
       rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Inter&display=swap',
+      href: 'https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap',
       crossorigin: ''
     },
     {
       rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Playpen+Sans&display=swap',
+      href: 'https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap',
       crossorigin: ''
     },
   ]
@@ -75,7 +75,6 @@ const { data: plants } = await useAsyncData('plantor', async () => {
 // }
 
 
-console.log(plants);
 </script>
 
 
@@ -152,12 +151,19 @@ console.log(plants);
   transition: all 200ms;
   box-sizing: border-box;
   /* font-family: 'Playpen Sans'; */
-  font-family: Salsa;
+  /* font-family: Salsa; */
+  font-family: 'Roboto Slab';
+  /* font-weight: 900; */
   word-spacing: 1px;
   letter-spacing: 0.1px;
   /* font-family: Caveat; */
   /* font-family: Inter; */
   /* font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Helvetica, sans-serif; */
+}
+
+h1 {
+  font-family: 'Roboto';
+  font-weight: 900;
 }
 
 :root {
@@ -344,6 +350,7 @@ button.cta {
 ::selection,
 ::-moz-selection {
   background: var(--primary-green);
+  color: var(--text-color-light);
 }
 
 .dark ::selection,

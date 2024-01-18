@@ -56,7 +56,7 @@ onClickOutside(target, () => {
   width: 100%;
   height: 100%;
   z-index: 5;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.85);
   display: flex;
   /* justify-content: center; */
   /* flex-shrink: 1; */
@@ -66,7 +66,7 @@ onClickOutside(target, () => {
 }
 
 .main-content div .screen-cover img {
-  box-shadow: 0 0 100px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 100px 5px rgba(0, 0, 0, 0.5);
   max-height: 100%;
   /* height: 100%; */
   max-width: 100%;
