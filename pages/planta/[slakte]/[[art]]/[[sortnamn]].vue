@@ -53,7 +53,9 @@ const { data: specificPlant } = await useAsyncData('plant-fetch', async () => {
     // } else {
     // return { slakte: router.params.slakte, art: router.params.slakte, sortnamn: router.params.sortnamn, text: 'Bra släkte' }
     // }
-    return data ? data : { slakte: router.params.slakte, art: router.params.slakte, sortnamn: router.params.sortnamn, text: 'Ingen Info' }
+    return data ? data :
+      // If no data:
+      { slakte: router.params.slakte, art: 'slakte', sortnamn: router.params.sortnamn, text: 'Ingen Info' }
   }
 
 })
@@ -267,16 +269,7 @@ const images = computed(() => {
   }
 }
 
-@media screen and (max-width: 1000px) {
-  .sidebar {
-    /* grid-row: 1; */
-  }
-
-  .center-content {
-    /* text-align: center; */
-    /* place-items: center; */
-  }
-}
+@media screen and (max-width: 1000px) {}
 
 .page.plant {
   display: flex;

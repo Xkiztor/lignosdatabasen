@@ -57,6 +57,9 @@ const { data: plants } = await useAsyncData('plantor', async () => {
   if (error) {
     console.log(error);
   }
+  if (data) {
+    console.log(data);
+  }
   return data
 })
 
@@ -74,6 +77,41 @@ const { data: plants } = await useAsyncData('plantor', async () => {
 //   console.log(error);
 // }
 
+
+const slakteGen = () => {
+  // Funktion för att generara en extra av varje släkte med artnamnet "slakte"
+
+  let array = plants.value
+
+  let oneOfEverySlakte = []
+
+  for (let i = 0; i < array.length; i++) {
+    if (oneOfEverySlakte.some(plant => plant === array[i].slakte)) {
+      console.log('already contains');
+    } else {
+      oneOfEverySlakte.push(array[i].slakte)
+      console.log('added');
+    }
+  }
+
+  console.log(array);
+  console.log(oneOfEverySlakte);
+
+  oneOfEverySlakte.forEach(async (plant) => {
+    const { data, error } = await client
+      .from('växt-databas')
+      .insert([{
+        slakte: `${plant}`, art: `slakte`, text: `Ingen info`
+      }])
+      .select()
+    if (error) {
+      console.error(error);
+    }
+    if (data) {
+      console.log(data);
+    }
+  })
+}
 
 </script>
 
@@ -142,6 +180,7 @@ const { data: plants } = await useAsyncData('plantor', async () => {
       </nav> -->
     </nav>
     <NuxtPage />
+    <!-- <button @click="slakteGen()">Generara släkte</button> -->
     <Footer />
   </div>
 </template>

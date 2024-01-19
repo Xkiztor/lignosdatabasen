@@ -2,7 +2,7 @@
 const props = defineProps([
   'bokstav', 'plants'
 ])
-console.log(props.bokstav);
+// console.log(props.bokstav);
 
 // console.log(props.plants)
 
@@ -23,9 +23,9 @@ const plantsInLetter = computed(() => {
   return sortedArray
 })
 
-console.log(plantsInLetter.value);
+// console.log(plantsInLetter.value);
 
-console.log(plantsInLetter.value.lenght)
+// console.log(plantsInLetter.value.lenght)
 
 const showDropdown = ref(false)
 
