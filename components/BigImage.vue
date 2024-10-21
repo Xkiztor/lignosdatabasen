@@ -42,9 +42,9 @@ onClickOutside(target, () => {
 
 <template>
   <div class="screen-cover" v-if="imageOpened">
-    <img :src="string" :alt="string" ref="target">
+    <NuxtImg :src="string" :alt="string" ref="target" :placeholder="[50, 25, 75, 5]" />
   </div>
-  <img @click="openImage()" :src="string" :alt="string" ref="image" :class="imageOreientation">
+  <NuxtImg @click="openImage()" :src="string" :alt="string" ref="image" :class="imageOreientation" loading="lazy" />
 </template>
 
 

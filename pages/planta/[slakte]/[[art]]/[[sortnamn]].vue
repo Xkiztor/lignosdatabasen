@@ -111,7 +111,8 @@ const unHide = async () => {
 
 
 const images = computed(() => {
-  return specificPlant.value.text.split(/[\[\]]/).filter(str => str !== '' && str.includes('http'))
+  return specificPlant.value.text.split(/!\[[^\]]*\]\(([^)]+)\)/g).filter(str => str !== '' && str.includes('http') && !str.includes('['))
+  // return specificPlant.value.text.split(/[\[\]]/).filter(str => str !== '' && str.includes('http'))
 })
 </script>
 
@@ -153,8 +154,8 @@ const images = computed(() => {
     <header class="top-bar" :class="{ 'no-image': images[0] == undefined }">
       <div class="content">
         <h1>{{ specificPlant.slakte }} {{ specificPlant.art === 'slakte' ? '' : specificPlant.art }} {{
-          specificPlant.sortnamn ? `'${specificPlant.sortnamn}'` :
-          '' }}</h1>
+      specificPlant.sortnamn ? `'${specificPlant.sortnamn}'` :
+        '' }}</h1>
         <!-- <h1>{{ $route.params.slakte }} {{ $route.params.art === 'slakte' ? '' : $route.params.art }} {{
             $route.params.sortnamn ? `'${$route.params.sortnamn}'` :
             '' }}</h1> -->
@@ -205,9 +206,10 @@ const images = computed(() => {
                 '' }}</h1>
               <h2 class="subtitle">{{ editablePlant.svensktnamn }}</h2>
             </header> -->
-            <article>
+            <!-- <article>
               <RichText :plant="editablePlant" />
-            </article>
+            </article> -->
+            <Markdown :plant="specificPlant" />
           </div>
           <div class="main-content" v-else>
             <!-- <header>
@@ -216,9 +218,15 @@ const images = computed(() => {
             '' }}</h1>
           <h2 class="subtitle">{{ specificPlant.svensktnamn }}</h2>
         </header> -->
-            <article>
+
+
+            <!-- <article>
               <RichText :plant="specificPlant" />
-            </article>
+            </article> -->
+
+            <Markdown :plant="specificPlant" />
+
+
             <!-- <h1>{{ plant.slakte }} {{ plant.art }} <v-if v-if="plant.sortnamn">'{{ plant.sortnamn }}'</v-if></h1> -->
             <!-- <p>{{ plant.text }}</p> -->
           </div>
@@ -228,7 +236,7 @@ const images = computed(() => {
       <div class="sidebar">
         <ul>
           <li class="slakte"><nuxt-link :to="`/planta/${$route.params.slakte}/slakte`">Släkte: {{ $route.params.slakte
-          }}</nuxt-link></li>
+              }}</nuxt-link></li>
           <li v-for="plant in sortedPlantsInSlakte" :class="{ 'muted': plant.text === 'Ingen info' }">
             <nuxt-link v-if="!plant.hidden || runtimeConfig.public.ADMIN_PASSWORD === enteredPassword"
               :to="`/planta/${plant.slakte}/${plant.art}/${plant.sortnamn}`">
@@ -294,6 +302,10 @@ header h2.subtitle {
     font-size: 3rem;
   }
 
+  .page.plant .main-content h1 {
+    font-size: 2.5rem;
+  }
+
   header h2.subtitle {
     font-size: 1.4rem;
   }
@@ -343,7 +355,7 @@ header h2.subtitle {
   text-shadow: 0 0 13px rgba(0, 0, 0, 0.5);
 }
 
-.page .top-bar.no-image {
+.page .top-bar {
   background: var(--primary-green-light);
 }
 
@@ -396,8 +408,8 @@ html:not(.dark) .sidebar li a.router-link-active {
   opacity: 0.5;
 }
 
-.main-content article div:not(.screen-cover)>img {
-  max-height: 25rem;
+.main-content article .article-image {
+  max-height: 35rem;
   max-width: 100%;
   margin: 0.5rem 0;
   object-fit: cover;
@@ -414,10 +426,6 @@ html:not(.dark) .sidebar li a.router-link-active {
 
 .main-content article * {
   font-size: 1.2rem;
-}
-
-.main-content article div:has(img) {
-  display: inline;
 }
 
 
@@ -534,7 +542,7 @@ img.backdrop {
 }
 
 .main-content.edit form>div textarea {
-  min-height: 10rem;
+  min-height: 20rem;
   resize: vertical;
   transition: none;
 }

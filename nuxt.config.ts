@@ -3,7 +3,13 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ['@/assets/css/styles.css'],
   // modules: ['nuxt-icon'],
-  modules: ['nuxt-icon', '@nuxtjs/supabase', '@nuxt/image', '@vueuse/nuxt'],
+  modules: [
+    'nuxt-icon',
+    '@nuxtjs/supabase',
+    '@nuxt/image',
+    '@vueuse/nuxt',
+    '@nuxtjs/mdc',
+  ],
   supabase: {
     redirect: false,
   },
@@ -21,6 +27,18 @@ export default defineNuxtConfig({
           content: 'En samlad databas med information om växter',
         },
       ],
+    },
+  },
+  image: {
+    provider: 'ipx',
+  },
+  mdc: {
+    components: {
+      prose: true, // Disable predefined prose components
+      map: {
+        img: 'Image',
+        a: 'Anchor',
+      },
     },
   },
 });

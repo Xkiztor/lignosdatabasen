@@ -1,4 +1,4 @@
-<script setup lang='tsx'>
+<script setup>
 
 const props = defineProps(['plant'])
 
@@ -15,12 +15,17 @@ const separatedString = computed(() => {
 
 console.log(separatedString);
 
-const checkIfLink = (string: string) => {
-  const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+const checkIfLink = (string) => {
+  const urlRegex = /.*\b(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+  return urlRegex.test(string);
+}
+const checkIfImage = (string) => {
+  const urlRegex = /.*\b(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+  const bildRegex = /.*\b(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
   return urlRegex.test(string);
 }
 
-const checkIfSpacer = (string: string) => {
+const checkIfSpacer = (string) => {
   return string === 'n'
 }
 

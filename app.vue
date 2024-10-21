@@ -58,7 +58,7 @@ const { data: plants } = await useAsyncData('plantor', async () => {
     console.log(error);
   }
   if (data) {
-    console.log(data);
+    // console.log(data);
   }
   return data
 })
@@ -227,6 +227,9 @@ h1 {
   --primary-brown: #6b5e0a;
   --primary-green-dark: #8ac957;
   --primary-green-light: #76994e;
+
+  --link-light: #0645AD;
+  --link-dark: #75b4f8;
   /* --primary-green-light: #386641; */
   /* --primary-green-light: #447c4f; */
   --primary-red: #bc4749;
@@ -246,6 +249,8 @@ html {
   --border-color: var(--border-color-light);
 
   --primary-green: var(--primary-green-light);
+
+  --link: var(--link-light);
 }
 
 .dark {
@@ -262,6 +267,8 @@ html {
   --border-color: var(--border-color-dark);
 
   --primary-green: var(--primary-green-dark);
+
+  --link: var(--link-dark);
 }
 
 html {
