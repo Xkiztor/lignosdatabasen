@@ -152,24 +152,27 @@ const slakteGen = () => {
           <ArtBokstav :bokstav="'U'" :plants="plants" />
           <ArtBokstav :bokstav="'V'" :plants="plants" />
           <ArtBokstav :bokstav="'W'" :plants="plants" />
-          <ArtBokstav :bokstav="'X'" :plants="plants" />
+          <!-- <ArtBokstav :bokstav="'X'" :plants="plants" /> -->
           <ArtBokstav :bokstav="'Y'" :plants="plants" />
           <ArtBokstav :bokstav="'Z'" :plants="plants" />
         </ul>
-        <ThemeToggle v-if="width < 700" />
-        <div class="account-icon" v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword">
-          <NuxtLink to="/admin">
-            <Icon name="ic:baseline-person" />
-          </NuxtLink>
-        </div>
-        <div class="add-icon" v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword">
-          <NuxtLink to="/ny">
-            <Icon name="material-symbols:add-rounded" />
-          </NuxtLink>
+        <div class="side">
+          <ThemeToggle v-if="width < 700" />
+          <div class="account-icon" v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword">
+            <NuxtLink to="/admin">
+              <Icon name="ic:baseline-person" />
+            </NuxtLink>
+          </div>
+          <div class="add-icon" v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword">
+            <NuxtLink to="/ny">
+              <Icon name="material-symbols:add-rounded" />
+            </NuxtLink>
+          </div>
         </div>
       </div>
-
       <ThemeToggle v-if="width > 700" />
+      <div id="popup-location"></div>
+
 
       <!-- <nav v-if="showMobileMenu" class="mobile-menu" @click="showMobileMenu = false">
         <NuxtLink to="/">Startsidan</NuxtLink>
@@ -527,11 +530,14 @@ nav .add-icon svg {
   color: var(--primary-green);
 }
 
-nav .add-icon {
-  border-left: 2px solid var(--border-color);
-  margin-left: 5px;
-  padding-left: 5px;
+@media screen and (min-width: 700px) {
+  nav .add-icon {
+    border-left: 2px solid var(--border-color);
+    margin-left: 5px;
+    padding-left: 5px;
+  }
 }
+
 
 
 nav .hamburger-menu {
@@ -549,12 +555,11 @@ nav .hamburger-menu {
   color: var(--primary-green);
 }
 
-nav .mobile-nav {
-  .theme-toggle {
-    background: none;
-    padding: 0;
-    margin: auto 0.5rem auto auto;
-  }
+nav .theme-toggle {
+  background: none;
+  padding: 0;
+  margin: auto 0.5rem auto auto;
+
 }
 
 nav .mobile-nav {
@@ -568,11 +573,11 @@ nav .mobile-nav {
 
 @media screen and (max-width: 500px) {
   nav .mobile-nav {
-    grid-template-rows: 1fr 1fr;
+    /* grid-template-rows: 1fr 1fr; */
   }
 
   nav .mobile-nav .link-align {
-    grid-row: 1/3;
+    /* grid-row: 1/3; */
     flex-wrap: wrap;
     display: grid;
     grid-template-columns: repeat(13, 1fr);
@@ -584,7 +589,7 @@ nav .mobile-nav {
   }
 }
 
-@media screen and (max-width: 350px) {
+@media screen and (max-width: 400px) {
   nav .mobile-nav .link-align {
     grid-template-columns: repeat(7, 1fr);
   }
@@ -605,5 +610,53 @@ nav .mobile-nav p:has(.router-link-active) {
 
 nav .mobile-nav .router-link-active {
   color: var(--mute-text) !important;
+}
+
+nav .side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+@media screen and (min-width: 500px) {
+  nav .side {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  nav .side .theme-toggle {
+    margin-right: 0.3rem;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  nav .side .theme-toggle {
+    margin: 0;
+  }
+
+}
+
+nav .theme-toggle svg.icon {
+  display: block;
+}
+
+#popup-location {
+  width: 100%;
+  border-color: transparent;
+  grid-column: 1/3;
+}
+
+#popup-location .dropdown {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 0 1rem;
+  gap: 0.2rem 0.5rem;
+}
+
+#popup-location:has(.dropdown) {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-color);
 }
 </style>

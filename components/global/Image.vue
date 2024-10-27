@@ -13,12 +13,20 @@ const target = ref()
 onClickOutside(target, () => {
   imageOpened.value = false
 })
+
+const compressedUrl = computed(() => {
+  return props.src.replace('/upload/', '/upload/t_700bred/')
+})
+const bigImageUrl = computed(() => {
+  return props.src.replace('/upload/', '/upload/t_2000bred/')
+})
 </script>
 
 
 <template>
   <div class="screen-cover" v-if="imageOpened">
-    <NuxtImg :src="src" :alt="src" ref="target" :placeholder="[50, 25, 75, 5]" />
+    <NuxtImg :src="bigImageUrl" :alt="src" ref="target" />
   </div>
-  <NuxtImg class="article-image" @click="openImage()" :src="src" :alt="src" :class="alt" loading="lazy" />
+  <NuxtImg class="article-image" @click="openImage()" :src="compressedUrl" :alt="compressedUrl" :class="alt"
+    loading="lazy" />
 </template>

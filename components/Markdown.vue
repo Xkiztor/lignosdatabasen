@@ -31,7 +31,7 @@ hr {
   /* justify-content: center; */
   /* flex-shrink: 1; */
   backdrop-filter: blur(2px);
-  padding: 5rem 1rem;
+  padding: 3rem 1rem;
   object-fit: scale-down;
 }
 

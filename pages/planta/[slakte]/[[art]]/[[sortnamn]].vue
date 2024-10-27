@@ -114,12 +114,23 @@ const images = computed(() => {
   return specificPlant.value.text.split(/!\[[^\]]*\]\(([^)]+)\)/g).filter(str => str !== '' && str.includes('http') && !str.includes('['))
   // return specificPlant.value.text.split(/[\[\]]/).filter(str => str !== '' && str.includes('http'))
 })
+
+const compressedUrl = computed(() => {
+  console.log(images.value == new Array ? 'true' : 'false');
+  console.log(images.value[0] === undefined);
+
+  if (images.value[0] === undefined) {
+    return ''
+  } else {
+    return images.value[0].replace('/upload/', '/upload/t_300bred/')
+  }
+})
 </script>
 
 
 <template>
   <div class="page plant">
-    <img class="backdrop" :src="images[0]" alt="">
+    <img class="backdrop" :src="compressedUrl" alt="">
     <div class="confirm model delete" v-if="showDeleteModel">
       <div class="content" ref="outsideClickTarget">
         <h1>Är du säker?</h1>
@@ -161,7 +172,7 @@ const images = computed(() => {
             '' }}</h1> -->
         <h2 class="subtitle">{{ specificPlant.svensktnamn }}</h2>
       </div>
-      <img :src="images[0]" alt="">
+      <img :src="compressedUrl" alt="">
     </header>
     <div class="center-content">
       <div>
@@ -536,7 +547,8 @@ img.backdrop {
 
 .main-content.edit form>div {
   display: grid;
-  grid-template-columns: 1fr 4fr;
+  grid-template-columns: 1fr 7fr;
+  gap: 1rem;
   margin-bottom: 1rem;
   place-items: center stretch;
 }

@@ -34,50 +34,59 @@ const outsideClickRef = ref()
 onClickOutside(outsideClickRef, () => {
   showDropdown.value = false
 })
+
+const { width, height } = useWindowSize()
 </script>
 
 
 <template>
   <li @mouseenter="showDropdown = plantsInLetter == 0 ? false : true" @mouseleave="showDropdown = false"
-    @click="showDropdown = plantsInLetter == 0 ? false : !showDropdown" ref="outsideClickRef" class="">
+    @click="showDropdown = plantsInLetter == 0 ? false : !showDropdown" ref="outsideClickRef" class="artbokstav">
     <p :class="{ 'muted': plantsInLetter == 0 }">
       {{ bokstav }}
     </p>
-    <div class="dropdown-spacer">
-      <Transition name="dropdown">
-        <ul class="dropdown" v-if="showDropdown">
-          <li v-for="plant in plantsInLetter"><nuxt-link :to="'/planta/' + plant + '/' + 'slakte' + '/'">{{
-            plant }}</nuxt-link></li>
-        </ul>
-      </Transition>
-    </div>
+    <Teleport to="#popup-location" :disabled="width > 700">
+      <div class="dropdown-spacer">
+        <Transition name="dropdown">
+          <ul class="dropdown" v-if="showDropdown">
+            <li v-for="plant in plantsInLetter"><nuxt-link :to="'/planta/' + plant + '/' + 'slakte' + '/'">{{
+    plant }}</nuxt-link></li>
+          </ul>
+        </Transition>
+      </div>
+    </Teleport>
   </li>
 </template>
 
 
 <style>
-li {
+.artbokstav {
   list-style-type: none;
-  position: relative;
 }
 
-li p,
-li a {
+@media screen and (min-width: 700px) {
+  .artbokstav {
+    position: relative;
+  }
+}
+
+.artbokstav p,
+.artbokstav a {
   cursor: pointer;
   text-decoration: none;
 }
 
-li p:hover:not(.muted),
-li a:hover:not(.muted) {
+.artbokstav p:hover:not(.muted),
+.artbokstav a:hover:not(.muted) {
   color: var(--primary-green);
 }
 
-.dark li p:hover:not(.muted),
-.dark li a:hover:not(.muted) {
+.dark .artbokstav p:hover:not(.muted),
+.dark .artbokstav a:hover:not(.muted) {
   color: var(--primary-green);
 }
 
-.dropdown li:has(a:hover) {
+.dropdown .artbokstav:has(a:hover) {
   transform: translate(4px, 0);
 }
 
@@ -91,50 +100,46 @@ p.muted {
   color: var(--mute-text);
 }
 
-.dropdown-spacer {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0);
-  padding-top: 1.25rem;
-  z-index: 5;
+
+@media screen and (min-width: 700px) {
+  .dropdown-spacer {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    padding-top: 1.25rem;
+    z-index: 5;
+  }
+
+  .dropdown {
+    padding: 0.75rem 0.75rem 1rem;
+    border-radius: 0.5rem;
+    background: var(--element-bg);
+    border: 1px solid var(--element-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    line-height: 1;
+    z-index: 5;
+  }
+
+  .dropdown::before {
+    content: "";
+    z-index: 5;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    top: 6px;
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+
+    border-bottom: 15px solid var(--element-bg);
+  }
+
 }
 
-.dropdown {
-  padding: 0.75rem 0.75rem 1rem;
-  border-radius: 0.5rem;
-  background: var(--element-bg);
-  border: 1px solid var(--element-bg);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.75rem;
-  line-height: 1;
-  z-index: 5;
-}
-
-.dark .dropdown {
-  background: var(--element-bg);
-  border-color: var(--element-bg);
-}
-
-.dropdown::before {
-  content: "";
-  z-index: 5;
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0);
-  top: 6px;
-  width: 0;
-  height: 0;
-  border-left: 15px solid transparent;
-  border-right: 15px solid transparent;
-
-  border-bottom: 15px solid var(--element-bg);
-}
-
-.dark .dropdown::before {
-  border-bottom-color: var(--element-bg);
-}
 
 .dropdown-enter-active,
 .dropdown-leave-active {
