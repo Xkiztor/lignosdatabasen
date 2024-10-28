@@ -65,22 +65,25 @@ div.main-content article img.halv {
 
 @media screen and (min-width: 700px) {
   div.main-content article img.hel {
-    max-width: calc(60ch - 1rem);
+    max-width: calc(70ch - 1rem);
     width: 100%;
   }
 
   div.main-content article img.halv {
-    max-width: calc(30ch - 1rem);
+    max-width: calc(35ch - 1rem);
     width: 100%;
     display: inline;
   }
 
   div.main-content article img.vänster {
     float: left;
+    margin-top: 0;
   }
 
   div.main-content article img.höger {
     float: right;
+    margin-top: 0;
+    margin-left: 1rem;
   }
 
   div.main-content article p:has(img.vänster),
@@ -106,5 +109,9 @@ div.main-content article img.halv {
   /* margin-left: 0.5rem; */
   /* margin-inline-start: 0.5rem; */
   padding-inline-start: 0.5rem;
+}
+
+.main-content article #text {
+  background: red;
 }
 </style>

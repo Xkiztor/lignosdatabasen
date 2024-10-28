@@ -20,7 +20,11 @@ const { data: plantsInSlakte } = await useAsyncData('plants-fetch', async () => 
   if (error) {
     console.error(error);
   }
-  return data
+  if (runtimeConfig.public.ADMIN_PASSWORD === enteredPassword.value) {
+    return data
+  } else {
+    return data.filter(e => e.hidden !== true)
+  }
 })
 
 const sortedPlantsInSlakte = computed(() => {
@@ -35,7 +39,13 @@ const sortedPlantsInSlakte = computed(() => {
 // console.log(plantsInSlakte.value);
 const { data: specificPlant } = await useAsyncData('plant-fetch', async () => {
   if (!isSlakte.value) {
-    const { data, error } = await client.from('växt-databas').select().eq('slakte', `${router.params.slakte}`).eq('art', `${router.params.art}`).eq('sortnamn', `${router.params.sortnamn}`).single()
+    const { data, error } = await client
+      .from('växt-databas')
+      .select()
+      .eq('slakte', `${router.params.slakte}`)
+      .eq('art', `${router.params.art === '-' ? '-' : router.params.art}`)
+      .eq('sortnamn', `${router.params.sortnamn}`)
+      .single()
 
     if (error) {
       console.error(error);
@@ -164,7 +174,8 @@ const compressedUrl = computed(() => {
     </div> -->
     <header class="top-bar" :class="{ 'no-image': images[0] == undefined }">
       <div class="content">
-        <h1>{{ specificPlant.slakte }} {{ specificPlant.art === 'slakte' ? '' : specificPlant.art }} {{
+        <h1>{{ specificPlant.slakte }} {{ specificPlant.art === 'slakte' || specificPlant.art === '-' ? '' :
+      specificPlant.art }} {{
       specificPlant.sortnamn ? `'${specificPlant.sortnamn}'` :
         '' }}</h1>
         <!-- <h1>{{ $route.params.slakte }} {{ $route.params.art === 'slakte' ? '' : $route.params.art }} {{
@@ -249,9 +260,9 @@ const compressedUrl = computed(() => {
           <li class="slakte"><nuxt-link :to="`/planta/${$route.params.slakte}/slakte`">Släkte: {{ $route.params.slakte
               }}</nuxt-link></li>
           <li v-for="plant in sortedPlantsInSlakte" :class="{ 'muted': plant.text === 'Ingen info' }">
-            <nuxt-link v-if="!plant.hidden || runtimeConfig.public.ADMIN_PASSWORD === enteredPassword"
-              :to="`/planta/${plant.slakte}/${plant.art}/${plant.sortnamn}`">
-              {{ plant.slakte }} {{ plant.art }} {{ plant.sortnamn ? `'${plant.sortnamn}'` : '' }}{{ plant.hidden ? ` -
+            <nuxt-link v-if="!plant.hidden" :to="`/planta/${plant.slakte}/${plant.art}/${plant.sortnamn}`">
+              {{ plant.slakte }} {{ plant.art === '-' ? '' : plant.art }} {{ plant.sortnamn ? `'${plant.sortnamn}'` : ''
+              }}{{ plant.hidden ? ` -
               ( Dold växt )` : "" }}
             </nuxt-link>
           </li>
@@ -431,12 +442,12 @@ html:not(.dark) .sidebar li a.router-link-active {
 }
 
 .main-content article p {
-  max-width: 60ch;
+  max-width: 70ch;
   line-height: 1.4;
 }
 
 .main-content article * {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
 }
 
 

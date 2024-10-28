@@ -16,6 +16,7 @@ const editablePlant = reactive({
 })
 
 const addPlant = async () => {
+  if (editablePlant.art === '') editablePlant.art = '-'
   const { error } = await client.from('växt-databas').insert({ ...editablePlant })
   if (error) {
     console.error(error)
@@ -62,8 +63,8 @@ const addPlant = async () => {
         <div>
           <header>
             <h1>{{ editablePlant.slakte }} {{ editablePlant.art === 'slakte' ? '' : editablePlant.art }} {{
-              editablePlant.sortnamn ? `'${editablePlant.sortnamn}'` :
-              '' }}</h1>
+        editablePlant.sortnamn ? `'${editablePlant.sortnamn}'` :
+          '' }}</h1>
             <h2 class="subtitle">{{ editablePlant.svensktnamn }}</h2>
           </header>
           <article>

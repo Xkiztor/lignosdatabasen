@@ -38,4 +38,8 @@ const toggleDark = useToggle(isDark)
 .gray {
   color: rgb(84, 84, 84);
 }
+
+.theme-toggle:hover {
+  border-color: none;
+}
 </style>

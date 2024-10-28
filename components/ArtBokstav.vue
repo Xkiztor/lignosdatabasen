@@ -33,16 +33,45 @@ const outsideClickRef = ref()
 
 onClickOutside(outsideClickRef, () => {
   showDropdown.value = false
+  if (width.value > 700) {
+    // console.log('outside');
+  }
 })
 
+
 const { width, height } = useWindowSize()
+
+const router = useRoute()
+onMounted(() => {
+  // console.log(props.bokstav);
+  // console.log(router.params);
+  // console.log(router.params.slakte[0]);
+})
+
+const routerActive = computed(() => {
+  // console.log(router.params);
+  // console.log(router.params === {} ? 'ye' : 'no');
+  // console.log(Object.keys(router.params).length === 0);
+  if (Object.keys(router.params).length === 0) {
+    return false
+  }
+  else {
+    if (router.params.slakte[0] == props.bokstav) {
+      return true
+    } else {
+      return false
+    }
+  }
+  // return false
+})
 </script>
 
 
 <template>
-  <li @mouseenter="showDropdown = plantsInLetter == 0 ? false : true" @mouseleave="showDropdown = false"
+  <li @mouseenter="showDropdown = width > 700 ? plantsInLetter == 0 ? false : true : false"
+    @mouseleave="width > 700 ? showDropdown = false : ''"
     @click="showDropdown = plantsInLetter == 0 ? false : !showDropdown" ref="outsideClickRef" class="artbokstav">
-    <p :class="{ 'muted': plantsInLetter == 0 }">
+    <p :class="{ 'muted': plantsInLetter == 0, 'router-active': routerActive }">
       {{ bokstav }}
     </p>
     <Teleport to="#popup-location" :disabled="width > 700">
@@ -96,8 +125,9 @@ p.muted {
   cursor: default;
 }
 
-.dark p.muted {
-  color: var(--mute-text);
+.artbokstav .router-active {
+  color: var(--primary-green);
+  text-decoration: underline;
 }
 
 

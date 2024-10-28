@@ -113,6 +113,14 @@ const slakteGen = () => {
   })
 }
 
+const outsideNavRef = ref()
+
+onClickOutside(outsideNavRef, () => {
+  console.log('outside');
+  showMobileMenu.value = false
+
+})
+
 </script>
 
 
@@ -124,10 +132,12 @@ const slakteGen = () => {
           <Icon name="ph:database" />Växtdatabasen
         </h1>
       </NuxtLink>
-      <button @click="showMobileMenu = !showMobileMenu" v-if="width < 700" class="hamburger-menu">
-        <Icon name="ci:hamburger-md" />
+      <button v-if="width < 700" class="hamburger-menu">
+        <Icon @click="showMobileMenu = false" v-if="showMobileMenu" name="material-symbols:close-rounded" />
+        <Icon @click="showMobileMenu = true" v-else name="ci:hamburger-md" />
       </button>
-      <div :class="{ 'large-nav': width > 700, 'mobile-nav': width < 700 }" v-if="showMobileMenu || width > 700">
+      <div ref="outsideNavRef" :class="{ 'large-nav': width > 700, 'mobile-nav': width < 700 }"
+        v-if="showMobileMenu || width > 700">
         <ul class="link-align">
           <ArtBokstav :bokstav="'A'" :plants="plants" />
           <ArtBokstav :bokstav="'B'" :plants="plants" />
@@ -155,6 +165,12 @@ const slakteGen = () => {
           <!-- <ArtBokstav :bokstav="'X'" :plants="plants" /> -->
           <ArtBokstav :bokstav="'Y'" :plants="plants" />
           <ArtBokstav :bokstav="'Z'" :plants="plants" />
+          <NuxtLink @click="showMobileMenu = false" class="alla-växter" to="/planta/" v-if="width < 700">
+            <!-- <Icon name="mingcute:grid-fill" /> -->
+            <Icon name="mingcute:grid-2-fill" />
+            <!-- <Icon name="mingcute:grid-2-line" /> -->
+            <!-- <Icon name="tabler:layout-grid" /> -->
+          </NuxtLink>
         </ul>
         <div class="side">
           <ThemeToggle v-if="width < 700" />
@@ -170,7 +186,16 @@ const slakteGen = () => {
           </div>
         </div>
       </div>
-      <ThemeToggle v-if="width > 700" />
+      <div class="big-nav-side">
+        <NuxtLink class="alla-växter" to="/planta/" v-if="width > 700">
+          <p>
+            <Icon name="mingcute:grid-fill" />
+            Alla växter
+          </p>
+          <Icon name="mingcute:grid-2-fill" />
+        </NuxtLink>
+        <ThemeToggle v-if="width > 700" />
+      </div>
       <div id="popup-location"></div>
 
 
@@ -194,7 +219,8 @@ const slakteGen = () => {
   box-sizing: border-box;
   /* font-family: 'Playpen Sans'; */
   /* font-family: Salsa; */
-  font-family: 'Roboto Slab';
+  font-family: var(--slab-font);
+  ;
   /* font-weight: 900; */
   word-spacing: 1px;
   letter-spacing: 0.1px;
@@ -204,7 +230,8 @@ const slakteGen = () => {
 }
 
 h1 {
-  font-family: 'Roboto';
+  font-family: var(--title-font);
+
   font-weight: 900;
 }
 
@@ -236,6 +263,9 @@ h1 {
   /* --primary-green-light: #386641; */
   /* --primary-green-light: #447c4f; */
   --primary-red: #bc4749;
+
+  --slab-font: 'Roboto Slab', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Helvetica, sans-serif;
+  --title-font: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Helvetica, sans-serif;
 }
 
 html {
@@ -387,7 +417,7 @@ button:hover {
   opacity: 0.8;
 }
 
-.dark button:hover {
+.dark button:not(.theme-toggle):hover {
   border-color: var(--primary-green);
 }
 
@@ -426,7 +456,7 @@ nav * {
   transition: all 100ms;
 }
 
-@media screen and (max-width: 1100px) {
+@media screen and (max-width: 1200px) {
   nav {
     grid-template-columns: min-content auto min-content;
   }
@@ -455,15 +485,23 @@ nav .link-align {
   flex-direction: row;
   justify-content: space-between;
   flex-grow: 1;
-  padding-right: 1rem;
   padding-left: 1rem;
   margin: auto;
 }
 
-nav .link-align>li {
-  width: 100%;
-  text-align: center;
+@media screen and (min-width: 700px) {
+  nav .link-align {
+    padding-right: 1rem;
+  }
+
+  nav .link-align>li {
+    width: 100%;
+    text-align: center;
+  }
+
 }
+
+nav .link-align>li {}
 
 @media screen and (min-width: 1000px) {
   nav .link-align {
@@ -571,7 +609,7 @@ nav .mobile-nav {
   grid-template-columns: auto min-content;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 700px) {
   nav .mobile-nav {
     /* grid-template-rows: 1fr 1fr; */
   }
@@ -581,11 +619,18 @@ nav .mobile-nav {
     flex-wrap: wrap;
     display: grid;
     grid-template-columns: repeat(13, 1fr);
+    place-items: center start;
   }
 
   nav .mobile-nav .link-align li {
-    /* width: fit-content; */
-    opacity: 1 !important;
+    width: fit-content;
+    height: fit-content;
+    opacity: 1;
+  }
+
+  nav .mobile-nav .link-align li p {
+    width: fit-content;
+    height: fit-content;
   }
 }
 
@@ -604,14 +649,6 @@ nav .mobile-nav * {
 }
 
 
-nav .mobile-nav p:has(.router-link-active) {
-  color: var(--primary-green) !important;
-}
-
-nav .mobile-nav .router-link-active {
-  color: var(--mute-text) !important;
-}
-
 nav .side {
   display: flex;
   flex-direction: column;
@@ -619,22 +656,22 @@ nav .side {
   justify-content: center;
 }
 
-@media screen and (min-width: 500px) {
-  nav .side {
-    flex-direction: row;
-    align-items: center;
-  }
-
-  nav .side .theme-toggle {
-    margin-right: 0.3rem;
-  }
-}
-
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 700px) {
   nav .side .theme-toggle {
     margin: 0;
   }
 
+  nav .side {
+    margin: 0 0.75rem;
+    gap: 0.5rem;
+  }
+
+}
+
+@media screen and (min-width: 700px) {
+  nav .side {
+    flex-direction: row;
+  }
 }
 
 nav .theme-toggle svg.icon {
@@ -658,5 +695,74 @@ nav .theme-toggle svg.icon {
   margin-top: 0.5rem;
   padding-top: 0.5rem;
   border-top: 1px solid var(--border-color);
+}
+
+.big-nav-side {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-self: flex-end;
+  gap: 0.5rem;
+}
+
+@media screen and (min-width: 1000px) {
+  .big-nav-side {
+    gap: 1.5rem;
+  }
+}
+
+.big-nav-side .router-link-exact-active {
+  color: var(--primary-green);
+}
+
+.big-nav-side .icon {
+  font-size: 1.2em;
+}
+
+@media screen and (min-width: 1205px) {
+  .alla-växter>.icon {
+    display: none;
+  }
+
+  .alla-växter p {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-direction: row;
+  }
+
+  .alla-växter p .icon {
+    font-size: 1.1em;
+  }
+
+  .alla-växter {
+    transition: color 150ms ease-in-out;
+  }
+
+  .alla-växter:hover {
+    /* background: var(--element-bg); */
+    color: var(--primary-green);
+  }
+}
+
+@media screen and (max-width: 1204px) {
+  .alla-växter p {
+    display: none;
+  }
+}
+
+.alla-växter:has(.icon) {
+  display: grid;
+  place-items: center;
+}
+
+a.alla-växter.router-link-exact-active {
+  color: var(--primary-green);
+}
+
+ul .alla-växter {
+  width: fit-content;
+  height: fit-content;
+  font-size: 1.15em;
 }
 </style>
