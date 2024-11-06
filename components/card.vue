@@ -1,25 +1,33 @@
 <script setup>
 const props = defineProps(['växt'])
 
-console.log(props.växt);
+// console.log(props.växt);
 
 
 const descriptionLenght = 70
 const formattedDescription = computed(() => {
-  let desc = props.växt.text
+  if (props.växt.ingress) {
+    return props.växt.ingress
+  } else {
+    let desc = props.växt.text
 
-  // let desclenght = desc.lenght
+    // let desclenght = desc.lenght
 
-  desc = desc.replace(/!\[.*?\]\(.*?\)|\[.*?\]\(.*?\)/g, '');
-  desc = desc.replace(/[*\-_#{}\[\]]/g, "");;
+    desc = desc.replace(/!\[.*?\]\(.*?\)|\[.*?\]\(.*?\)/g, '');
+    desc = desc.replace(/[*\-_#{}\[\]]/g, "");;
 
-  desc = desc.slice(0, descriptionLenght)
+    desc = desc.slice(0, descriptionLenght)
 
-  // if (desclenght > descriptionLenght) {
-  // }
-  desc = desc + '...'
+    // if (desclenght > descriptionLenght) {
+    // }
+    // console.log(desc);
 
-  return desc
+    if (desc) {
+      desc = desc + '...'
+    }
+
+    return desc
+  }
 })
 
 const images = computed(() => {

@@ -135,6 +135,18 @@ const compressedUrl = computed(() => {
     return images.value[0].replace('/upload/', '/upload/t_300bred/')
   }
 })
+
+const computedList = computed(() => {
+  let newList = plantsInSlakte.value
+
+  newList = newList.filter(e => e.text !== 'Ingen info')
+
+  newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn))
+  newList = newList.sort((a, b) => a.art.localeCompare(b.art))
+  newList = newList.sort((a, b) => a.slakte.localeCompare(b.slakte))
+
+  return newList
+})
 </script>
 
 
@@ -181,6 +193,11 @@ const compressedUrl = computed(() => {
         <!-- <h1>{{ $route.params.slakte }} {{ $route.params.art === 'slakte' ? '' : $route.params.art }} {{
             $route.params.sortnamn ? `'${$route.params.sortnamn}'` :
             '' }}</h1> -->
+        <h2 class="subtitle fakta">
+          <span v-if="specificPlant.höjd">Höjd: {{ specificPlant.höjd }} m</span>
+          <span v-if="specificPlant.bredd">Bredd: {{ specificPlant.bredd }} m</span>
+          <span v-if="specificPlant.zon">Zon: {{ specificPlant.zon }}</span>
+        </h2>
         <h2 class="subtitle">{{ specificPlant.svensktnamn }}</h2>
       </div>
       <img :src="compressedUrl" alt="">
@@ -206,9 +223,39 @@ const compressedUrl = computed(() => {
                 <h2>Svenskt Namn</h2>
                 <input type="text" v-model="editablePlant.svensktnamn">
               </div>
+
               <div>
+                <div class="three-column">
+                  <div>
+                    <h2>Höjd</h2>
+                    <input type="text" v-model="editablePlant.höjd">
+                  </div>
+                  <div>
+                    <h2>Bredd</h2>
+                    <input type="text" v-model="editablePlant.bredd">
+                  </div>
+                  <div>
+                    <h2>Zon</h2>
+                    <input type="text" v-model="editablePlant.zon">
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h2>Ingress <br>{{ editablePlant.ingress.length }} tecken</h2>
+                <textarea type="text" v-model="editablePlant.ingress" />
+              </div>
+              <div class="text">
                 <h2>Text</h2>
                 <textarea type="text" v-model="editablePlant.text" />
+              </div>
+              <div>
+                <div></div>
+                <p>Bild: ![halv hel vänster höger omslag](https://exempel.se/bild.jpg)</p>
+              </div>
+              <div>
+                <div></div>
+                <p>Länk: [här är texten som ska stå](https://exempel.se/)</p>
               </div>
               <!-- <div>
             <h2>Id</h2>
@@ -222,38 +269,19 @@ const compressedUrl = computed(() => {
             <div class="forhandsgranskning">
               <h1>Förhandsgranskning:</h1>
             </div>
-            <!-- <header>
-              <h1>{{ editablePlant.slakte }} {{ editablePlant.art === 'slakte' ? '' : editablePlant.art }} {{
-                editablePlant.sortnamn ? `'${editablePlant.sortnamn}'` :
-                '' }}</h1>
-              <h2 class="subtitle">{{ editablePlant.svensktnamn }}</h2>
-            </header> -->
-            <!-- <article>
-              <RichText :plant="editablePlant" />
-            </article> -->
+            <p class="ingress">{{ specificPlant.ingress }}</p>
             <Markdown :plant="specificPlant" />
           </div>
           <div class="main-content" v-else>
-            <!-- <header>
-              <h1>{{ specificPlant.slakte }} {{ specificPlant.art === 'slakte' ? '' : specificPlant.art }} {{
-            specificPlant.sortnamn ? `'${specificPlant.sortnamn}'` :
-            '' }}</h1>
-          <h2 class="subtitle">{{ specificPlant.svensktnamn }}</h2>
-        </header> -->
-
-
-            <!-- <article>
-              <RichText :plant="specificPlant" />
-            </article> -->
-
+            <p class="ingress" v-if="specificPlant.ingress">{{ specificPlant.ingress }}</p>
             <Markdown :plant="specificPlant" />
-
-
-            <!-- <h1>{{ plant.slakte }} {{ plant.art }} <v-if v-if="plant.sortnamn">'{{ plant.sortnamn }}'</v-if></h1> -->
-            <!-- <p>{{ plant.text }}</p> -->
           </div>
 
         </Transition>
+        <div class="grid-layout" v-if="specificPlant.art === 'slakte' || false">
+          <h1 v-if="specificPlant.text !== 'Ingen info'">Växter i släktet:</h1>
+          <Card v-for="växt in computedList" :key="växt.id" :växt="växt" />
+        </div>
       </div>
       <div class="sidebar">
         <ul>
@@ -317,6 +345,15 @@ const compressedUrl = computed(() => {
 
 header h2.subtitle {
   font-size: 1.2em;
+}
+
+header .content h2.subtitle.fakta {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  font-weight: 500;
+  margin-top: 0.1rem;
+  margin-bottom: 0.15rem;
 }
 
 @media screen and (min-width: 700px) {
@@ -426,6 +463,12 @@ html:not(.dark) .sidebar li a.router-link-active {
   }
 }
 
+@media screen and (max-width: 700px) {
+  .sidebar {
+    margin-top: 1rem;
+  }
+}
+
 .sidebar li.muted * {
   opacity: 0.5;
 }
@@ -446,7 +489,8 @@ html:not(.dark) .sidebar li a.router-link-active {
   line-height: 1.4;
 }
 
-.main-content article * {
+.main-content article *,
+.center-content .grid-layout {
   font-size: 1.15rem;
 }
 
@@ -564,7 +608,7 @@ img.backdrop {
   place-items: center stretch;
 }
 
-.main-content.edit form>div textarea {
+.main-content.edit form>div.text textarea {
   min-height: 20rem;
   resize: vertical;
   transition: none;
@@ -575,6 +619,79 @@ img.backdrop {
   margin-bottom: 3rem;
   /* grid-column: 1/3; */
 }
+
+.main-content.edit .three-column {
+  grid-column: 2/3;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  place-items: center;
+}
+
+.main-content.edit .three-column>div {
+  text-align: center;
+}
+
+.main-content.edit .three-column input {
+  width: 100%;
+  margin-top: 0.3rem;
+}
+
+
+
+.main-content .ingress {
+  font-weight: bold;
+  margin-bottom: 1rem;
+  font-size: 1.2em;
+}
+
+
+
+
+
+.center-content .grid-layout {
+  display: grid;
+
+  max-width: 70ch;
+  font-size: 1.15rem;
+
+  padding-right: 1rem;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media screen and (min-width: 700px) {
+  .center-content .grid-layout {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .center-content .grid-layout h1 {
+    grid-column: 1/3;
+    font-size: 2.5rem;
+  }
+
+  .center-content .grid-layout .card {
+    margin-bottom: 1rem;
+  }
+}
+
+.center-content .grid-layout .card {
+  padding: 0;
+  font-size: 1.05rem;
+}
+
+.dark .center-content .grid-layout .card {
+  /* padding: 1rem; */
+  background: none;
+  box-shadow: none;
+}
+
+.center-content .grid-layout h1 {
+  margin-bottom: 0;
+  margin-top: 2rem;
+}
+
 
 
 .edit-enter-active,

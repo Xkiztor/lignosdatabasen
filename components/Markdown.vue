@@ -2,11 +2,19 @@
 const props = defineProps(['plant'])
 
 console.log(props.plant.text);
+
+const formattedText = computed(() => {
+  let text = props.plant.text
+
+  text = text.replace(/!\[omslag]\([^)]+\)/g, '');
+
+  return text
+})
 </script>
 
 
 <template>
-  <MDC :value="plant.text" tag="article" />
+  <MDC :value="formattedText" tag="article" />
 </template>
 
 
