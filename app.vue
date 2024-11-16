@@ -1,6 +1,6 @@
 <script setup>
 useHead({
-  title: 'Växt Databas',
+  title: 'Lignosdatabsen',
   // or, instead:
   // titleTemplate: (title) => `My App - ${title}`,
   viewport: 'width=device-width, initial-scale=1, maximum-scale=6',
@@ -45,7 +45,8 @@ const enteredPassword = useCookie('enteredPassword', { maxAge: 60604800 });
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
-const { width, height } = useWindowSize()
+// const { width, height } = useWindowSize()
+const windowSize = useWidth()
 
 const showMobileMenu = ref(false)
 
@@ -129,74 +130,90 @@ onClickOutside(outsideNavRef, () => {
     <nav>
       <NuxtLink to="/" class="title">
         <h1>
-          <Icon name="ph:database" />Växtdatabasen
+          <Icon name="mdi:leaf-circle" />Lignosdatabasen
         </h1>
       </NuxtLink>
-      <button v-if="width < 700" class="hamburger-menu">
+      <button v-if="windowSize.width < 700" class="hamburger-menu">
         <Icon @click="showMobileMenu = false" v-if="showMobileMenu" name="material-symbols:close-rounded" />
         <Icon @click="showMobileMenu = true" v-else name="ci:hamburger-md" />
       </button>
-      <div ref="outsideNavRef" :class="{ 'large-nav': width > 700, 'mobile-nav': width < 700 }"
-        v-if="showMobileMenu || width > 700">
-        <ul class="link-align">
-          <ArtBokstav :bokstav="'A'" :plants="plants" />
-          <ArtBokstav :bokstav="'B'" :plants="plants" />
-          <ArtBokstav :bokstav="'C'" :plants="plants" />
-          <ArtBokstav :bokstav="'D'" :plants="plants" />
-          <ArtBokstav :bokstav="'E'" :plants="plants" />
-          <ArtBokstav :bokstav="'F'" :plants="plants" />
-          <ArtBokstav :bokstav="'G'" :plants="plants" />
-          <ArtBokstav :bokstav="'H'" :plants="plants" />
-          <ArtBokstav :bokstav="'I'" :plants="plants" />
-          <ArtBokstav :bokstav="'J'" :plants="plants" />
-          <ArtBokstav :bokstav="'K'" :plants="plants" />
-          <ArtBokstav :bokstav="'L'" :plants="plants" />
-          <ArtBokstav :bokstav="'M'" :plants="plants" />
-          <ArtBokstav :bokstav="'N'" :plants="plants" />
-          <ArtBokstav :bokstav="'O'" :plants="plants" />
-          <ArtBokstav :bokstav="'P'" :plants="plants" />
-          <ArtBokstav :bokstav="'Q'" :plants="plants" />
-          <ArtBokstav :bokstav="'R'" :plants="plants" />
-          <ArtBokstav :bokstav="'S'" :plants="plants" />
-          <ArtBokstav :bokstav="'T'" :plants="plants" />
-          <ArtBokstav :bokstav="'U'" :plants="plants" />
-          <ArtBokstav :bokstav="'V'" :plants="plants" />
-          <ArtBokstav :bokstav="'W'" :plants="plants" />
-          <!-- <ArtBokstav :bokstav="'X'" :plants="plants" /> -->
-          <ArtBokstav :bokstav="'Y'" :plants="plants" />
-          <ArtBokstav :bokstav="'Z'" :plants="plants" />
-          <NuxtLink @click="showMobileMenu = false" class="alla-växter" to="/planta/" v-if="width < 700">
-            <!-- <Icon name="mingcute:grid-fill" /> -->
-            <Icon name="mingcute:grid-2-fill" />
-            <!-- <Icon name="mingcute:grid-2-line" /> -->
-            <!-- <Icon name="tabler:layout-grid" /> -->
-          </NuxtLink>
-        </ul>
-        <div class="side">
-          <ThemeToggle v-if="width < 700" />
-          <div class="account-icon" v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword">
-            <NuxtLink to="/admin">
-              <Icon name="ic:baseline-person" />
-            </NuxtLink>
+
+      <div class="nav-container">
+        <div class="popup">
+
+
+          <div ref="outsideNavRef"
+            :class="{ 'large-nav': windowSize.width > 700, 'mobile-nav': windowSize.width < 700 }"
+            v-if="showMobileMenu || windowSize.width > 700">
+            <ul class="link-align">
+              <ArtBokstav :bokstav="'A'" :plants="plants" />
+              <ArtBokstav :bokstav="'B'" :plants="plants" />
+              <ArtBokstav :bokstav="'C'" :plants="plants" />
+              <ArtBokstav :bokstav="'D'" :plants="plants" />
+              <ArtBokstav :bokstav="'E'" :plants="plants" />
+              <ArtBokstav :bokstav="'F'" :plants="plants" />
+              <ArtBokstav :bokstav="'G'" :plants="plants" />
+              <ArtBokstav :bokstav="'H'" :plants="plants" />
+              <ArtBokstav :bokstav="'I'" :plants="plants" />
+              <ArtBokstav :bokstav="'J'" :plants="plants" />
+              <ArtBokstav :bokstav="'K'" :plants="plants" />
+              <ArtBokstav :bokstav="'L'" :plants="plants" />
+              <ArtBokstav :bokstav="'M'" :plants="plants" />
+              <ArtBokstav :bokstav="'N'" :plants="plants" />
+              <ArtBokstav :bokstav="'O'" :plants="plants" />
+              <ArtBokstav :bokstav="'P'" :plants="plants" />
+              <ArtBokstav :bokstav="'Q'" :plants="plants" />
+              <ArtBokstav :bokstav="'R'" :plants="plants" />
+              <ArtBokstav :bokstav="'S'" :plants="plants" />
+              <ArtBokstav :bokstav="'T'" :plants="plants" />
+              <ArtBokstav :bokstav="'U'" :plants="plants" />
+              <ArtBokstav :bokstav="'V'" :plants="plants" />
+              <ArtBokstav :bokstav="'W'" :plants="plants" />
+              <!-- <ArtBokstav :bokstav="'X'" :plants="plants" /> -->
+              <ArtBokstav :bokstav="'Y'" :plants="plants" />
+              <ArtBokstav :bokstav="'Z'" :plants="plants" />
+              <NuxtLink @click="showMobileMenu = false" class="alla-växter" to="/planta/" v-if="windowSize.width < 700">
+                <!-- <Icon name="mingcute:grid-fill" /> -->
+                <Icon name="mingcute:grid-2-fill" />
+                <!-- <Icon name="mingcute:grid-2-line" /> -->
+                <!-- <Icon name="tabler:layout-grid" /> -->
+              </NuxtLink>
+            </ul>
+
+            <div class="side">
+              <ThemeToggle v-if="windowSize.width < 700" />
+              <div class="account-icon" v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword">
+                <NuxtLink to="/admin">
+                  <Icon name="ic:baseline-person" />
+                </NuxtLink>
+              </div>
+
+              <div class="add-icon" v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword">
+                <NuxtLink to="/ny">
+                  <Icon name="material-symbols:add-rounded" />
+                </NuxtLink>
+              </div>
+            </div>
+
+
           </div>
-          <div class="add-icon" v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword">
-            <NuxtLink to="/ny">
-              <Icon name="material-symbols:add-rounded" />
-            </NuxtLink>
-          </div>
+          <div id="popup-location"></div>
         </div>
+
+
+
       </div>
+
       <div class="big-nav-side">
-        <NuxtLink class="alla-växter" to="/planta/" v-if="width > 700">
+        <NuxtLink class="alla-växter" to="/planta/" v-if="windowSize.width > 700">
           <p>
             <Icon name="mingcute:grid-fill" />
             Alla växter
           </p>
           <Icon name="mingcute:grid-2-fill" />
         </NuxtLink>
-        <ThemeToggle v-if="width > 700" />
+        <ThemeToggle v-if="windowSize.width > 700" />
       </div>
-      <div id="popup-location"></div>
 
 
       <!-- <nav v-if="showMobileMenu" class="mobile-menu" @click="showMobileMenu = false">
@@ -313,6 +330,10 @@ html {
 html.dark {
   background: var(--bg-color);
   color: var(--text-color);
+}
+
+html:has(#image-screen-cover) {
+  overflow: clip;
 }
 
 body {
@@ -530,7 +551,7 @@ nav h1 {
   height: 100%;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
   font-size: 1em;
 }
 
@@ -600,13 +621,22 @@ nav .theme-toggle {
 
 }
 
+nav .popup:has(.mobile-nav) {
+  position: absolute;
+  width: 100%;
+  background: var(--bg-color);
+}
+
 nav .mobile-nav {
   border-top: 1px solid var(--border-color);
   margin-top: 0.5rem;
   padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
   display: grid;
   grid-column: 1/3;
   grid-template-columns: auto min-content;
+  width: 100%;
 }
 
 @media screen and (max-width: 700px) {
@@ -692,9 +722,10 @@ nav .theme-toggle svg.icon {
 }
 
 #popup-location:has(.dropdown) {
-  margin-top: 0.5rem;
+  /* margin-top: 0.5rem; */
   padding-top: 0.5rem;
-  border-top: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .big-nav-side {

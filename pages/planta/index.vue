@@ -124,6 +124,21 @@ const computedList = computed(() => {
   align-items: flex-end;
 }
 
+@media screen and (max-width: 700px) {
+  .alla-växter-page .top-part {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .dark .alla-växter-page .top-part {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
 .alla-växter-page .top-part h1 {
   font-size: 2rem;
   line-height: 1;

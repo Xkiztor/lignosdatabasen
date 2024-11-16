@@ -39,7 +39,7 @@ hr {
   /* justify-content: center; */
   /* flex-shrink: 1; */
   backdrop-filter: blur(2px);
-  padding: 3rem 1rem;
+  padding: 2rem 2rem;
   object-fit: scale-down;
 }
 
@@ -53,6 +53,25 @@ hr {
   /* flex-shrink: 1; */
   /* flex-grow: 1; */
   margin: auto;
+}
+
+
+article .screen-cover a {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  font-size: 0.9rem;
+  opacity: 0.6;
+  display: flex;
+  align-items: center;
+}
+
+article .screen-cover a .icon {
+  margin-right: 0.25rem;
+}
+
+article .screen-cover a:hover {
+  text-decoration: underline;
 }
 
 

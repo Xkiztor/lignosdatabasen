@@ -24,8 +24,11 @@ const bigImageUrl = computed(() => {
 
 
 <template>
-  <div class="screen-cover" v-if="imageOpened">
+  <div class="screen-cover" id="image-screen-cover" v-if="imageOpened">
     <NuxtImg :src="bigImageUrl" :alt="src" ref="target" />
+    <NuxtLink :to="src" target="_blank">
+      <Icon name="material-symbols:open-in-new-rounded" />Öppna full bild
+    </NuxtLink>
   </div>
   <NuxtImg class="article-image" @click="openImage()" :src="compressedUrl" :alt="compressedUrl" :class="alt"
     loading="lazy" />

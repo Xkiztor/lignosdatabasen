@@ -1,8 +1,9 @@
 <script setup>
 const runtimeConfig = useRuntimeConfig();
 const enteredPassword = useCookie('enteredPassword', { maxAge: 60604800 });
+const client = useSupabaseClient()
 
-
+const windowSize = useWidth()
 // const { planta } = useRoute().params
 
 const router = useRoute()
@@ -12,7 +13,6 @@ const isSlakte = ref(router.params.art === 'slakte')
 
 console.log(isSlakte.value);
 
-const client = useSupabaseClient()
 
 const { data: plantsInSlakte } = await useAsyncData('plants-fetch', async () => {
   const { data, error } = await client.from('växt-databas').select().eq('slakte', `${router.params.slakte}`).neq('art', 'slakte')
@@ -23,6 +23,7 @@ const { data: plantsInSlakte } = await useAsyncData('plants-fetch', async () => 
   if (runtimeConfig.public.ADMIN_PASSWORD === enteredPassword.value) {
     return data
   } else {
+    // return data
     return data.filter(e => e.hidden !== true)
   }
 })
@@ -31,6 +32,7 @@ const sortedPlantsInSlakte = computed(() => {
   let newList = plantsInSlakte.value
   // console.log(plantsInSlakte.value);
   // newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn))
+  newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn))
   newList = newList.sort((a, b) => a.art.localeCompare(b.art))
   // return newList
   return plantsInSlakte.value
@@ -51,7 +53,16 @@ const { data: specificPlant } = await useAsyncData('plant-fetch', async () => {
       console.error(error);
     }
     console.log(data);
-    return data
+
+    if (error || !data) {
+      return { slakte: router.params.slakte, art: router.params.art, sortnamn: router.params.sortnamn + '- 404 - Existerar inte', text: 'Kontrollera adressen', hidden: false }
+    } else {
+      return data
+    }
+    //  else {
+    //   return { slakte: router.params.slakte, art: router.params.art, sortnamn: router.params.sortnamn + 'Existerar inte', text: 'Ingen Info', hidden: false }
+    // }
+
   } else {
     const { data, error } = await client.from('växt-databas').select().eq('slakte', `${router.params.slakte}`).eq('art', `${router.params.art}`).single()
 
@@ -63,9 +74,9 @@ const { data: specificPlant } = await useAsyncData('plant-fetch', async () => {
     // } else {
     // return { slakte: router.params.slakte, art: router.params.slakte, sortnamn: router.params.sortnamn, text: 'Bra släkte' }
     // }
-    return data ? data :
-      // If no data:
-      { slakte: router.params.slakte, art: 'slakte', sortnamn: router.params.sortnamn, text: 'Ingen Info' }
+
+    // If no data:
+    return data ? data : { slakte: router.params.slakte, art: 'slakte', sortnamn: router.params.sortnamn, text: 'Ingen Info', hidden: false }
   }
 
 })
@@ -145,8 +156,22 @@ const computedList = computed(() => {
   newList = newList.sort((a, b) => a.art.localeCompare(b.art))
   newList = newList.sort((a, b) => a.slakte.localeCompare(b.slakte))
 
+
+
   return newList
 })
+
+useHead({
+  // or as a function
+  titleTemplate: () => {
+    return `
+    ${router.params.slakte}
+    ${router.params.art === 'slakte' ? ' släkte' : (router.params.art === '-' ? '' : ' ' + router.params.art)}
+    ${router.params.sortnamn ? " '" + router.params.sortnamn + "'" : ''}`
+  }
+})
+
+
 </script>
 
 
@@ -187,9 +212,9 @@ const computedList = computed(() => {
     <header class="top-bar" :class="{ 'no-image': images[0] == undefined }">
       <div class="content">
         <h1>{{ specificPlant.slakte }} {{ specificPlant.art === 'slakte' || specificPlant.art === '-' ? '' :
-      specificPlant.art }} {{
-      specificPlant.sortnamn ? `'${specificPlant.sortnamn}'` :
-        '' }}</h1>
+          specificPlant.art }} {{
+            specificPlant.sortnamn ? `'${specificPlant.sortnamn}'` :
+              '' }}</h1>
         <!-- <h1>{{ $route.params.slakte }} {{ $route.params.art === 'slakte' ? '' : $route.params.art }} {{
             $route.params.sortnamn ? `'${$route.params.sortnamn}'` :
             '' }}</h1> -->
@@ -278,7 +303,8 @@ const computedList = computed(() => {
           </div>
 
         </Transition>
-        <div class="grid-layout" v-if="specificPlant.art === 'slakte' || false">
+        <div class="grid-layout" v-if="(specificPlant.art === 'slakte' || false) && windowSize.width > 700">
+          <div v-if="specificPlant.text !== 'Ingen info'" class="line-spacer"></div>
           <h1 v-if="specificPlant.text !== 'Ingen info'">Växter i släktet:</h1>
           <Card v-for="växt in computedList" :key="växt.id" :växt="växt" />
         </div>
@@ -288,7 +314,7 @@ const computedList = computed(() => {
           <li class="slakte"><nuxt-link :to="`/planta/${$route.params.slakte}/slakte`">Släkte: {{ $route.params.slakte
               }}</nuxt-link></li>
           <li v-for="plant in sortedPlantsInSlakte" :class="{ 'muted': plant.text === 'Ingen info' }">
-            <nuxt-link v-if="!plant.hidden" :to="`/planta/${plant.slakte}/${plant.art}/${plant.sortnamn}`">
+            <nuxt-link :to="`/planta/${plant.slakte}/${plant.art}/${plant.sortnamn}`">
               {{ plant.slakte }} {{ plant.art === '-' ? '' : plant.art }} {{ plant.sortnamn ? `'${plant.sortnamn}'` : ''
               }}{{ plant.hidden ? ` -
               ( Dold växt )` : "" }}
@@ -655,13 +681,13 @@ img.backdrop {
   max-width: 70ch;
   font-size: 1.15rem;
 
-  padding-right: 1rem;
   grid-template-columns: 1fr;
   gap: 2rem;
 }
 
 @media screen and (min-width: 700px) {
   .center-content .grid-layout {
+    padding-right: 1rem;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
@@ -673,6 +699,10 @@ img.backdrop {
 
   .center-content .grid-layout .card {
     margin-bottom: 1rem;
+  }
+
+  .center-content .grid-layout .line-spacer {
+    grid-column: 1/3;
   }
 }
 
@@ -688,8 +718,16 @@ img.backdrop {
 }
 
 .center-content .grid-layout h1 {
-  margin-bottom: 0;
-  margin-top: 2rem;
+  margin: 0;
+  line-height: 1;
+  /* margin-top: 3rem; */
+}
+
+.center-content .grid-layout .line-spacer {
+  margin-top: 1.5rem;
+  margin-bottom: calc(1.5rem - 1rem);
+  width: 100%;
+  border-top: 1px solid var(--border-color);
 }
 
 

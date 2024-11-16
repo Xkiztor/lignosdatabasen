@@ -9,6 +9,8 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@vueuse/nuxt',
     '@nuxtjs/mdc',
+    // '@nuxtjs/device',
+    // { src: '@nuxtjs/device', ssr: false },
   ],
   supabase: {
     redirect: false,
