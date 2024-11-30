@@ -16,7 +16,7 @@ const formattedText = computed(() => {
 <template>
   <!-- ! här är felet, något med MDC, blir recursive oavsett props till MDC -->
   <!-- <MDC/> -->
-  <!-- <MDC :value="formattedText" tag="article" /> -->
+  <MDC :value="formattedText" tag="div" />
 </template>
 
 
@@ -29,7 +29,7 @@ hr {
 
 
 
-.main-content article .screen-cover {
+article.main-content .screen-cover {
   position: fixed;
   top: 0;
   left: 0;
@@ -45,7 +45,7 @@ hr {
   object-fit: scale-down;
 }
 
-.main-content article .screen-cover img {
+article.main-content .screen-cover img {
   box-shadow: 0 0 100px 5px rgba(0, 0, 0, 0.5);
   max-height: 100%;
   /* height: 100%; */
@@ -58,7 +58,7 @@ hr {
 }
 
 
-article .screen-cover a {
+article.main-content a {
   position: absolute;
   bottom: 0.75rem;
   left: 0.75rem;
@@ -77,23 +77,23 @@ article .screen-cover a:hover {
 }
 
 
-div.main-content article img.hel {
+article.main-content img.hel {
   width: 100%;
 }
 
-div.main-content article img.halv {
+article.main-content img.halv {
   width: 100%;
 }
 
 
 
-.main-content article img {
+article.main-content img {
   transition: none;
   cursor: pointer;
 }
 
 @media screen and (min-width: 700px) {
-  div.main-content article img.hel {
+  article.main-content img.hel {
     max-width: calc(70ch - 1rem);
     width: 100%;
   }
@@ -104,35 +104,35 @@ div.main-content article img.halv {
     display: inline;
   }
 
-  div.main-content article img.vänster {
+  article.main-content img.vänster {
     float: left;
     margin-top: 0;
   }
 
-  div.main-content article img.höger {
+  article.main-content img.höger {
     float: right;
     margin-top: 0;
     margin-left: 1rem;
   }
 
-  div.main-content article p:has(img.vänster),
-  div.main-content article p:has(img.höger) {
+  article.main-content p:has(img.vänster),
+  article.main-content p:has(img.höger) {
     overflow: hidden;
   }
 }
 
-.main-content article .link {
+article.main-content .link {
   color: var(--link);
   text-decoration: underline;
 }
 
-.main-content article ol * {
+article.main-content ol * {
   margin-top: 0.5rem;
   list-style-type: decimal;
   list-style-position: inside;
 }
 
-.main-content article ul * {
+article.main-content ul * {
   list-style-type: disc;
   list-style-position: inside;
   /* margin-left: 0.5rem; */
@@ -140,7 +140,7 @@ div.main-content article img.halv {
   padding-inline-start: 0.5rem;
 }
 
-.main-content article #text {
+article.main-content #text {
   background: red;
 }
 </style>

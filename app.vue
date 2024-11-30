@@ -7,6 +7,7 @@ useHead({
   charset: 'utf-8',
   meta: [
     { name: 'description', content: 'En samlad informationskälla om olika växter' },
+    { name: 'ogDescription', content: 'En samlad informationskälla om olika växter' },
     // { name: 'keywords', content: 'Lista, Lindersplantskola, superlista, Växter, ovanliga växter, lista att beställa ifån, 2024' },
     { name: 'author', content: 'Ugo Linder, Peter Linder' },
   ],
@@ -37,6 +38,16 @@ useHead({
       crossorigin: ''
     },
   ]
+})
+
+useSeoMeta({
+  ogImage: 'https://res.cloudinary.com/dxwhmugdr/image/upload/t_1500bred/v1731606845/Li_102332_zk7mww.jpg',
+  ogImageAlt: 'Körsbärsbakgrund',
+  // Optional
+  ogImageWidth: 1500,
+  ogImageHeight: 2250,
+  ogImageType: 'image/jpeg',
+  ogImageUrl: 'https://res.cloudinary.com/dxwhmugdr/image/upload/t_1500bred/v1731606845/Li_102332_zk7mww.jpg',
 })
 
 const runtimeConfig = useRuntimeConfig();

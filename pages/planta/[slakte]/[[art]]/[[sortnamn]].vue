@@ -20,23 +20,27 @@ const { data: plantsInSlakte } = await useAsyncData('plants-fetch', async () => 
   if (error) {
     console.error(error);
   }
+  let newList = data
+  newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn))
+  newList = newList.sort((a, b) => a.art.localeCompare(b.art))
+
   if (runtimeConfig.public.ADMIN_PASSWORD === enteredPassword.value) {
-    return data
+    return newList
   } else {
     // return data
-    return data.filter(e => e.hidden !== true)
+    return newList.filter(e => e.hidden !== true)
   }
 })
 
-const sortedPlantsInSlakte = computed(() => {
-  let newList = plantsInSlakte.value
-  // console.log(plantsInSlakte.value);
-  // newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn))
-  newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn))
-  newList = newList.sort((a, b) => a.art.localeCompare(b.art))
-  // return newList
-  return plantsInSlakte.value
-})
+// const sortedPlantsInSlakte = computed(() => {
+//   let newList = plantsInSlakte.value
+//   // console.log(plantsInSlakte.value);
+//   // newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn))
+//   newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn))
+//   newList = newList.sort((a, b) => a.art.localeCompare(b.art))
+//   // return newList
+//   return plantsInSlakte.value
+// })
 
 // console.log(plantsInSlakte.value);
 const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async () => {
@@ -55,22 +59,19 @@ const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async
     if (error) {
       console.error(error);
     }
-    console.log(data);
-
+    
+    // If no data:
     if (error || !data) {
       return { slakte: router.params.slakte, art: router.params.art, sortnamn: router.params.sortnamn + '- 404 - Existerar inte', text: 'Kontrollera adressen', hidden: false }
     } else {
       return data
     }
-    //  else {
-    //   return { slakte: router.params.slakte, art: router.params.art, sortnamn: router.params.sortnamn + 'Existerar inte', text: 'Ingen Info', hidden: false }
-    // }
+
 
     // ? Släkte
   } else {
     console.log('släkte');
     const { data, error } = await client.from('lignosdatabasen').select().eq('slakte', `${router.params.slakte}`).eq('art', `${router.params.art}`).single()
-
     if (error) { console.error(error) }
 
     // If no data:
@@ -166,7 +167,19 @@ useHead({
     ${router.params.slakte}
     ${router.params.art === 'slakte' ? ' släkte' : (router.params.art === '-' ? '' : ' ' + router.params.art)}
     ${router.params.sortnamn ? " '" + router.params.sortnamn + "'" : ''}`
-  }
+  },
+  scripts: [
+    {
+      type: 'application/ld+json',
+      innerHTML: {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        'headline': `${specificPlant.value.slakte} ${specificPlant.value.art === 'slakte' ? 'släkte' : (specificPlant.value.art === '-' ? '' : specificPlant.value.art)} ${specificPlant.value.sortnamn ? "'" + specificPlant.value.sortnamn + "'" : ''}`,
+        'author': 'Peter Linder',
+        "image": images.value
+      }
+    }
+  ],
 })
 
 
@@ -226,7 +239,7 @@ useHead({
       <img :src="compressedUrl" alt="">
     </header>
     <div class="center-content">
-      <div>
+      <main>
 
         <Transition name="main">
           <div class="main-content edit" v-if="isEditing">
@@ -281,10 +294,6 @@ useHead({
                 <div></div>
                 <p>Länk: [här är texten som ska stå](https://exempel.se/) []()</p>
               </div>
-              <!-- <div>
-            <h2>Id</h2>
-            <div class="buttonlike muted">{{ specificPlant.id }}</div>
-          </div> -->
               <div>
                 <div></div>
                 <button class="bold" @click="editPlant()">Updatera</button>
@@ -297,25 +306,27 @@ useHead({
             <Markdown :plant="specificPlant" />
           </div>
 
-          <div class="main-content" v-else>
+          <article class="main-content" v-else>
             <p class="ingress" v-if="specificPlant.ingress">{{ specificPlant.ingress }}</p>
             <Markdown :plant="specificPlant" />
-          </div>
+          </article>
         </Transition>
 
 
         <div class="grid-layout" v-if="(specificPlant.art === 'slakte' || false) && windowSize.width > 700">
           <div v-if="specificPlant.text !== 'Ingen info'" class="line-spacer"></div>
           <h1 v-if="specificPlant.text !== 'Ingen info'">Växter i släktet:</h1>
-          <!-- <Card v-for="växt in computedList" :key="växt.id" :växt="växt" /> -->
           <SearchCard v-for="växt in computedList" :key="växt.id" :plant="växt" />
         </div>
-      </div>
-      <div class="sidebar">
+
+
+      </main>
+      <aside class="sidebar">
+
         <ul>
           <li class="slakte"><nuxt-link :to="`/planta/${$route.params.slakte}/slakte`">Släkte: {{ $route.params.slakte
               }}</nuxt-link></li>
-          <li v-for="plant in sortedPlantsInSlakte" :class="{ 'muted': plant.text === 'Ingen info' }">
+          <li v-for="plant in plantsInSlakte" :class="{ 'muted': plant.text === 'Ingen info' }">
             <nuxt-link :to="`/planta/${plant.slakte}/${plant.art}/${plant.sortnamn}`">
               {{ plant.slakte }} {{ plant.art === '-' ? '' : plant.art }} {{ plant.sortnamn ? `'${plant.sortnamn}'` : ''
               }}{{ plant.hidden ? ` -
@@ -323,7 +334,8 @@ useHead({
             </nuxt-link>
           </li>
         </ul>
-      </div>
+
+      </aside>
     </div>
   </div>
 </template>
@@ -501,7 +513,7 @@ html:not(.dark) .sidebar li a.router-link-active {
   opacity: 0.5;
 }
 
-.main-content article .article-image {
+article.main-content .article-image {
   max-height: 35rem;
   max-width: 100%;
   margin: 0.5rem 0;
@@ -512,12 +524,12 @@ html:not(.dark) .sidebar li a.router-link-active {
   cursor: pointer;
 }
 
-.main-content article p {
+article.main-content p {
   max-width: 70ch;
   line-height: 1.4;
 }
 
-.main-content article *,
+article.main-content *,
 .center-content .grid-layout {
   font-size: 1.15rem;
 }

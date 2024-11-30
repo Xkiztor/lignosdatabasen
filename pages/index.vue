@@ -85,8 +85,8 @@ const searchResult = computed(() => {
       <Icon class="dots" name="mdi:dots-horizontal" />
     </header>
 
-    <section class="">
-      <div class="text">
+    <section class="about">
+      <article class="text">
         <p>
           Välkommen till Lignosdatabasen! Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter.
           Urvalet siktar på allt som är som är härdigt att odla utomhus i Sverige men även en del som är på gränsen men
@@ -105,7 +105,7 @@ const searchResult = computed(() => {
           Välkommen att botanisera runt i databasen. Klicka dig fram till ett släkte via alfabetet eller skriv i
           sökrutan.
         </p>
-      </div>
+      </article>
     </section>
 
   </div>
