@@ -56,5 +56,5 @@ export default defineNuxtConfig({
     name: 'Lignosdatabasen',
   },
 
-  compatibilityDate: '2024-11-28',
+  // compatibilityDate: '2024-11-28',
 });
