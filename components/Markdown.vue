@@ -14,7 +14,9 @@ const formattedText = computed(() => {
 
 
 <template>
-  <MDC :value="formattedText" tag="article" />
+  <!-- ! här är felet, något med MDC, blir recursive oavsett props till MDC -->
+  <!-- <MDC/> -->
+  <!-- <MDC :value="formattedText" tag="article" /> -->
 </template>
 
 

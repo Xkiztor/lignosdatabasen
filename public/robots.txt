@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+
+User-agent: Googlebot
+Disallow: /admin
+
+User-agent: Bingbot
+Disallow: /admin
+
+Sitemap: https://superlistan.lindersplantskola.se/sitemap.xml

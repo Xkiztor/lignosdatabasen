@@ -15,8 +15,8 @@ console.log(isSlakte.value);
 
 
 const { data: plantsInSlakte } = await useAsyncData('plants-fetch', async () => {
-  const { data, error } = await client.from('växt-databas').select().eq('slakte', `${router.params.slakte}`).neq('art', 'slakte')
-  // const { data, error } = await client.from('växt-databas').select().eq('slakte', `${planta}`).single()
+  const { data, error } = await client.from('lignosdatabasen').select().eq('slakte', `${router.params.slakte}`).neq('art', 'slakte')
+  // const { data, error } = await client.from('lignosdatabasen').select().eq('slakte', `${planta}`).single()
   if (error) {
     console.error(error);
   }
@@ -39,10 +39,13 @@ const sortedPlantsInSlakte = computed(() => {
 })
 
 // console.log(plantsInSlakte.value);
-const { data: specificPlant } = await useAsyncData('plant-fetch', async () => {
+const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async () => {
+
+  // ? Inte släkte
   if (!isSlakte.value) {
+    console.log('inte släkte');
     const { data, error } = await client
-      .from('växt-databas')
+      .from('lignosdatabasen')
       .select()
       .eq('slakte', `${router.params.slakte}`)
       .eq('art', `${router.params.art === '-' ? '-' : router.params.art}`)
@@ -63,17 +66,12 @@ const { data: specificPlant } = await useAsyncData('plant-fetch', async () => {
     //   return { slakte: router.params.slakte, art: router.params.art, sortnamn: router.params.sortnamn + 'Existerar inte', text: 'Ingen Info', hidden: false }
     // }
 
+    // ? Släkte
   } else {
-    const { data, error } = await client.from('växt-databas').select().eq('slakte', `${router.params.slakte}`).eq('art', `${router.params.art}`).single()
+    console.log('släkte');
+    const { data, error } = await client.from('lignosdatabasen').select().eq('slakte', `${router.params.slakte}`).eq('art', `${router.params.art}`).single()
 
     if (error) { console.error(error) }
-
-    // return data
-    // if (data) {
-    //   return data
-    // } else {
-    // return { slakte: router.params.slakte, art: router.params.slakte, sortnamn: router.params.sortnamn, text: 'Bra släkte' }
-    // }
 
     // If no data:
     return data ? data : { slakte: router.params.slakte, art: 'slakte', sortnamn: router.params.sortnamn, text: 'Ingen Info', hidden: false }
@@ -89,7 +87,7 @@ const isEditing = ref(false)
 const editablePlant = reactive(specificPlant.value)
 
 const editPlant = async () => {
-  const { error } = await client.from('växt-databas').update({ ...editablePlant }).eq('id', `${editablePlant.id}`)
+  const { error } = await client.from('lignosdatabasen').update({ ...editablePlant }).eq('id', `${editablePlant.id}`)
   if (error) {
     console.error(error)
   } else {
@@ -106,7 +104,7 @@ onClickOutside(outsideClickTarget, () => {
 const deletePlant = async () => {
   showDeleteModel.value = false
 
-  const { error } = await client.from('växt-databas').delete().eq('id', `${specificPlant.value.id}`)
+  const { error } = await client.from('lignosdatabasen').delete().eq('id', `${specificPlant.value.id}`)
   if (error) {
     console.error(error)
   }
@@ -115,7 +113,7 @@ const deletePlant = async () => {
 const showHide = ref(!specificPlant.value.hidden)
 
 const hide = async () => {
-  const { error } = await client.from('växt-databas').update({ hidden: 'TRUE' }).eq('id', `${specificPlant.value.id}`)
+  const { error } = await client.from('lignosdatabasen').update({ hidden: 'TRUE' }).eq('id', `${specificPlant.value.id}`)
   if (error) {
     console.error(error)
   }
@@ -123,7 +121,7 @@ const hide = async () => {
 }
 
 const unHide = async () => {
-  const { error } = await client.from('växt-databas').update({ hidden: 'FALSE' }).eq('id', `${specificPlant.value.id}`)
+  const { error } = await client.from('lignosdatabasen').update({ hidden: 'FALSE' }).eq('id', `${specificPlant.value.id}`)
   if (error) {
     console.error(error)
   }
@@ -137,8 +135,8 @@ const images = computed(() => {
 })
 
 const compressedUrl = computed(() => {
-  console.log(images.value == new Array ? 'true' : 'false');
-  console.log(images.value[0] === undefined);
+  // console.log(images.value == new Array ? 'true' : 'false');
+  // console.log(images.value[0] === undefined);
 
   if (images.value[0] === undefined) {
     return ''
@@ -229,6 +227,7 @@ useHead({
     </header>
     <div class="center-content">
       <div>
+
         <Transition name="main">
           <div class="main-content edit" v-if="isEditing">
             <form @submit.prevent="">
@@ -276,11 +275,11 @@ useHead({
               </div>
               <div>
                 <div></div>
-                <p>Bild: ![halv hel vänster höger omslag](https://exempel.se/bild.jpg)</p>
+                <p>Bild: ![halv hel vänster höger omslag](https://exempel.se/bild.jpg) ![]()</p>
               </div>
               <div>
                 <div></div>
-                <p>Länk: [här är texten som ska stå](https://exempel.se/)</p>
+                <p>Länk: [här är texten som ska stå](https://exempel.se/) []()</p>
               </div>
               <!-- <div>
             <h2>Id</h2>
@@ -297,16 +296,19 @@ useHead({
             <p class="ingress">{{ specificPlant.ingress }}</p>
             <Markdown :plant="specificPlant" />
           </div>
+
           <div class="main-content" v-else>
             <p class="ingress" v-if="specificPlant.ingress">{{ specificPlant.ingress }}</p>
             <Markdown :plant="specificPlant" />
           </div>
-
         </Transition>
+
+
         <div class="grid-layout" v-if="(specificPlant.art === 'slakte' || false) && windowSize.width > 700">
           <div v-if="specificPlant.text !== 'Ingen info'" class="line-spacer"></div>
           <h1 v-if="specificPlant.text !== 'Ingen info'">Växter i släktet:</h1>
-          <Card v-for="växt in computedList" :key="växt.id" :växt="växt" />
+          <!-- <Card v-for="växt in computedList" :key="växt.id" :växt="växt" /> -->
+          <SearchCard v-for="växt in computedList" :key="växt.id" :plant="växt" />
         </div>
       </div>
       <div class="sidebar">
@@ -541,6 +543,8 @@ html:not(.dark) .sidebar li a.router-link-active {
   border-radius: 0.5rem;
 }
 
+
+
 .page.plant .admin-panel {
   z-index: 1;
   right: 1rem;
@@ -676,16 +680,14 @@ img.backdrop {
 
 
 .center-content .grid-layout {
-  display: grid;
-
-  max-width: 70ch;
   font-size: 1.15rem;
 
-  grid-template-columns: 1fr;
-  gap: 2rem;
+  /* max-width: 70ch; */
+  /* grid-template-columns: 1fr; */
+  /* gap: 2rem; */
 }
 
-@media screen and (min-width: 700px) {
+/* @media screen and (min-width: 700px) {
   .center-content .grid-layout {
     padding-right: 1rem;
     grid-template-columns: 1fr 1fr;
@@ -712,15 +714,13 @@ img.backdrop {
 }
 
 .dark .center-content .grid-layout .card {
-  /* padding: 1rem; */
   background: none;
   box-shadow: none;
-}
+} */
 
 .center-content .grid-layout h1 {
-  margin: 0;
+  margin: 1rem 0;
   line-height: 1;
-  /* margin-top: 3rem; */
 }
 
 .center-content .grid-layout .line-spacer {

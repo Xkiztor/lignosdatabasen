@@ -2,7 +2,7 @@
   "name": "nuxt-app",
   "private": true,
   "scripts": {
-    "dev": "nuxt dev",
+    "dev": "nuxt dev --host",
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
@@ -17,7 +17,11 @@
     "@types/node": "^18.17.3",
     "@vueuse/core": "^10.3.0",
     "@vueuse/nuxt": "^10.3.0",
-    "nuxt": "^3.6.5",
+    "nuxt": "^3.14.1592",
     "nuxt-icon": "^0.5.0"
+  },
+  "dependencies": {
+    "@nuxtjs/sitemap": "^7.0.0",
+    "@vueform/slider": "^2.1.10"
   }
 }

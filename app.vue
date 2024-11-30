@@ -53,7 +53,7 @@ const showMobileMenu = ref(false)
 const client = useSupabaseClient()
 
 const { data: plants } = await useAsyncData('plantor', async () => {
-  const { data, error } = await client.from('växt-databas').select().eq('hidden', 'FALSE')
+  const { data, error } = await client.from('lignosdatabasen').select().eq('hidden', 'FALSE')
 
   if (error) {
     console.log(error);
@@ -65,15 +65,15 @@ const { data: plants } = await useAsyncData('plantor', async () => {
 })
 
 // -------------  Filtera bort null / mellanslag ---------------------
-// const { error } = await client.from('växt-databas').update({ art: '' }).eq('art', ' ').select()
+// const { error } = await client.from('lignosdatabasen').update({ art: '' }).eq('art', ' ').select()
 // if (error) {
 //   console.log(error);
 // }
-// const { error } = await client.from('växt-databas').update({ sortnamn: '' }).eq('sortnamn', ' ').select()
+// const { error } = await client.from('lignosdatabasen').update({ sortnamn: '' }).eq('sortnamn', ' ').select()
 // if (error) {
 //   console.log(error);
 // }
-// const { error } = await client.from('växt-databas').update({ svensktnamn: '' }).eq('svensktnamn', ' ').select()
+// const { error } = await client.from('lignosdatabasen').update({ svensktnamn: '' }).eq('svensktnamn', ' ').select()
 // if (error) {
 //   console.log(error);
 // }
@@ -100,7 +100,7 @@ const slakteGen = () => {
 
   oneOfEverySlakte.forEach(async (plant) => {
     const { data, error } = await client
-      .from('växt-databas')
+      .from('lignosdatabasen')
       .insert([{
         slakte: `${plant}`, art: `slakte`, text: `Ingen info`
       }])
@@ -212,6 +212,7 @@ onClickOutside(outsideNavRef, () => {
           </p>
           <Icon name="mingcute:grid-2-fill" />
         </NuxtLink>
+
         <ThemeToggle v-if="windowSize.width > 700" />
       </div>
 
@@ -268,7 +269,8 @@ h1 {
   --element-bg-light: #dddad1;
   --element-bg-dark: #261f18;
 
-  --border-color-dark: #27272a;
+  --border-color-dark: #312a22;
+  /* --border-color-dark: #27272a; */
   --border-color-light: #ccc9c2;
 
   --primary-brown: #6b5e0a;
@@ -335,6 +337,8 @@ html.dark {
 html:has(#image-screen-cover) {
   overflow: clip;
 }
+
+
 
 body {
   margin: 0;
@@ -456,6 +460,32 @@ button.cta {
 .dark ::selection,
 .dark ::-moz-selection {
   color: var(--text-color-light);
+}
+
+:not(html) ::-webkit-scrollbar {
+  width: 10px;
+}
+
+:not(html)::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:not(html)::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+:not(html)::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 5px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #888;
 }
 
 nav {
@@ -795,5 +825,12 @@ ul .alla-växter {
   width: fit-content;
   height: fit-content;
   font-size: 1.15em;
+}
+
+
+.nav-sök-button {
+  padding: 0;
+  background: none;
+  border: none;
 }
 </style>

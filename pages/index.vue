@@ -12,7 +12,7 @@ const fullPlantList = ref([])
 
 const fetchList = async () => {
   const { data, error } = await client
-    .from('växt-databas')
+    .from('lignosdatabasen')
     .select()
 
   if (error) {
@@ -67,9 +67,9 @@ const searchResult = computed(() => {
 
           <div class="sök">
             <input type="text" name="" id="" placeholder="Sök" v-model="query">
-            <button>
-              <Icon v-if="query" name="material-symbols:close-rounded" @click="query = ''" />
-              <Icon v-else name="material-symbols:search-rounded" />
+            <button @click="query = ''">
+              <Icon v-if="query" name="material-symbols:close-rounded" class="stäng-ikon" />
+              <Icon v-else name="material-symbols:search-rounded" class="sök-ikon" />
             </button>
             <Transition name="expand">
               <div class="expanded" v-if="query">
@@ -132,7 +132,7 @@ const searchResult = computed(() => {
   }
 }
 
-.index header * {
+.index .content * {
   text-align: center;
 }
 
@@ -372,10 +372,27 @@ const searchResult = computed(() => {
   border-color: transparent;
 }
 
+.index .content .sök button:hover,
+.index .content .sök button:active,
+.index .content .sök button:focus {
+  /* border: none; */
+  /* border-width: 0; */
+  border-color: transparent;
+}
+
 .index .content .sök button {
   display: grid;
   place-items: center;
-  margin-right: 0.25rem;
+  margin-right: 0.3rem;
+}
+
+.sök button:has(.stäng-ikon) {
+  padding: 0.5rem;
+  font-size: 1.4rem;
+}
+
+.sök button:has(.sök-ikon) {
+  pointer-events: none;
 }
 
 @media screen and (min-width: 700px) {
@@ -421,7 +438,7 @@ const searchResult = computed(() => {
   height: 100%;
   padding: 1rem 1rem 0;
   border-top: 1px solid var(--border-color);
-  overflow: scroll;
+  overflow: clip scroll;
 }
 
 

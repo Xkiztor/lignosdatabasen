@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-
+const currentYear = new Date().getFullYear();
 </script>
 
 
@@ -7,13 +7,14 @@
   <footer>
     <div class="grid-align">
       <div>
-        <p>© 2023 Fotodendron.</p>
-        <p>Alla rättigheter tillhör Peter Linder / Fotodendron.se.</p>
+        <p>© {{currentYear}} Lignosdatabasen.</p>
+        <p>Alla rättigheter tillhör Peter Linder / Lindersplantskola.</p>
         <p>Material från denna sida får ej användas utan tillåtelse.</p>
       </div>
       <div>
         Se även
         <a href="http://lindersplantskola.se/">Lindersplantskola.se</a>
+        <a href="https://superlistan.lindersplantskola.se/">Superlistan</a>
         <a href="https://www.facebook.com/LindersPlantskola">Lindersplantskola Facebook</a>
       </div>
     </div>

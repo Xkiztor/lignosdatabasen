@@ -24,7 +24,7 @@ const image = computed(() => {
       <NuxtLink :to="`/planta/${plant.slakte}/${plant.art}/${plant.sortnamn}`">
         <span>
           {{ plant.slakte }}{{ plant.art ? ' ' : ''
-          }}{{ plant.art }}{{ plant.sortnamn ? " '" : '' }}{{
+          }}{{ plant.art.replace(/\([^()]*\)/g, '') }}{{ plant.sortnamn ? " '" : '' }}{{
             plant.sortnamn
           }}{{ plant.sortnamn ? "'" : '' }}
         </span>
@@ -42,7 +42,7 @@ const image = computed(() => {
 
 
 <style>
-.index .search-card {
+.search-card {
   display: grid;
   grid-template-columns: 1fr 3fr;
   gap: 1rem;
@@ -51,11 +51,12 @@ const image = computed(() => {
   margin-bottom: 1rem
 }
 
-.index .search-card * {
+.expanded ul li.search-card *,
+.search-card * {
   text-align: left;
 }
 
-.index .search-card a {
+.search-card a {
   font-size: 1.25rem;
   font-weight: 700;
   /* display: flex; */
@@ -66,50 +67,50 @@ const image = computed(() => {
 }
 
 
-.index .search-card a span {
+.search-card a span {
   display: block;
 }
 
-.index .search-card a span:first-child {
+.search-card a span:first-child {
   font-size: 1.75rem;
   font-family: var(--title-font);
 }
 
 @media screen and (max-width: 700px) {
-  .index .search-card a {
+  .search-card a {
     font-size: 1.1rem;
   }
 
-  .index .search-card a span:first-child {
+  .search-card a span:first-child {
     font-size: 1.5rem;
   }
 }
 
-.index .search-card div {
+.search-card div {
   height: 100%;
   width: 100%;
 }
 
-.index .search-card img {}
+.search-card img {}
 
-.index .search-card div.skeleton {
+.search-card div.skeleton {
   border-radius: 0.5rem;
   background: var(--border-color);
 }
 
-.index .search-card img,
-.index .search-card div.skeleton {
+.search-card img,
+.search-card div.skeleton {
   object-fit: cover;
   min-height: 6rem;
   aspect-ratio: 1/1;
   width: 100%;
 }
 
-.index .search-card .text {}
+.search-card .text {}
 
-.index .search-card .text p {
+.search-card .text p {
   font-size: 1rem;
   max-height: 100%;
-  overflow-y: scroll
+  overflow-y: clip;
 }
 </style>

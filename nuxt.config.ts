@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ['@/assets/css/styles.css'],
+
   // modules: ['nuxt-icon'],
   modules: [
     'nuxt-icon',
@@ -9,17 +10,21 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@vueuse/nuxt',
     '@nuxtjs/mdc',
+    '@nuxtjs/sitemap',
     // '@nuxtjs/device',
     // { src: '@nuxtjs/device', ssr: false },
   ],
+
   supabase: {
     redirect: false,
   },
+
   runtimeConfig: {
     public: {
       ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
     },
   },
+
   app: {
     head: {
       title: 'Växt Databas',
@@ -31,9 +36,11 @@ export default defineNuxtConfig({
       ],
     },
   },
+
   image: {
     provider: 'ipx',
   },
+
   mdc: {
     components: {
       prose: true, // Disable predefined prose components
@@ -43,4 +50,11 @@ export default defineNuxtConfig({
       },
     },
   },
+
+  site: {
+    url: 'https://lignosdatabasen.netlify.app/',
+    name: 'Lignosdatabasen',
+  },
+
+  // compatibilityDate: '2024-11-28',
 });
