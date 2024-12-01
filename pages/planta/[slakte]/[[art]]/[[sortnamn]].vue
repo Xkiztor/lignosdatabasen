@@ -6,16 +6,19 @@ const client = useSupabaseClient()
 const windowSize = useWidth()
 // const { planta } = useRoute().params
 
-const router = useRoute()
-console.log(router.params);
+const route = useRoute()
+const router = useRouter()
+console.log(route.params);
 
-const isSlakte = ref(router.params.art === 'slakte')
+const state = useGlobalState()
+
+const isSlakte = ref(route.params.art === 'slakte')
 
 console.log(isSlakte.value);
 
 
 const { data: plantsInSlakte } = await useAsyncData('plants-fetch', async () => {
-  const { data, error } = await client.from('lignosdatabasen').select().eq('slakte', `${router.params.slakte}`).neq('art', 'slakte')
+  const { data, error } = await client.from('lignosdatabasen').select().eq('slakte', `${route.params.slakte}`).neq('art', 'slakte')
   // const { data, error } = await client.from('lignosdatabasen').select().eq('slakte', `${planta}`).single()
   if (error) {
     console.error(error);
@@ -51,9 +54,9 @@ const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async
     const { data, error } = await client
       .from('lignosdatabasen')
       .select()
-      .eq('slakte', `${router.params.slakte}`)
-      .eq('art', `${router.params.art === '-' ? '-' : router.params.art}`)
-      .eq('sortnamn', `${router.params.sortnamn}`)
+      .eq('slakte', `${route.params.slakte}`)
+      .eq('art', `${route.params.art === '-' ? '-' : route.params.art}`)
+      .eq('sortnamn', `${route.params.sortnamn}`)
       .single()
 
     if (error) {
@@ -62,7 +65,7 @@ const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async
     
     // If no data:
     if (error || !data) {
-      return { slakte: router.params.slakte, art: router.params.art, sortnamn: router.params.sortnamn + '- 404 - Existerar inte', text: 'Kontrollera adressen', hidden: false }
+      return { slakte: route.params.slakte, art: route.params.art, sortnamn: route.params.sortnamn + '- 404 - Existerar inte', text: 'Kontrollera adressen', hidden: false }
     } else {
       return data
     }
@@ -71,11 +74,11 @@ const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async
     // ? Släkte
   } else {
     console.log('släkte');
-    const { data, error } = await client.from('lignosdatabasen').select().eq('slakte', `${router.params.slakte}`).eq('art', `${router.params.art}`).single()
+    const { data, error } = await client.from('lignosdatabasen').select().eq('slakte', `${route.params.slakte}`).eq('art', `${route.params.art}`).single()
     if (error) { console.error(error) }
 
     // If no data:
-    return data ? data : { slakte: router.params.slakte, art: 'slakte', sortnamn: router.params.sortnamn, text: 'Ingen Info', hidden: false }
+    return data ? data : { slakte: route.params.slakte, art: 'slakte', sortnamn: route.params.sortnamn, text: 'Ingen Info', hidden: false }
   }
 
 })
@@ -131,8 +134,8 @@ const unHide = async () => {
 
 
 const images = computed(() => {
+  state.currentPageImages.value = specificPlant.value.text.split(/!\[(?!omslag\])[^]*?\]\(([^)]+)\)/g).filter(str => str !== '' && str.includes('http') && !str.includes('['))
   return specificPlant.value.text.split(/!\[[^\]]*\]\(([^)]+)\)/g).filter(str => str !== '' && str.includes('http') && !str.includes('['))
-  // return specificPlant.value.text.split(/[\[\]]/).filter(str => str !== '' && str.includes('http'))
 })
 
 const compressedUrl = computed(() => {
@@ -164,9 +167,9 @@ useHead({
   // or as a function
   titleTemplate: () => {
     return `
-    ${router.params.slakte}
-    ${router.params.art === 'slakte' ? ' släkte' : (router.params.art === '-' ? '' : ' ' + router.params.art)}
-    ${router.params.sortnamn ? " '" + router.params.sortnamn + "'" : ''}`
+    ${route.params.slakte}
+    ${route.params.art === 'slakte' ? ' släkte' : (route.params.art === '-' ? '' : ' ' + route.params.art)}
+    ${route.params.sortnamn ? " '" + route.params.sortnamn + "'" : ''}`
   },
   scripts: [
     {
@@ -182,7 +185,42 @@ useHead({
   ],
 })
 
+// ? Close / refresh
+onMounted(() => {
+  const handleBeforeUnload = (event) => {
+    if (isEditing.value) {
+      event.preventDefault();
+      event.returnValue = ''; // Required for the dialog to show in modern browsers
+    }
+  };
 
+  // Add event listener
+  window.addEventListener('beforeunload', handleBeforeUnload);
+
+  // Remove event listener on component unmount
+  onBeforeUnmount(() => {
+    window.removeEventListener('beforeunload', handleBeforeUnload);
+  });
+});
+// ? Internal route change
+onMounted(() => {
+  // Add a global navigation guard
+  const unregister = router.beforeEach((to, from, next) => {
+    if (isEditing.value) {
+      const confirmLeave = confirm('Du har osparade ändringar. Säker du vill lämna?');
+      if (confirmLeave) {
+        // isEditing.value = false; // Reset changes if confirmed
+        next(); // Allow navigation
+      } else {
+        next(false); // Block navigation
+      }
+    } else {
+      next(); // Allow navigation
+    }
+  });
+  // Cleanup guard on component unmount
+  onBeforeUnmount(() => unregister());
+});
 </script>
 
 
@@ -233,6 +271,7 @@ useHead({
           <span v-if="specificPlant.höjd">Höjd: {{ specificPlant.höjd }} m</span>
           <span v-if="specificPlant.bredd">Bredd: {{ specificPlant.bredd }} m</span>
           <span v-if="specificPlant.zon">Zon: {{ specificPlant.zon }}</span>
+          <span v-if="specificPlant.synonymer">Synonymer: {{ specificPlant.synonymer }}</span>
         </h2>
         <h2 class="subtitle">{{ specificPlant.svensktnamn }}</h2>
       </div>
@@ -240,9 +279,9 @@ useHead({
     </header>
     <div class="center-content">
       <main>
-
         <Transition name="main">
-          <div class="main-content edit" v-if="isEditing">
+
+          <article class="main-content edit" v-if="isEditing">
             <form @submit.prevent="">
               <div>
                 <h2>Släkte</h2>
@@ -260,7 +299,6 @@ useHead({
                 <h2>Svenskt Namn</h2>
                 <input type="text" v-model="editablePlant.svensktnamn">
               </div>
-
               <div>
                 <div class="three-column">
                   <div>
@@ -277,22 +315,29 @@ useHead({
                   </div>
                 </div>
               </div>
-
               <div>
-                <h2>Ingress <br>{{ editablePlant.ingress.length }} tecken</h2>
-                <textarea type="text" v-model="editablePlant.ingress" />
+                <h2>Syn.</h2>
+                <input type="text" v-model="editablePlant.synonymer">
+              </div>
+              <div>
+                <h2>Syn. till <br>(lokal länk)</h2>
+                <input type="text" v-model="editablePlant.synonymtill">
+              </div>
+              <div>
+                <h2>Ingress <br>{{ editablePlant.ingress.length }} tecken. (150 max)</h2>
+                <textarea class="y-size" type="text" v-model="editablePlant.ingress" />
               </div>
               <div class="text">
                 <h2>Text</h2>
-                <textarea type="text" v-model="editablePlant.text" />
+                <textarea class="y-size" type="text" v-model="editablePlant.text" />
               </div>
               <div>
                 <div></div>
-                <p>Bild: ![halv hel vänster höger omslag](https://exempel.se/bild.jpg) ![]()</p>
+                <p>Bild: ![halv hel vänster höger omslag](länk) ![]()</p>
               </div>
               <div>
                 <div></div>
-                <p>Länk: [här är texten som ska stå](https://exempel.se/) []()</p>
+                <p>Länk: [här är texten som ska stå](länk) []()</p>
               </div>
               <div>
                 <div></div>
@@ -304,7 +349,7 @@ useHead({
             </div>
             <p class="ingress">{{ specificPlant.ingress }}</p>
             <Markdown :plant="specificPlant" />
-          </div>
+          </article>
 
           <article class="main-content" v-else>
             <p class="ingress" v-if="specificPlant.ingress">{{ specificPlant.ingress }}</p>
@@ -529,9 +574,14 @@ article.main-content p {
   line-height: 1.4;
 }
 
-article.main-content *,
+.center-content main,
+.center-content main *,
 .center-content .grid-layout {
   font-size: 1.15rem;
+}
+
+.center-content main {
+  max-width: 70ch;
 }
 
 
@@ -652,6 +702,10 @@ img.backdrop {
 
 .main-content.edit form>div.text textarea {
   min-height: 20rem;
+}
+
+.main-content.edit form .y-size {
+  min-height: 7rem;
   resize: vertical;
   transition: none;
 }
@@ -684,7 +738,7 @@ img.backdrop {
 .main-content .ingress {
   font-weight: bold;
   margin-bottom: 1rem;
-  font-size: 1.2em;
+  font-size: 1.1em;
 }
 
 

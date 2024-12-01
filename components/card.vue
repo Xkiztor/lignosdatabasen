@@ -5,9 +5,15 @@ const props = defineProps(['växt'])
 
 
 const descriptionLenght = 70
+const ingressLenght = 120
 const formattedDescription = computed(() => {
   if (props.växt.ingress) {
-    return props.växt.ingress
+    let ingress = props.växt.ingress
+    ingress = ingress.slice(0, ingressLenght)
+    if (ingress !== props.växt.ingress) {
+      ingress = ingress + '...'
+    }
+    return ingress
   } else {
     let desc = props.växt.text
 
@@ -42,6 +48,17 @@ const images = computed(() => {
     <NuxtLink class="image" :to="`/planta/${växt.slakte}/${växt.art}/${växt.sortnamn}`">
       <NuxtImg v-if="images[0]" loading="lazy" :src="images[0]" alt="" />
     </NuxtLink>
+    <div class="faktarutan">
+      <div v-if="växt.höjd"> 
+        H: <span>{{ växt.höjd }}</span> m
+      </div>
+      <div v-if="växt.bredd">
+        B: <span>{{ växt.bredd }}</span> m
+      </div>
+      <div v-if="växt.zon">
+        Z: <span>{{ växt.zon }}</span>
+      </div>
+    </div>
     <NuxtLink :to="`/planta/${växt.slakte}/${växt.art}/${växt.sortnamn}`">
       <h2>{{ växt.slakte }} {{ växt.art }} {{ växt.sortnamn ? `'` : '' }}{{ växt.sortnamn }}{{ växt.sortnamn ? `'` :
       '' }}</h2>
@@ -75,7 +92,7 @@ const images = computed(() => {
 .card h2 {
   font-size: 1.5rem;
   font-family: var(--title-font);
-  margin-top: 0.5rem;
+  margin-top: 0.2rem;
 }
 
 .card h2:hover {
@@ -85,11 +102,43 @@ const images = computed(() => {
 .card {
   border-radius: 1rem;
   padding: 1rem;
-  /* border: 1px solid var(--border-color); */
+  border: 2px solid var(--border-color);
+  box-shadow: 0 0 15px 0px rgba(0, 0, 0, 0.15);
 }
 
 .dark .card {
   background: var(--element-bg);
   box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.5);
+}
+
+.card .faktarutan {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  place-items: center;
+  border-radius: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.dark .card .faktarutan {
+  background: var(--element-top-bg);
+}
+
+html:not(.dark) .card .faktarutan {
+  opacity: 0.6;
+}
+
+.card .faktarutan:has(div) {
+  border: 2px solid var(--border-color);
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+}
+
+.card .faktarutan div {
+}
+
+.card .faktarutan span {
+  opacity: 1;
+  font-size: 1.3rem;
+  font-weight: 800;
 }
 </style>

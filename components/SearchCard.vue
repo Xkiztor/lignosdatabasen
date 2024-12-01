@@ -21,12 +21,16 @@ const image = computed(() => {
     <img v-if="image" :src="image" alt="">
     <div v-else class="skeleton"></div>
     <div class="text">
-      <NuxtLink :to="`/planta/${plant.slakte}/${plant.art}/${plant.sortnamn}`">
+      <NuxtLink :to="plant.synonymtill ? plant.synonymtill : `/planta/${plant.slakte}/${plant.art}/${plant.sortnamn}`" @click="$emit('close')">
         <span>
           {{ plant.slakte }}{{ plant.art ? ' ' : ''
-          }}{{ plant.art.replace(/\([^()]*\)/g, '') }}{{ plant.sortnamn ? " '" : '' }}{{
+          }}{{ plant.art }}{{ plant.sortnamn ? " '" : '' }}{{
             plant.sortnamn
           }}{{ plant.sortnamn ? "'" : '' }}
+          <!-- {{ plant.slakte }}{{ plant.art ? ' ' : ''
+          }}{{ plant.art.replace(/\([^()]*\)/g, '') }}{{ plant.sortnamn ? " '" : '' }}{{
+            plant.sortnamn
+          }}{{ plant.sortnamn ? "'" : '' }} -->
         </span>
         <!-- <span>
           {{ plant.svensktnamn ? "-" : '' }}
@@ -86,6 +90,10 @@ const image = computed(() => {
   }
 }
 
+.search-card a:hover {
+  text-decoration: underline;
+}
+
 .search-card div {
   height: 100%;
   width: 100%;
@@ -101,7 +109,7 @@ const image = computed(() => {
 .search-card img,
 .search-card div.skeleton {
   object-fit: cover;
-  min-height: 6rem;
+  /* min-height: 6rem; */
   aspect-ratio: 1/1;
   width: 100%;
 }

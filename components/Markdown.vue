@@ -14,8 +14,6 @@ const formattedText = computed(() => {
 
 
 <template>
-  <!-- ! här är felet, något med MDC, blir recursive oavsett props till MDC -->
-  <!-- <MDC/> -->
   <MDC :value="formattedText" tag="div" />
 </template>
 
@@ -58,7 +56,7 @@ article.main-content .screen-cover img {
 }
 
 
-article.main-content a {
+article.main-content .screen-cover a {
   position: absolute;
   bottom: 0.75rem;
   left: 0.75rem;
@@ -98,7 +96,7 @@ article.main-content img {
     width: 100%;
   }
 
-  div.main-content article img.halv {
+  article.main-content img.halv {
     max-width: calc(35ch - 1rem);
     width: 100%;
     display: inline;

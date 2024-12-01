@@ -4,7 +4,7 @@ const props = defineProps(['href'])
 
 
 <template>
-  <NuxtLink class="link" :href="props.href" target="_blank">
+  <NuxtLink class="link" :href="props.href" :target="props.href.includes('http') ? '_blank' : ''">
     <slot />
   </NuxtLink>
 </template>

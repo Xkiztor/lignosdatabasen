@@ -10,6 +10,7 @@ const currentYear = new Date().getFullYear();
         <p>© {{currentYear}} Lignosdatabasen.</p>
         <p>Alla rättigheter tillhör Peter Linder / Lindersplantskola.</p>
         <p>Material från denna sida får ej användas utan tillåtelse.</p>
+        <p>peter@lindersplantskola.se  -  0733 518 716</p>
       </div>
       <div>
         Se även

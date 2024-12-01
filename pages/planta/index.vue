@@ -72,7 +72,7 @@ const bredd = ref([0, 10])
 const zon = ref([1, 8])
 
 const zonFormat = (zon) => {
-  return zon === 8 ? 'IIIIIIII' : zon === 7 ? 'IIIIIII' : zon === 6 ? 'IIIIII' : zon === 5 ? 'IIIII' : zon === 4 ? 'IIII' : zon === 3 ? 'III' : zon === 2 ? 'II' : 'I'
+  return zon === 8 ? 'VIII' : zon === 7 ? 'VII' : zon === 6 ? 'VI' : zon === 5 ? 'V' : zon === 4 ? 'IV' : zon === 3 ? 'III' : zon === 2 ? 'II' : 'I'
 }
 
 </script>
@@ -108,6 +108,8 @@ const zonFormat = (zon) => {
 
 
 <style>
+
+
 .page.alla-växter-page {
   padding: 0 1rem;
 }

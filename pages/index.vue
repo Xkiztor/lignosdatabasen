@@ -87,8 +87,11 @@ const searchResult = computed(() => {
 
     <section class="about">
       <article class="text">
+        <p class="välkommen">
+          Välkommen till Lignosdatabasen! 
+        </p>
         <p>
-          Välkommen till Lignosdatabasen! Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter.
+          Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter.
           Urvalet siktar på allt som är som är härdigt att odla utomhus i Sverige men även en del som är på gränsen men
           som kan klara t.ex. innergårdar i städerna eller kallväxthus.
         </p>
@@ -106,6 +109,8 @@ const searchResult = computed(() => {
           sökrutan.
         </p>
       </article>
+      <img src="https://res.cloudinary.com/dxwhmugdr/image/upload/t_1000bred/v1732986145/Li_69394_gnk58o.jpg" alt="" v-if="windowSize.width > 800">
+      <!-- <img src="https://res.cloudinary.com/dxwhmugdr/image/upload/t_1000bred/v1732985680/Li_54974_cpkjcz.jpg" alt=""> -->
     </section>
 
   </div>
@@ -126,11 +131,11 @@ const searchResult = computed(() => {
 }
 
 
-@media screen and (min-width: 700px) {
+/* @media screen and (min-width: 700px) {
   .index header {
     height: calc(90vh);
   }
-}
+} */
 
 .index .content * {
   text-align: center;
@@ -205,10 +210,13 @@ const searchResult = computed(() => {
   .index .image-align .hero-image {
     /* height: 70vh; */
     height: 100%;
+    width: 100%;
     object-fit: cover;
   }
 
   .index .image-align {
+    height: 100%;
+    width: 100%;
     flex-grow: 1;
   }
 }
@@ -409,13 +417,12 @@ const searchResult = computed(() => {
 
 .index .content .sök:has(.expanded) {
   width: 90vw;
-  max-width: 40rem;
+  max-width: 50rem;
 }
 
 @media screen and (min-width:700px) {
   .index .content .sök:has(.expanded) {
     width: 75vw;
-    max-width: 40rem;
   }
 }
 
@@ -426,11 +433,15 @@ const searchResult = computed(() => {
   width: 100%;
   z-index: -1;
   padding-top: 3rem;
-  height: 30rem;
+  height: 40rem;
   background: var(--element-bg);
   border-radius: 1.5rem;
-  box-shadow: 0 5px 20px 2px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 20px 30px 2px rgba(0, 0, 0, 0.4);
   color: var(--text-color);
+}
+
+.dark .index .sök .expanded {
+  box-shadow: 0 5px 25px 5px rgba(0, 0, 0, 0.6);
 }
 
 .index .sök .expanded ul {
@@ -466,13 +477,43 @@ const searchResult = computed(() => {
   overflow: hidden
 }
 
-/* .sök .expanded.expand-enter-active,
-.sök .expanded.expand-leave-active {
-  transition: height 0.5s ease;
+section.about {
+  margin: 1rem auto 0;
+  font-size: 1.05rem;
+  margin-bottom: 3rem;
+  max-width: 60ch;
 }
 
-.sök .expanded.expand-enter-from *,
-.sök .expanded.expand-leave-to * {
-  opacity: 0;
-} */
+@media screen and (min-width:800px) {
+  section.about {
+    
+    margin: 0 auto;
+    display: grid;
+    place-items: center;
+    grid-template-columns: 1fr 1fr;
+    max-width: 110ch;
+    gap: 3rem;
+    padding: 0 2rem
+  }
+}
+
+@media screen and (min-width:1200px) {
+  section.about {
+    margin: 0 auto;
+    display: grid;
+    place-items: center;
+    grid-template-columns: 1fr 1fr;
+    max-width: 110ch;
+    gap: 10rem;
+  }
+}
+
+section.about p {
+  margin-bottom: 1rem;
+}
+section.about p.välkommen {
+  font-size: 1.4rem;
+  font-weight: 900;
+  font-family: var(--title-font);
+}
 </style>

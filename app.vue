@@ -56,6 +56,8 @@ const enteredPassword = useCookie('enteredPassword', { maxAge: 60604800 });
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
+const isSökOpen = ref(false)
+
 // const { width, height } = useWindowSize()
 const windowSize = useWidth()
 
@@ -133,16 +135,87 @@ onClickOutside(outsideNavRef, () => {
 
 })
 
+
+
+const sökInput = useTemplateRef('sökInput')
+const openSök = async () => {
+  isSökOpen.value = true
+  showMobileMenu.value = false
+  query.value = ''
+  await nextTick()
+  sökInput.value.focus()
+}
+const query = ref('')
+const fullPlantList = ref([])
+const fetchList = async () => {
+  const { data, error } = await client
+    .from('lignosdatabasen')
+    .select()
+
+  if (error) {
+    console.error(error);
+  }
+  fullPlantList.value = data
+}
+onMounted(async () => {
+  await nextTick()
+  fetchList()
+})
+const searchResult = computed(() => {
+  let newList = fullPlantList.value
+
+  let queryArray = query.value.toLowerCase().split(" ")
+  if (query.value) {
+    // newList = newList.filter(e => e.text.toLowerCase().contains(searchQuery.value.toLowerCase()))
+    newList = newList.filter(item => queryArray.every(str => `${item.slakte} ${item.art} ${item.sortnamn} ${item.svensktnamn} ${item.synonymer}`.toLowerCase().includes(str)))
+  }
+
+  newList = newList.filter(e => e.text !== 'Ingen info')
+  newList = newList.filter(e => e.art !== 'slakte')
+  newList = newList.filter(e => e.hidden === false)
+
+  newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn))
+  newList = newList.sort((a, b) => a.art.localeCompare(b.art))
+  newList = newList.sort((a, b) => a.slakte.localeCompare(b.slakte))
+
+  return newList
+})
+const sökContainer = ref()
+onClickOutside(sökContainer, () => isSökOpen.value = false)
+
 </script>
 
 
 <template>
+  <Transition name="sök">
+    <div class="sök-cover" v-if="isSökOpen">
+      <div class="sök-container" ref="sökContainer">
+            <div class="input-align">
+              <input type="text" name="" id="" placeholder="Sök" v-model="query" ref="sökInput">
+              <button @click="query ? query = '' : isSökOpen = false">
+                <Icon v-if="query" name="material-symbols:close-rounded" class="rensa-ikon" />
+                <Icon v-else name="material-symbols:close-rounded" class="stäng-ikon" />
+              </button>
+            </div>
+              <div class="expanded">
+                <ul>
+                  <SearchCard v-for="plant in searchResult" :plant="plant" @close="isSökOpen = false"/>
+                </ul>
+              </div>
+          </div>
+    </div>
+  </Transition>
+
   <div class="site">
     <nav>
       <NuxtLink to="/" class="title">
-        <h1>
+        <img class="large light" src="/logga-text-ljus.svg" alt="">
+        <img class="large dark" src="/logga-text-mörk.svg" alt="">
+        <img class="small light" src="/logga-löv-ljus.svg" alt="">
+        <img class="small dark" src="/logga-löv-mörk.svg" alt="">
+        <!-- <h1>
           <Icon name="mdi:leaf-circle" />Lignosdatabasen
-        </h1>
+        </h1> -->
       </NuxtLink>
       <button v-if="windowSize.width < 700" class="hamburger-menu">
         <Icon @click="showMobileMenu = false" v-if="showMobileMenu" name="material-symbols:close-rounded" />
@@ -181,8 +254,10 @@ onClickOutside(outsideNavRef, () => {
               <ArtBokstav :bokstav="'V'" :plants="plants" />
               <ArtBokstav :bokstav="'W'" :plants="plants" />
               <!-- <ArtBokstav :bokstav="'X'" :plants="plants" /> -->
-              <ArtBokstav :bokstav="'Y'" :plants="plants" />
+              <!-- <ArtBokstav :bokstav="'Y'" :plants="plants" /> -->
               <ArtBokstav :bokstav="'Z'" :plants="plants" />
+              <button class="nav-search" @click="openSök()" v-if="windowSize.width < 700"><Icon name="material-symbols:search-rounded" /></button>
+
               <NuxtLink @click="showMobileMenu = false" class="alla-växter" to="/planta/" v-if="windowSize.width < 700">
                 <!-- <Icon name="mingcute:grid-fill" /> -->
                 <Icon name="mingcute:grid-2-fill" />
@@ -216,9 +291,11 @@ onClickOutside(outsideNavRef, () => {
       </div>
 
       <div class="big-nav-side">
+        <button class="nav-search" @click="openSök()" v-if="windowSize.width > 700"><Icon name="material-symbols:search-rounded" /></button>
+
         <NuxtLink class="alla-växter" to="/planta/" v-if="windowSize.width > 700">
           <p>
-            <Icon name="mingcute:grid-fill" />
+            <Icon name="mingcute:grid-2-fill" />
             Alla växter
           </p>
           <Icon name="mingcute:grid-2-fill" />
@@ -249,7 +326,6 @@ onClickOutside(outsideNavRef, () => {
   /* font-family: 'Playpen Sans'; */
   /* font-family: Salsa; */
   font-family: var(--slab-font);
-  ;
   /* font-weight: 900; */
   word-spacing: 1px;
   letter-spacing: 0.1px;
@@ -280,6 +356,9 @@ h1 {
   --element-bg-light: #dddad1;
   --element-bg-dark: #261f18;
 
+  --element-top-bg-light: #dddad1;
+  --element-top-bg-dark: #312a22;
+
   --border-color-dark: #312a22;
   /* --border-color-dark: #27272a; */
   --border-color-light: #ccc9c2;
@@ -309,6 +388,8 @@ html {
 
   --element-bg: var(--element-bg-light);
 
+  --element-top-bg: var(--element-top-bg-light);
+
   --border-color: var(--border-color-light);
 
   --primary-green: var(--primary-green-light);
@@ -326,6 +407,8 @@ html {
   --bg-color: var(--bg-color-dark);
 
   --element-bg: var(--element-bg-dark);
+
+  --element-top-bg: var(--element-top-bg-dark);
 
   --border-color: var(--border-color-dark);
 
@@ -526,7 +609,7 @@ nav * {
 
 @media screen and (max-width: 700px) {
   nav {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 5fr 1fr;
     grid-template-rows: 1fr min-content;
     padding-left: 0;
     padding-right: 0;
@@ -607,9 +690,42 @@ nav h1 svg {
   color: var(--primary-green);
 }
 
-nav .title {
-  text-decoration: none;
+nav .title img.large {
+  min-width: 16rem;
+  /* width: 100%; */
+  /* height: 5rem; */
+  max-height: 2.1rem;
 }
+nav .title img.small {
+  min-width: 2.1rem;
+  /* width: 100%; */
+  /* height: 5rem; */
+  max-height: 2.1rem;
+}
+
+@media screen and (min-width:700px) and (max-width:1000px) {
+  nav .title img.large {
+    display: none;
+  }
+}
+@media screen and (max-width:700px){
+  nav .title img.small {
+    display: none;
+  }
+}
+@media screen and (min-width:1001px){
+  nav .title img.small {
+    display: none;
+  }
+}
+
+.dark img.light {
+  display: none;
+}
+html:not(.dark) img.dark {
+  display: none;
+}
+
 
 nav .large-nav {
   display: flex;
@@ -655,12 +771,30 @@ nav .hamburger-menu {
   color: var(--primary-green);
 }
 
+@media screen and (min-width:700px) {
+  nav .hamburger-menu {
+    grid-column: 3/4;
+  }
+}
+
 nav .theme-toggle {
   background: none;
   padding: 0;
   margin: auto 0.5rem auto auto;
 
 }
+
+@media screen and (min-width:700px) {
+  .nav-container{
+    display: grid;
+    place-items: center;
+  }
+  
+  .nav-container .popup {
+    width: 100%;
+  }
+}
+
 
 nav .popup:has(.mobile-nav) {
   position: absolute;
@@ -791,7 +925,7 @@ nav .theme-toggle svg.icon {
   font-size: 1.2em;
 }
 
-@media screen and (min-width: 1205px) {
+@media screen and (min-width: 1250px) {
   .alla-växter>.icon {
     display: none;
   }
@@ -801,10 +935,11 @@ nav .theme-toggle svg.icon {
     align-items: center;
     gap: 0.25rem;
     flex-direction: row;
+    font-size: 1.3rem;
   }
 
   .alla-växter p .icon {
-    font-size: 1.1em;
+    font-size: 1.3em;
   }
 
   .alla-växter {
@@ -815,9 +950,10 @@ nav .theme-toggle svg.icon {
     /* background: var(--element-bg); */
     color: var(--primary-green);
   }
+
 }
 
-@media screen and (max-width: 1204px) {
+@media screen and (max-width: 1249px) {
   .alla-växter p {
     display: none;
   }
@@ -838,10 +974,146 @@ ul .alla-växter {
   font-size: 1.15em;
 }
 
+nav .icon:hover {
+    /* background: var(--element-bg); */
+    color: var(--primary-green);
+  }
 
-.nav-sök-button {
+
+
+
+.nav-search {
   padding: 0;
   background: none;
   border: none;
+  height: 100%;
+  /* display: grid; */
+  place-items: center;
+  /* margin-left: 1rem */
 }
+
+.nav-search .icon {
+  height: 100%;
+  font-size: 1.6rem;
+}
+
+.sök-cover {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(70, 70, 70, 0.4);
+  z-index: 5; 
+  display: grid;
+  place-items: center;
+  padding: 0 1rem;
+}
+
+.dark .sök-cover {
+  background: rgba(24, 20, 16, 0.4);
+}
+
+html:has(.sök-cover) {
+  overflow: hidden;
+}
+
+.sök-enter-active,
+.sök-leave-active {
+  transition: all 0.3s ease;
+}
+
+.sök-enter-from {
+  opacity: 0;
+}
+
+.sök-leave-to {
+  opacity: 0;
+}
+
+.sök-container {
+  margin-top: 1rem;
+  background: var(--element-bg);
+  border-radius: 1rem;
+  box-shadow: 0 1px 40px 0px rgba(0, 0, 0, 0.4);
+  /* width: 90vw; */
+  width: 100%;
+  max-width: 50rem;
+  margin: 0
+}
+
+.sök-container .input-align {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: row;
+  transition: max-width 300ms ease-in-out;
+}
+
+.sök-container:has(.expanded) {
+  z-index: 3;
+}
+
+.sök-container * {
+  background: none
+}
+
+.sök-container input {
+  margin-left: 0.25rem;
+  text-align: left;
+  background: none;
+  flex-grow: 1;
+  border: none;
+  border-color: transparent;
+  border-width: 0;
+  border-radius: 0;
+}
+
+.sök-container input::placeholder {
+  opacity: 0.6;
+}
+
+.sök-container input:hover,
+.sök-container input:active,
+.sök-container input:focus {
+  border: none;
+  border-width: 0;
+  border-color: transparent;
+}
+
+.sök-container button:hover,
+.sök-container button:active,
+.sök-container button:focus {
+  /* border: none; */
+  /* border-width: 0; */
+  border-color: transparent;
+}
+
+.sök-container button {
+  display: grid;
+  place-items: center;
+  margin-right: 0.3rem;
+}
+
+.sök-container button:has(.icon) {
+  padding: 0.5rem;
+  font-size: 1.4rem;
+}
+
+.sök-container .expanded {
+  width: 100%;
+  height: 40rem;
+  color: var(--text-color);
+}
+
+.sök-container .expanded ul {
+  width: 100%;
+  height: 100%;
+  padding: 1rem 1rem 0;
+  border-top: 1px solid var(--border-color);
+  overflow: clip scroll;
+}
+
 </style>
