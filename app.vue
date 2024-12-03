@@ -1,13 +1,13 @@
 <script setup>
 useHead({
-  title: 'Lignosdatabsen',
+  title: 'Lignosdatabasen - Samlad informationskälla om lignoser',
   // or, instead:
   // titleTemplate: (title) => `My App - ${title}`,
   viewport: 'width=device-width, initial-scale=1, maximum-scale=6',
   charset: 'utf-8',
   meta: [
-    { name: 'description', content: 'En samlad informationskälla om olika växter' },
-    { name: 'ogDescription', content: 'En samlad informationskälla om olika växter' },
+    { name: 'description', content: 'Samlad informationskälla om lignoser. Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter.Urvalet siktar på allt som är som är härdigt att odla utomhus i Sverige men även en del som är på gränsen mensom kan klara t.ex. innergårdar i städerna eller kallväxthus.' },
+    { name: 'ogDescription', content: 'Samlad informationskälla om lignoser. Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter.Urvalet siktar på allt som är som är härdigt att odla utomhus i Sverige men även en del som är på gränsen mensom kan klara t.ex. innergårdar i städerna eller kallväxthus.' },
     // { name: 'keywords', content: 'Lista, Lindersplantskola, superlista, Växter, ovanliga växter, lista att beställa ifån, 2024' },
     { name: 'author', content: 'Ugo Linder, Peter Linder' },
   ],
@@ -37,7 +37,11 @@ useHead({
       href: 'https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap',
       crossorigin: ''
     },
-  ]
+    {
+      rel: 'canonical',
+      href: 'https://lignosdatabasen.se'
+    },
+  ],
 })
 
 useSeoMeta({
@@ -48,6 +52,7 @@ useSeoMeta({
   ogImageHeight: 2250,
   ogImageType: 'image/jpeg',
   ogImageUrl: 'https://res.cloudinary.com/dxwhmugdr/image/upload/t_1500bred/v1731606845/Li_102332_zk7mww.jpg',
+  keywords: 'Lista, Lindersplantskola, Växter, ovanliga växter, bilder'
 })
 
 const runtimeConfig = useRuntimeConfig();
@@ -66,15 +71,17 @@ const showMobileMenu = ref(false)
 const client = useSupabaseClient()
 
 const { data: plants } = await useAsyncData('plantor', async () => {
-  const { data, error } = await client.from('lignosdatabasen').select().eq('hidden', 'FALSE')
+  const { data, error } = await client.from('lignosdatabasen').select()
 
   if (error) {
     console.log(error);
   }
-  if (data) {
+  if (runtimeConfig.public.ADMIN_PASSWORD === enteredPassword.value) {
     // console.log(data);
+    return data
+  } else {
+    return data.filter(e => e.hidden !== true)
   }
-  return data
 })
 
 // -------------  Filtera bort null / mellanslag ---------------------

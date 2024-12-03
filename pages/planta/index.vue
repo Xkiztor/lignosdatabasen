@@ -75,6 +75,10 @@ const zonFormat = (zon) => {
   return zon === 8 ? 'VIII' : zon === 7 ? 'VII' : zon === 6 ? 'VI' : zon === 5 ? 'V' : zon === 4 ? 'IV' : zon === 3 ? 'III' : zon === 2 ? 'II' : 'I'
 }
 
+useSeoMeta({
+  title: 'Översikt av alla växter - Lignosdatabasen',
+  description: 'Översikt av alla växter som finns på Lignosdatabasen. Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter.Urvalet siktar på allt som är som är härdigt att odla utomhus i Sverige.',
+})
 </script>
 
 

@@ -117,14 +117,12 @@ const images = computed(() => {
   place-items: center;
   border-radius: 0.5rem;
   margin-top: 0.5rem;
+  opacity: 0.6;
 }
 
 .dark .card .faktarutan {
   background: var(--element-top-bg);
-}
-
-html:not(.dark) .card .faktarutan {
-  opacity: 0.6;
+  opacity: 0.9;
 }
 
 .card .faktarutan:has(div) {

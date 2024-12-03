@@ -45,12 +45,17 @@ const searchResult = computed(() => {
 
   return newList
 })
+
+useSeoMeta({
+  title: 'Lignosdatabasen - Samlad informationskälla om lignoser',
+  description: 'Samlad informationskälla om lignoser. Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter.Urvalet siktar på allt som är som är härdigt att odla utomhus i Sverige men även en del som är på gränsen mensom kan klara t.ex. innergårdar i städerna eller kallväxthus.',
+})
 </script>
 
 
 <template>
   <div class="page index" ref="page">
-    <header>
+    <header class="hero">
       <div>
         <div class="image-align small">
           <img class="hero-image" :src="windowSize.width > 700 ? bigImg : smallImg" alt="">
@@ -85,7 +90,7 @@ const searchResult = computed(() => {
       <Icon class="dots" name="mdi:dots-horizontal" />
     </header>
 
-    <section class="about">
+    <header class="about">
       <article class="text">
         <p class="välkommen">
           Välkommen till Lignosdatabasen! 
@@ -111,7 +116,7 @@ const searchResult = computed(() => {
       </article>
       <img src="https://res.cloudinary.com/dxwhmugdr/image/upload/t_1000bred/v1732986145/Li_69394_gnk58o.jpg" alt="" v-if="windowSize.width > 800">
       <!-- <img src="https://res.cloudinary.com/dxwhmugdr/image/upload/t_1000bred/v1732985680/Li_54974_cpkjcz.jpg" alt=""> -->
-    </section>
+    </header>
 
   </div>
 </template>
@@ -123,7 +128,7 @@ const searchResult = computed(() => {
   /* display: flex; */
 }
 
-.index header {
+.index .hero {
   /* flex-grow: 1; */
   height: calc(100vh - 45px);
   display: grid;
@@ -132,7 +137,7 @@ const searchResult = computed(() => {
 
 
 /* @media screen and (min-width: 700px) {
-  .index header {
+  .index .hero {
     height: calc(90vh);
   }
 } */
@@ -141,7 +146,7 @@ const searchResult = computed(() => {
   text-align: center;
 }
 
-.index header h1 {
+.index .hero h1 {
   margin: 0;
   /* margin-bottom: 1rem; */
   font-size: 12.5vw;
@@ -150,36 +155,36 @@ const searchResult = computed(() => {
 }
 
 @media screen and (max-width: 700px) {
-  .index header h1.lignos {
+  .index .hero h1.lignos {
     font-size: 20vw;
   }
 
-  .index header h1.lignos-databas {
+  .index .hero h1.lignos-databas {
     display: none;
   }
 }
 
 @media screen and (min-width: 700px) {
-  .index header h1 {
+  .index .hero h1 {
     font-size: 5rem;
   }
 
-  .index header h1.lignos,
-  .index header h1.databas {
+  .index .hero h1.lignos,
+  .index .hero h1.databas {
     display: none;
   }
 
-  .index header p {
+  .index .hero p {
     font-size: 1.5rem;
   }
 }
 
 @media screen and (max-width: 700px) {
-  .index header h1 {
+  .index .hero h1 {
     line-height: 0.95;
   }
 
-  .index header p {
+  .index .hero p {
     margin-top: 1rem;
   }
 }
@@ -193,14 +198,14 @@ const searchResult = computed(() => {
   /* filter: brightness(0.8); */
 }
 
-.index header>div {
+.index .hero>div {
   position: relative;
   display: flex;
   flex-direction: column;
 }
 
 @media screen and (min-width: 700px) {
-  .index header>div {
+  .index .hero>div {
     display: grid;
     grid-template-rows: 80% 20%;
   }
@@ -264,12 +269,12 @@ const searchResult = computed(() => {
 }
 
 @media screen and (min-width: 700px) {
-  .page.index header .image-align .fade {
+  .page.index .hero .image-align .fade {
     padding-top: 0;
   }
 }
 
-.index header .content {
+.index .hero .content {
   position: absolute;
   padding: 1rem;
   bottom: 2rem;
@@ -277,7 +282,7 @@ const searchResult = computed(() => {
 }
 
 @media screen and (max-width: 700px) {
-  .index header .content {
+  .index .hero .content {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -287,7 +292,7 @@ const searchResult = computed(() => {
 }
 
 @media screen and (min-width: 700px) {
-  .index header .content {
+  .index .hero .content {
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -301,7 +306,7 @@ const searchResult = computed(() => {
 }
 
 
-.dark .index header .content * {
+.dark .index .hero .content * {
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -453,12 +458,12 @@ const searchResult = computed(() => {
 }
 
 
-.index section {
+.index .about {
   padding: 0 1rem;
   display: grid;
 }
 
-.index section div.text {
+.index .about div.text {
   max-width: 60ch
 }
 
@@ -477,7 +482,7 @@ const searchResult = computed(() => {
   overflow: hidden
 }
 
-section.about {
+header.about {
   margin: 1rem auto 0;
   font-size: 1.05rem;
   margin-bottom: 3rem;
@@ -485,7 +490,7 @@ section.about {
 }
 
 @media screen and (min-width:800px) {
-  section.about {
+  header.about {
     
     margin: 0 auto;
     display: grid;
@@ -498,7 +503,7 @@ section.about {
 }
 
 @media screen and (min-width:1200px) {
-  section.about {
+  header.about {
     margin: 0 auto;
     display: grid;
     place-items: center;
@@ -508,10 +513,10 @@ section.about {
   }
 }
 
-section.about p {
+header.about p {
   margin-bottom: 1rem;
 }
-section.about p.välkommen {
+header.about p.välkommen {
   font-size: 1.4rem;
   font-weight: 900;
   font-family: var(--title-font);

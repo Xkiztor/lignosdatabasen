@@ -17,13 +17,17 @@ const editablePlant = reactive({
 
 const addPlant = async () => {
   if (editablePlant.art === '') editablePlant.art = '-'
-  const { error } = await client.from('växt-databas').insert({ ...editablePlant })
+  const { error } = await client.from('lignosdatabasen').insert({ ...editablePlant })
   if (error) {
     console.error(error)
   } else {
     navigateTo('/')
   }
 }
+
+definePageMeta({
+  middleware: ['admin'],
+});
 </script>
 
 

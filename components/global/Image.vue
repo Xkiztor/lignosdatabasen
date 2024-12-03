@@ -1,6 +1,8 @@
 <script setup>
 const props = defineProps(['string', 'src', 'alt'])
 
+const route = useRoute()
+
 var source = props.src
 var index = 0
 
@@ -37,6 +39,10 @@ const next = () => {
     imageOpened.value = true
     getImage(index + 1)
     index = index + 1
+  } else {
+    imageOpened.value = true
+    getImage(0)
+    index = 0
   }
 }
 const previous = () => {
@@ -44,6 +50,10 @@ const previous = () => {
     imageOpened.value = true
     getImage(index - 1)
     index = index - 1
+  } else {
+    imageOpened.value = true
+    getImage(state.currentPageImages.value.length - 1)
+    index = state.currentPageImages.value.length - 1
   }
 }
 </script>
@@ -51,24 +61,25 @@ const previous = () => {
 
 <template>
   <div class="screen-cover" id="image-screen-cover" v-if="imageOpened">
-    <NuxtImg :src="bigImageUrl" :alt="source" ref="target" />
+    <NuxtImg :src="bigImageUrl" :alt="`${route.params.slakte} ${route.params.art}${route.params.sortnamn ? ` '` : ''}${route.params.sortnamn}${route.params.sortnamn ? `'` : ''}`" ref="target" />
     <button class="switch previous" @click="previous()"><Icon name="material-symbols:arrow-left-rounded"/></button>
     <button class="switch next" @click="next()"><Icon name="material-symbols:arrow-right-rounded"/></button>
     <NuxtLink :to="source" target="_blank">
       <Icon name="material-symbols:open-in-new-rounded" />Öppna full bild
     </NuxtLink>
   </div>
-  <NuxtImg class="article-image" @click="openImage()" :src="compressedUrl" :alt="compressedUrl" :class="alt"
-    loading="lazy" />
+  <NuxtImg class="article-image" @click="openImage()" :src="compressedUrl" :alt="`${route.params.slakte} ${route.params.art}${route.params.sortnamn ? ` '` : ''}${route.params.sortnamn}${route.params.sortnamn ? `'` : ''}`" :class="alt"
+    loading="lazy" :title="`${route.params.slakte} ${route.params.art}${route.params.sortnamn ? ` '` : ''}${route.params.sortnamn}${route.params.sortnamn ? `'` : ''}`"/>
 </template>
 
 <style>
 .screen-cover .switch {
   position: absolute;
   background: none;
-  opacity: 0.5;
+  opacity: 0.3;
   border: none;
   padding: 0;
+  color: var(--text-color-dark);
 }
 
 .screen-cover .switch:hover {

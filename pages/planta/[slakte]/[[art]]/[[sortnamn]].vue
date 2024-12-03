@@ -64,21 +64,28 @@ const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async
     }
     
     // If no data:
-    if (error || !data) {
-      return { slakte: route.params.slakte, art: route.params.art, sortnamn: route.params.sortnamn + '- 404 - Existerar inte', text: 'Kontrollera adressen', hidden: false }
+    if (error || !data || (data.hidden === true && runtimeConfig.public.ADMIN_PASSWORD !== enteredPassword.value)) {
+      return { slakte: route.params.slakte, art: route.params.art, sortnamn: route.params.sortnamn + '- 404 - Existerar inte', text: 'Kontrollera adressen', hidden: true }
     } else {
       return data
     }
-
-
+    
+    
     // ? Släkte
   } else {
     console.log('släkte');
     const { data, error } = await client.from('lignosdatabasen').select().eq('slakte', `${route.params.slakte}`).eq('art', `${route.params.art}`).single()
     if (error) { console.error(error) }
-
+    
     // If no data:
-    return data ? data : { slakte: route.params.slakte, art: 'slakte', sortnamn: route.params.sortnamn, text: 'Ingen Info', hidden: false }
+    if (data.hidden === true && runtimeConfig.public.ADMIN_PASSWORD !== enteredPassword.value) {
+      return { slakte: route.params.slakte, art: route.params.art, sortnamn: route.params.sortnamn + '- 404 - Existerar inte', text: 'Kontrollera adressen', hidden: true }
+      // return{ slakte: route.params.slakte, art: 'slakte', sortnamn: route.params.sortnamn, text: 'Ingen Info', hidden: true }
+    } else if (error || !data) {
+      return{ slakte: route.params.slakte, art: 'slakte', sortnamn: route.params.sortnamn, text: 'Ingen Info', hidden: false }
+    } else {
+      return data
+    }
   }
 
 })
@@ -169,7 +176,7 @@ useHead({
     return `
     ${route.params.slakte}
     ${route.params.art === 'slakte' ? ' släkte' : (route.params.art === '-' ? '' : ' ' + route.params.art)}
-    ${route.params.sortnamn ? " '" + route.params.sortnamn + "'" : ''}`
+    ${route.params.sortnamn ? " '" + route.params.sortnamn + "'" : ''} - Ligonsdatabasen`
   },
   scripts: [
     {
@@ -183,6 +190,9 @@ useHead({
       }
     }
   ],
+})
+useSeoMeta({
+  description: specificPlant.value.ingress,
 })
 
 // ? Close / refresh
@@ -331,13 +341,29 @@ onMounted(() => {
                 <h2>Text</h2>
                 <textarea class="y-size" type="text" v-model="editablePlant.text" />
               </div>
-              <div>
+              <div >
                 <div></div>
-                <p>Bild: ![halv hel vänster höger omslag](länk) ![]()</p>
-              </div>
-              <div>
-                <div></div>
-                <p>Länk: [här är texten som ska stå](länk) []()</p>
+                <div class="guide">
+                  <div>
+                    <p class="copy">![]()</p>
+                    <p><strong>Bild</strong></p>
+                    <p class="list">halv hel vänster höger omslag</p>
+                  </div>
+                  <div>
+                    <p class="copy">[]()</p>
+                    <p><strong>Länk</strong></p>
+                  </div>
+                  <div>
+                    <div class="copy">
+                        <p>::Fifty</p>
+                        <p>![halv vänster]()</p>
+                        <p>&lt;div&gt;</p>
+                        <p>&lt;/div&gt;</p>
+                        <p>::</p>
+                    </div>
+                    <p><strong>Fifty fifty</strong></p>
+                  </div>
+                </div>
               </div>
               <div>
                 <div></div>
@@ -352,7 +378,7 @@ onMounted(() => {
           </article>
 
           <article class="main-content" v-else>
-            <p class="ingress" v-if="specificPlant.ingress">{{ specificPlant.ingress }}</p>
+            <h2 class="ingress" v-if="specificPlant.ingress">{{ specificPlant.ingress }}</h2>
             <Markdown :plant="specificPlant" />
           </article>
         </Transition>
@@ -360,7 +386,7 @@ onMounted(() => {
 
         <div class="grid-layout" v-if="(specificPlant.art === 'slakte' || false) && windowSize.width > 700">
           <div v-if="specificPlant.text !== 'Ingen info'" class="line-spacer"></div>
-          <h1 v-if="specificPlant.text !== 'Ingen info'">Växter i släktet:</h1>
+          <h1 v-if="specificPlant.text !== 'Ingen info' && specificPlant.text !== 'Kontrollera adressen'">Växter i släktet:</h1>
           <SearchCard v-for="växt in computedList" :key="växt.id" :plant="växt" />
         </div>
 
@@ -731,6 +757,30 @@ img.backdrop {
 .main-content.edit .three-column input {
   width: 100%;
   margin-top: 0.3rem;
+}
+
+.edit .guide {
+  display: flex;
+  justify-content: space-between;
+  /* display: grid; */
+  /* grid-template-columns: 1fr 1fr 1fr; */
+  gap: 1rem;
+}
+
+
+.edit .guide>div {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.edit .guide .copy {
+  text-align: start;
+  padding: 0.5rem;
+  background: var(--element-bg);
+  border-radius: 0.5rem;
 }
 
 
