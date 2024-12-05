@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps(['string', 'src', 'alt'])
+const props = defineProps(['string', 'src', 'alt', 'text'])
 
 const route = useRoute()
 
@@ -61,15 +61,19 @@ const previous = () => {
 
 <template>
   <div class="screen-cover" id="image-screen-cover" v-if="imageOpened">
-    <NuxtImg :src="bigImageUrl" :alt="`${route.params.slakte} ${route.params.art}${route.params.sortnamn ? ` '` : ''}${route.params.sortnamn}${route.params.sortnamn ? `'` : ''}`" ref="target" />
+    <NuxtImg :src="bigImageUrl" :alt="`${route.params.slakte} ${route.params.art}${route.params.sortnamn ? ` '` : ''}${route.params.sortnamn}${route.params.sortnamn ? `'` : ''}${state.currentPagePlant.value.svensktnamn ? ' - ' : ''}${state.currentPagePlant.value.svensktnamn ? state.currentPagePlant.value.svensktnamn : ''}`" ref="target" />
     <button class="switch previous" @click="previous()"><Icon name="material-symbols:arrow-left-rounded"/></button>
     <button class="switch next" @click="next()"><Icon name="material-symbols:arrow-right-rounded"/></button>
+    <p v-if="text" class="bildtext-big-image">{{ text }}</p>
     <NuxtLink :to="source" target="_blank">
       <Icon name="material-symbols:open-in-new-rounded" />Öppna full bild
     </NuxtLink>
   </div>
-  <NuxtImg class="article-image" @click="openImage()" :src="compressedUrl" :alt="`${route.params.slakte} ${route.params.art}${route.params.sortnamn ? ` '` : ''}${route.params.sortnamn}${route.params.sortnamn ? `'` : ''}`" :class="alt"
-    loading="lazy" :title="`${route.params.slakte} ${route.params.art}${route.params.sortnamn ? ` '` : ''}${route.params.sortnamn}${route.params.sortnamn ? `'` : ''}`"/>
+  <div class="img-div">
+    <NuxtImg class="article-image" @click="openImage()" :src="compressedUrl" :alt="`${route.params.slakte} ${route.params.art}${route.params.sortnamn ? ` '` : ''}${route.params.sortnamn}${route.params.sortnamn ? `'` : ''}${state.currentPagePlant.value.svensktnamn ? ' - ' : ''}${state.currentPagePlant.value.svensktnamn ? state.currentPagePlant.value.svensktnamn : ''}`" :class="alt"
+    loading="lazy" :title="`${route.params.slakte} ${route.params.art}${route.params.sortnamn ? ` '` : ''}${route.params.sortnamn}${route.params.sortnamn ? `'` : ''}${state.currentPagePlant.value.svensktnamn ? ' - ' : ''}${state.currentPagePlant.value.svensktnamn ? state.currentPagePlant.value.svensktnamn : ''}`"/>
+    <p v-if="text" class="bildtext">{{ text }}</p>
+  </div>
 </template>
 
 <style>
@@ -101,4 +105,31 @@ const previous = () => {
   transform: translate(0, -50%);
 }
 
+div.img-div {
+  display: inline-block;
+  /* width: min-content; */
+  height: fit-content;
+    margin-right: 1rem
+}
+
+article.main-content div.img-div:has(.bildtext) img.article-image {
+  margin-bottom: 0.1rem;
+}
+
+.img-div .bildtext{
+  margin-bottom: 0.5rem;
+  font-size: 0.85em;
+  width: fit-content;
+  max-width: 99%;
+  opacity: 0.7;
+}
+
+.screen-cover .bildtext-big-image {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--text-color-dark);
+  opacity: 0.7;
+}
 </style>

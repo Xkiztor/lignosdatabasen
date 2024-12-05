@@ -28,6 +28,7 @@ const plantsInLetter = computed(() => {
 // console.log(plantsInLetter.value.lenght)
 
 const showDropdown = ref(false)
+const isHovering = ref(false)
 
 const outsideClickRef = ref()
 
@@ -68,9 +69,9 @@ const routerActive = computed(() => {
 
 
 <template>
-  <li @mouseenter="showDropdown = width > 700 ? plantsInLetter == 0 ? false : true : false"
-    @mouseleave="width > 700 ? showDropdown = false : ''"
-    @click="showDropdown = plantsInLetter == 0 ? false : !showDropdown" ref="outsideClickRef" class="artbokstav">
+  <li @mouseenter="isHovering = true, showDropdown = width > 700 ? plantsInLetter == 0 ? false : true : false"
+    @mouseleave="isHovering = false, width > 700 ? showDropdown = false : ''"
+    @click="showDropdown = plantsInLetter == 0 ? false : isHovering ? true : !showDropdown" ref="outsideClickRef" class="artbokstav">
     <p :class="{ 'muted': plantsInLetter == 0, 'router-active': routerActive }">
       {{ bokstav }}
     </p>

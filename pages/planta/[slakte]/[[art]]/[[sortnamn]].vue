@@ -14,7 +14,10 @@ const state = useGlobalState()
 
 const isSlakte = ref(route.params.art === 'slakte')
 
-console.log(isSlakte.value);
+// console.log(isSlakte.value);
+
+const source = ref()
+const { text, copy, copied, isSupported } = useClipboard({ source })
 
 
 const { data: plantsInSlakte } = await useAsyncData('plants-fetch', async () => {
@@ -67,6 +70,9 @@ const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async
     if (error || !data || (data.hidden === true && runtimeConfig.public.ADMIN_PASSWORD !== enteredPassword.value)) {
       return { slakte: route.params.slakte, art: route.params.art, sortnamn: route.params.sortnamn + '- 404 - Existerar inte', text: 'Kontrollera adressen', hidden: true }
     } else {
+      state.currentPagePlant.value = data
+      console.log(state.currentPagePlant.value);
+      
       return data
     }
     
@@ -84,6 +90,7 @@ const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async
     } else if (error || !data) {
       return{ slakte: route.params.slakte, art: 'slakte', sortnamn: route.params.sortnamn, text: 'Ingen Info', hidden: false }
     } else {
+      state.currentPagePlant.value = data
       return data
     }
   }
@@ -278,10 +285,10 @@ onMounted(() => {
             $route.params.sortnamn ? `'${$route.params.sortnamn}'` :
             '' }}</h1> -->
         <h2 class="subtitle fakta">
-          <span v-if="specificPlant.höjd">Höjd: {{ specificPlant.höjd }} m</span>
-          <span v-if="specificPlant.bredd">Bredd: {{ specificPlant.bredd }} m</span>
-          <span v-if="specificPlant.zon">Zon: {{ specificPlant.zon }}</span>
-          <span v-if="specificPlant.synonymer">Synonymer: {{ specificPlant.synonymer }}</span>
+          <span v-if="specificPlant.höjd"><span class="label">Höjd: </span> {{ specificPlant.höjd }} m</span>
+          <span v-if="specificPlant.bredd"><span class="label">Bredd: </span> {{ specificPlant.bredd }} m</span>
+          <span v-if="specificPlant.zon"><span class="label">Zon: </span> {{ specificPlant.zon }}</span>
+          <span v-if="specificPlant.synonymer"><span class="label">Synonymer: </span> {{ specificPlant.synonymer }}</span>
         </h2>
         <h2 class="subtitle">{{ specificPlant.svensktnamn }}</h2>
       </div>
@@ -345,16 +352,16 @@ onMounted(() => {
                 <div></div>
                 <div class="guide">
                   <div>
-                    <p class="copy">![]()</p>
+                    <p class="copy" @click="copy(`![](){text='Foto: Peter Linder'}`)">![](){text="Foto: Peter Linder"}</p>
                     <p><strong>Bild</strong></p>
                     <p class="list">halv hel vänster höger omslag</p>
                   </div>
                   <div>
-                    <p class="copy">[]()</p>
+                    <p class="copy" @click="copy(`[]()`)">[]()</p>
                     <p><strong>Länk</strong></p>
                   </div>
                   <div>
-                    <div class="copy">
+                    <div class="copy" @click="copy(`::Fifty\n\n![halv vänster]()\n\n<div>\n\n</div>\n::`)">
                         <p>::Fifty</p>
                         <p>![halv vänster]()</p>
                         <p>&lt;div&gt;</p>
@@ -386,7 +393,7 @@ onMounted(() => {
 
         <div class="grid-layout" v-if="(specificPlant.art === 'slakte' || false) && windowSize.width > 700">
           <div v-if="specificPlant.text !== 'Ingen info'" class="line-spacer"></div>
-          <h1 v-if="specificPlant.text !== 'Ingen info' && specificPlant.text !== 'Kontrollera adressen'">Växter i släktet:</h1>
+          <h1 v-if="specificPlant.text !== 'Ingen info' && specificPlant.text !== 'Kontrollera adressen' || computedList.length">Växter i släktet:</h1>
           <SearchCard v-for="växt in computedList" :key="växt.id" :plant="växt" />
         </div>
 
@@ -458,14 +465,33 @@ header h2.subtitle {
   font-size: 1.2em;
 }
 
-header .content h2.subtitle.fakta {
+header .content h2.fakta {
   display: flex;
   flex-direction: row;
   gap: 1.5rem;
   font-weight: 500;
   margin-top: 0.1rem;
   margin-bottom: 0.15rem;
+  flex-wrap: wrap;
 }
+
+@media screen and (max-width:500px) {
+  header .content h2.subtitle.fakta {
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  header .content h2.fakta>span::before {
+    content: '•';
+  margin-right:0.5rem; 
+  color: var(--text);
+  }
+}
+
+header .content h2.fakta .label {
+  opacity: 0.9;
+}
+
 
 @media screen and (min-width: 700px) {
   .page.plant h1 {
@@ -634,7 +660,7 @@ article.main-content p {
 
 
 .page.plant .admin-panel {
-  z-index: 1;
+  z-index: 2;
   right: 1rem;
   padding: 1rem 1rem 1rem 0;
   display: flex;
@@ -837,6 +863,7 @@ img.backdrop {
 .center-content .grid-layout h1 {
   margin: 1rem 0;
   line-height: 1;
+  font-size: 2.25rem;
 }
 
 .center-content .grid-layout .line-spacer {

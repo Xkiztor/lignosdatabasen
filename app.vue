@@ -58,6 +58,8 @@ useSeoMeta({
 const runtimeConfig = useRuntimeConfig();
 const enteredPassword = useCookie('enteredPassword', { maxAge: 60604800 });
 
+const state = useGlobalState()
+
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 

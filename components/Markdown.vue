@@ -14,7 +14,7 @@ const formattedText = computed(() => {
 
 
 <template>
-  <MDC :value="formattedText" tag="div" />
+  <MDC v-if="formattedText" :value="formattedText" tag="div" />
 </template>
 
 
@@ -39,7 +39,7 @@ article.main-content .screen-cover {
   /* justify-content: center; */
   /* flex-shrink: 1; */
   backdrop-filter: blur(2px);
-  padding: 2rem 2rem;
+  padding: 2rem 2rem 3rem;
   object-fit: scale-down;
 }
 
@@ -64,6 +64,7 @@ article.main-content .screen-cover a {
   opacity: 0.6;
   display: flex;
   align-items: center;
+  color: var(--text-color-dark);
 }
 
 article .screen-cover a .icon {
@@ -91,26 +92,30 @@ article.main-content img {
 }
 
 @media screen and (min-width: 700px) {
-  article.main-content img.hel {
+  article.main-content .img-div:has(img.hel) {
     max-width: calc(70ch - 1rem);
     width: 100%;
   }
 
-  article.main-content img.halv {
+  article.main-content .img-div:has(img.halv) {
     max-width: calc(35ch - 1rem);
     width: 100%;
-    display: inline;
+    /* display: inline; */
   }
 
-  article.main-content img.vänster {
+  article.main-content .img-div:has(img.vänster) {
     float: left;
     margin-top: 0;
   }
 
-  article.main-content img.höger {
+  article.main-content .img-div:has(img.höger)  {
     float: right;
     margin-top: 0;
     margin-left: 1rem;
+  }
+
+  article.main-content .img-div img.höger, article.main-content .img-div img.vänster {
+    margin-top: 0;
   }
 
   article.main-content p:has(img.vänster),
