@@ -10,9 +10,9 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@vueuse/nuxt',
     '@nuxtjs/mdc',
-    '@nuxtjs/sitemap',
     // '@nuxtjs/device',
     // { src: '@nuxtjs/device', ssr: false },
+    '@nuxtjs/sitemap',
   ],
 
   supabase: {

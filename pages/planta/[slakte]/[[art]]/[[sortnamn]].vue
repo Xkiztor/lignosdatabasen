@@ -1,42 +1,45 @@
 <script setup>
 const runtimeConfig = useRuntimeConfig();
 const enteredPassword = useCookie('enteredPassword', { maxAge: 60604800 });
-const client = useSupabaseClient()
+const client = useSupabaseClient();
 
-const windowSize = useWidth()
+const windowSize = useWidth();
 // const { planta } = useRoute().params
 
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const router = useRouter();
 console.log(route.params);
 
-const state = useGlobalState()
+const state = useGlobalState();
 
-const isSlakte = ref(route.params.art === 'slakte')
+const isSlakte = ref(route.params.art === 'slakte');
 
 // console.log(isSlakte.value);
 
-const source = ref()
-const { text, copy, copied, isSupported } = useClipboard({ source })
-
+const source = ref();
+const { text, copy, copied, isSupported } = useClipboard({ source });
 
 const { data: plantsInSlakte } = await useAsyncData('plants-fetch', async () => {
-  const { data, error } = await client.from('lignosdatabasen').select().eq('slakte', `${route.params.slakte}`).neq('art', 'slakte')
+  const { data, error } = await client
+    .from('lignosdatabasen')
+    .select()
+    .eq('slakte', `${route.params.slakte}`)
+    .neq('art', 'slakte');
   // const { data, error } = await client.from('lignosdatabasen').select().eq('slakte', `${planta}`).single()
   if (error) {
     console.error(error);
   }
-  let newList = data
-  newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn))
-  newList = newList.sort((a, b) => a.art.localeCompare(b.art))
+  let newList = data;
+  newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn));
+  newList = newList.sort((a, b) => a.art.localeCompare(b.art));
 
   if (runtimeConfig.public.ADMIN_PASSWORD === enteredPassword.value) {
-    return newList
+    return newList;
   } else {
     // return data
-    return newList.filter(e => e.hidden !== true)
+    return newList.filter((e) => e.hidden !== true);
   }
-})
+});
 
 // const sortedPlantsInSlakte = computed(() => {
 //   let newList = plantsInSlakte.value
@@ -50,7 +53,6 @@ const { data: plantsInSlakte } = await useAsyncData('plants-fetch', async () => 
 
 // console.log(plantsInSlakte.value);
 const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async () => {
-
   // ? Inte släkte
   if (!isSlakte.value) {
     console.log('inte släkte');
@@ -60,130 +62,173 @@ const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async
       .eq('slakte', `${route.params.slakte}`)
       .eq('art', `${route.params.art === '-' ? '-' : route.params.art}`)
       .eq('sortnamn', `${route.params.sortnamn}`)
-      .single()
+      .single();
 
     if (error) {
       console.error(error);
     }
-    
+
     // If no data:
-    if (error || !data || (data.hidden === true && runtimeConfig.public.ADMIN_PASSWORD !== enteredPassword.value)) {
-      return { slakte: route.params.slakte, art: route.params.art, sortnamn: route.params.sortnamn + '- 404 - Existerar inte', text: 'Kontrollera adressen', hidden: true }
+    if (
+      error ||
+      !data ||
+      (data.hidden === true && runtimeConfig.public.ADMIN_PASSWORD !== enteredPassword.value)
+    ) {
+      return {
+        slakte: route.params.slakte,
+        art: route.params.art,
+        sortnamn: route.params.sortnamn + '- 404 - Existerar inte',
+        text: 'Kontrollera adressen',
+        hidden: true,
+      };
     } else {
-      state.currentPagePlant.value = data
+      state.currentPagePlant.value = data;
       console.log(state.currentPagePlant.value);
-      
-      return data
+
+      return data;
     }
-    
-    
+
     // ? Släkte
   } else {
     console.log('släkte');
-    const { data, error } = await client.from('lignosdatabasen').select().eq('slakte', `${route.params.slakte}`).eq('art', `${route.params.art}`).single()
-    if (error) { console.error(error) }
-    
+    const { data, error } = await client
+      .from('lignosdatabasen')
+      .select()
+      .eq('slakte', `${route.params.slakte}`)
+      .eq('art', `${route.params.art}`)
+      .single();
+    if (error) {
+      console.error(error);
+    }
+
     // If no data:
     if (data.hidden === true && runtimeConfig.public.ADMIN_PASSWORD !== enteredPassword.value) {
-      return { slakte: route.params.slakte, art: route.params.art, sortnamn: route.params.sortnamn + '- 404 - Existerar inte', text: 'Kontrollera adressen', hidden: true }
+      return {
+        slakte: route.params.slakte,
+        art: route.params.art,
+        sortnamn: route.params.sortnamn + '- 404 - Existerar inte',
+        text: 'Kontrollera adressen',
+        hidden: true,
+      };
       // return{ slakte: route.params.slakte, art: 'slakte', sortnamn: route.params.sortnamn, text: 'Ingen Info', hidden: true }
     } else if (error || !data) {
-      return{ slakte: route.params.slakte, art: 'slakte', sortnamn: route.params.sortnamn, text: 'Ingen Info', hidden: false }
+      return {
+        slakte: route.params.slakte,
+        art: 'slakte',
+        sortnamn: route.params.sortnamn,
+        text: 'Ingen Info',
+        hidden: false,
+      };
     } else {
-      state.currentPagePlant.value = data
-      return data
+      state.currentPagePlant.value = data;
+      return data;
     }
   }
+});
 
-})
+const isEditing = ref(false);
 
-
-
-
-const isEditing = ref(false)
-
-const editablePlant = reactive(specificPlant.value)
+const editablePlant = reactive(specificPlant.value);
 
 const editPlant = async () => {
-  const { error } = await client.from('lignosdatabasen').update({ ...editablePlant }).eq('id', `${editablePlant.id}`)
+  const { error } = await client
+    .from('lignosdatabasen')
+    .update({ ...editablePlant })
+    .eq('id', `${editablePlant.id}`);
   if (error) {
-    console.error(error)
+    console.error(error);
   } else {
-    isEditing.value = false
+    isEditing.value = false;
   }
-}
+};
 
-const showDeleteModel = ref(false)
-const outsideClickTarget = ref(null)
+const showDeleteModel = ref(false);
+const outsideClickTarget = ref(null);
 onClickOutside(outsideClickTarget, () => {
-  showDeleteModel.value = false
-})
+  showDeleteModel.value = false;
+});
 
 const deletePlant = async () => {
-  showDeleteModel.value = false
+  showDeleteModel.value = false;
 
-  const { error } = await client.from('lignosdatabasen').delete().eq('id', `${specificPlant.value.id}`)
+  const { error } = await client
+    .from('lignosdatabasen')
+    .delete()
+    .eq('id', `${specificPlant.value.id}`);
   if (error) {
-    console.error(error)
+    console.error(error);
   }
-}
+};
 
-const showHide = ref(!specificPlant.value.hidden)
+const showHide = ref(!specificPlant.value.hidden);
 
 const hide = async () => {
-  const { error } = await client.from('lignosdatabasen').update({ hidden: 'TRUE' }).eq('id', `${specificPlant.value.id}`)
+  const { error } = await client
+    .from('lignosdatabasen')
+    .update({ hidden: 'TRUE' })
+    .eq('id', `${specificPlant.value.id}`);
   if (error) {
-    console.error(error)
+    console.error(error);
   }
-  showHide.value = false
-}
+  showHide.value = false;
+};
 
 const unHide = async () => {
-  const { error } = await client.from('lignosdatabasen').update({ hidden: 'FALSE' }).eq('id', `${specificPlant.value.id}`)
+  const { error } = await client
+    .from('lignosdatabasen')
+    .update({ hidden: 'FALSE' })
+    .eq('id', `${specificPlant.value.id}`);
   if (error) {
-    console.error(error)
+    console.error(error);
   }
-  showHide.value = true
-}
-
+  showHide.value = true;
+};
 
 const images = computed(() => {
-  state.currentPageImages.value = specificPlant.value.text.split(/!\[(?!omslag\])[^]*?\]\(([^)]+)\)/g).filter(str => str !== '' && str.includes('http') && !str.includes('['))
-  return specificPlant.value.text.split(/!\[[^\]]*\]\(([^)]+)\)/g).filter(str => str !== '' && str.includes('http') && !str.includes('['))
-})
+  state.currentPageImages.value = specificPlant.value.text
+    .split(/!\[(?!omslag\])[^]*?\]\(([^)]+)\)/g)
+    .filter((str) => str !== '' && str.includes('http') && !str.includes('['));
+  return specificPlant.value.text
+    .split(/!\[[^\]]*\]\(([^)]+)\)/g)
+    .filter((str) => str !== '' && str.includes('http') && !str.includes('['));
+});
 
 const compressedUrl = computed(() => {
   // console.log(images.value == new Array ? 'true' : 'false');
   // console.log(images.value[0] === undefined);
 
   if (images.value[0] === undefined) {
-    return ''
+    return '';
   } else {
-    return images.value[0].replace('/upload/', '/upload/t_300bred/')
+    return images.value[0].replace('/upload/', '/upload/t_300bred/');
   }
-})
+});
 
 const computedList = computed(() => {
-  let newList = plantsInSlakte.value
+  let newList = plantsInSlakte.value;
 
-  newList = newList.filter(e => e.text !== 'Ingen info')
+  newList = newList.filter((e) => e.text !== 'Ingen info');
 
-  newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn))
-  newList = newList.sort((a, b) => a.art.localeCompare(b.art))
-  newList = newList.sort((a, b) => a.slakte.localeCompare(b.slakte))
+  newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn));
+  newList = newList.sort((a, b) => a.art.localeCompare(b.art));
+  newList = newList.sort((a, b) => a.slakte.localeCompare(b.slakte));
 
-
-
-  return newList
-})
+  return newList;
+});
 
 useHead({
   // or as a function
   titleTemplate: () => {
     return `
     ${route.params.slakte}
-    ${route.params.art === 'slakte' ? ' släkte' : (route.params.art === '-' ? '' : ' ' + route.params.art)}
-    ${route.params.sortnamn ? " '" + route.params.sortnamn + "'" : ''} - Ligonsdatabasen`
+    ${
+      route.params.art === 'slakte'
+        ? ' släkte'
+        : route.params.art === '-'
+        ? ''
+        : ' ' + route.params.art
+    }
+    ${route.params.sortnamn ? " '" + route.params.sortnamn + "'" : ''} - Ligonsdatabasen`;
   },
   scripts: [
     {
@@ -191,16 +236,22 @@ useHead({
       innerHTML: {
         '@context': 'https://schema.org',
         '@type': 'Article',
-        'headline': `${specificPlant.value.slakte} ${specificPlant.value.art === 'slakte' ? 'släkte' : (specificPlant.value.art === '-' ? '' : specificPlant.value.art)} ${specificPlant.value.sortnamn ? "'" + specificPlant.value.sortnamn + "'" : ''}`,
-        'author': 'Peter Linder',
-        "image": images.value
-      }
-    }
+        headline: `${specificPlant.value.slakte} ${
+          specificPlant.value.art === 'slakte'
+            ? 'släkte'
+            : specificPlant.value.art === '-'
+            ? ''
+            : specificPlant.value.art
+        } ${specificPlant.value.sortnamn ? "'" + specificPlant.value.sortnamn + "'" : ''}`,
+        author: 'Peter Linder',
+        image: images.value,
+      },
+    },
   ],
-})
+});
 useSeoMeta({
   description: specificPlant.value.ingress,
-})
+});
 
 // ? Close / refresh
 onMounted(() => {
@@ -238,12 +289,50 @@ onMounted(() => {
   // Cleanup guard on component unmount
   onBeforeUnmount(() => unregister());
 });
-</script>
 
+// const editor = ref(null);
+// const container = ref(null);
+// const view = ref();
+// // const editorState = ref();
+// const theme = (ref < 'light') | 'dark' | ('none' > 'light');
+// // const extensions = [javascript(), lineNumbersRelative];
+
+// import { useCodeMirror } from 'vue-codemirror';
+// import { javascript } from '@codemirror/lang-javascript';
+
+// const editorState = ref('// Write your code here');
+// const { editor } = useCodeMirror({
+//   value: editorState.value,
+//   extensions: [javascript()],
+//   onUpdate: (v) => {
+//     editorState.value = v.state.doc.toString();
+//   },
+// });
+
+// // onMounted(() => {
+//   useNuxtCodeMirror({
+//     ...props,
+//     container: editor.value,
+//     viewRef: view,
+//     stateRef: state,
+//     containerRef: container,
+//   });
+// });
+
+import { Codemirror } from 'vue-codemirror';
+// import 'codemirror/lib/codemirror.css';
+// import 'codemirror/theme/material.css';
+// import 'codemirror/mode/markdown/markdown';
+import { markdown } from '@codemirror/lang-markdown';
+import { oneDark } from '@codemirror/theme-one-dark';
+const extensions = [markdown(), oneDark];
+
+const code = ref('# Hello Markdown');
+</script>
 
 <template>
   <div class="page plant">
-    <img class="backdrop" :src="compressedUrl" alt="">
+    <img class="backdrop" :src="compressedUrl" alt="" />
     <div class="confirm model delete" v-if="showDeleteModel">
       <div class="content" ref="outsideClickTarget">
         <h1>Är du säker?</h1>
@@ -267,9 +356,7 @@ onMounted(() => {
       <button v-if="showHide === false" @click="unHide()">
         <Icon name="zondicons:view-show" />Visa växt
       </button>
-      <button v-else @click="hide()">
-        <Icon name="zondicons:view-hide" />Dölj växt
-      </button>
+      <button v-else @click="hide()"><Icon name="zondicons:view-hide" />Dölj växt</button>
     </div>
 
     <!-- <div class="image-showcase" :style="{ gridTemplateColumns: `repeat(${plant.bilder.length}, 1fr)` }">
@@ -277,147 +364,204 @@ onMounted(() => {
     </div> -->
     <header class="top-bar" :class="{ 'no-image': images[0] == undefined }">
       <div class="content">
-        <h1>{{ specificPlant.slakte }} {{ specificPlant.art === 'slakte' || specificPlant.art === '-' ? '' :
-          specificPlant.art }} {{
-            specificPlant.sortnamn ? `'${specificPlant.sortnamn}'` :
-              '' }}</h1>
+        <h1>
+          {{ specificPlant.slakte }}
+          {{ specificPlant.art === 'slakte' || specificPlant.art === '-' ? '' : specificPlant.art }}
+          {{ specificPlant.sortnamn ? `'${specificPlant.sortnamn}'` : '' }}
+        </h1>
         <!-- <h1>{{ $route.params.slakte }} {{ $route.params.art === 'slakte' ? '' : $route.params.art }} {{
             $route.params.sortnamn ? `'${$route.params.sortnamn}'` :
             '' }}</h1> -->
         <h2 class="subtitle fakta">
-          <span v-if="specificPlant.höjd"><span class="label">Höjd: </span> {{ specificPlant.höjd }} m</span>
-          <span v-if="specificPlant.bredd"><span class="label">Bredd: </span> {{ specificPlant.bredd }} m</span>
-          <span v-if="specificPlant.zon"><span class="label">Zon: </span> {{ specificPlant.zon }}</span>
-          <span v-if="specificPlant.synonymer"><span class="label">Synonymer: </span> {{ specificPlant.synonymer }}</span>
+          <span v-if="specificPlant.höjd"
+            ><span class="label">Höjd: </span> {{ specificPlant.höjd }} m</span
+          >
+          <span v-if="specificPlant.bredd"
+            ><span class="label">Bredd: </span> {{ specificPlant.bredd }} m</span
+          >
+          <span v-if="specificPlant.zon"
+            ><span class="label">Zon: </span> {{ specificPlant.zon }}</span
+          >
+          <span v-if="specificPlant.synonymer"
+            ><span class="label">Synonymer: </span> {{ specificPlant.synonymer }}</span
+          >
         </h2>
         <h2 class="subtitle">{{ specificPlant.svensktnamn }}</h2>
       </div>
-      <img :src="compressedUrl" alt="">
+      <img :src="compressedUrl" alt="" />
     </header>
-    <div class="center-content">
-      <main>
-        <Transition name="main">
-
-          <article class="main-content edit" v-if="isEditing">
-            <form @submit.prevent="">
+    <Transition name="main">
+      <div class="edit" v-if="isEditing">
+        <form @submit.prevent="">
+          <div>
+            <h2>Släkte</h2>
+            <input type="text" v-model="editablePlant.slakte" />
+          </div>
+          <div>
+            <h2>Art</h2>
+            <input type="text" v-model="editablePlant.art" />
+          </div>
+          <div>
+            <h2>Sortnamn</h2>
+            <input type="text" v-model="editablePlant.sortnamn" />
+          </div>
+          <div>
+            <h2>Svenskt Namn</h2>
+            <input type="text" v-model="editablePlant.svensktnamn" />
+          </div>
+          <div>
+            <div class="three-column">
               <div>
-                <h2>Släkte</h2>
-                <input type="text" v-model="editablePlant.slakte">
-              </div>
-              <div>
-                <h2>Art</h2>
-                <input type="text" v-model="editablePlant.art">
-              </div>
-              <div>
-                <h2>Sortnamn</h2>
-                <input type="text" v-model="editablePlant.sortnamn">
-              </div>
-              <div>
-                <h2>Svenskt Namn</h2>
-                <input type="text" v-model="editablePlant.svensktnamn">
-              </div>
-              <div>
-                <div class="three-column">
-                  <div>
-                    <h2>Höjd</h2>
-                    <input type="text" v-model="editablePlant.höjd">
-                  </div>
-                  <div>
-                    <h2>Bredd</h2>
-                    <input type="text" v-model="editablePlant.bredd">
-                  </div>
-                  <div>
-                    <h2>Zon</h2>
-                    <input type="text" v-model="editablePlant.zon">
-                  </div>
-                </div>
+                <h2>Höjd</h2>
+                <input type="text" v-model="editablePlant.höjd" />
               </div>
               <div>
-                <h2>Syn.</h2>
-                <input type="text" v-model="editablePlant.synonymer">
+                <h2>Bredd</h2>
+                <input type="text" v-model="editablePlant.bredd" />
               </div>
               <div>
-                <h2>Syn. till <br>(lokal länk)</h2>
-                <input type="text" v-model="editablePlant.synonymtill">
+                <h2>Zon</h2>
+                <input type="text" v-model="editablePlant.zon" />
               </div>
-              <div>
-                <h2>Ingress <br>{{ editablePlant.ingress.length }} tecken. (150 max)</h2>
-                <textarea class="y-size" type="text" v-model="editablePlant.ingress" />
-              </div>
-              <div class="text">
-                <h2>Text</h2>
-                <textarea class="y-size" type="text" v-model="editablePlant.text" />
-              </div>
-              <div >
-                <div></div>
-                <div class="guide">
-                  <div>
-                    <p class="copy" @click="copy(`![](){text='Foto: Peter Linder'}`)">![](){text="Foto: Peter Linder"}</p>
-                    <p><strong>Bild</strong></p>
-                    <p class="list">halv hel vänster höger omslag</p>
-                  </div>
-                  <div>
-                    <p class="copy" @click="copy(`[]()`)">[]()</p>
-                    <p><strong>Länk</strong></p>
-                  </div>
-                  <div>
-                    <div class="copy" @click="copy(`::Fifty\n\n![halv vänster]()\n\n<div>\n\n</div>\n::`)">
-                        <p>::Fifty</p>
-                        <p>![halv vänster]()</p>
-                        <p>&lt;div&gt;</p>
-                        <p>&lt;/div&gt;</p>
-                        <p>::</p>
-                    </div>
-                    <p><strong>Fifty fifty</strong></p>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div></div>
-                <button class="bold" @click="editPlant()">Updatera</button>
-              </div>
-            </form>
-            <div class="forhandsgranskning">
-              <h1>Förhandsgranskning:</h1>
             </div>
-            <p class="ingress">{{ specificPlant.ingress }}</p>
-            <Markdown :plant="specificPlant" />
-          </article>
+          </div>
+          <div>
+            <h2>Syn.</h2>
+            <input type="text" v-model="editablePlant.synonymer" />
+          </div>
+          <div>
+            <h2>Syn. till <br />(lokal länk)</h2>
+            <input type="text" v-model="editablePlant.synonymtill" />
+          </div>
+          <div>
+            <h2>Ingress <br />{{ editablePlant.ingress.length }} tecken. (150 max)</h2>
+            <textarea class="y-size" type="text" v-model="editablePlant.ingress" />
+          </div>
+          <!-- <div class="text">
+            <h2>Text</h2>
+            <textarea class="y-size" type="text" v-model="editablePlant.text" />
+          </div> -->
+          <div>
+            <!-- <NuxtCodeMirror
+              ref="editor"
+              v-model="editorState"
+              style="width: 500px; height: 400px"
+              :theme="theme"
+              placeholder="Enter your code here..."
+              :auto-focus="true"
+              :editable="true"
+              :basic-setup="true"
+              :indent-with-tab="true"
+            /> -->
+            <h2>Text</h2>
+            <Codemirror
+              :style="{ width: '100%', overflowX: 'auto' }"
+              v-model="editablePlant.text"
+              :options="{
+                // mode: 'markdown',
+                // theme: 'material',
 
-          <article class="main-content" v-else>
+                lineNumbers: true,
+                tabSize: 10,
+                matchBrackets: true,
+                autoCloseBrackets: true,
+                styleActiveLine: true,
+              }"
+              :extensions="extensions"
+            />
+          </div>
+
+          <div>
+            <div></div>
+            <div class="guide">
+              <div>
+                <p class="copy" @click="copy(`![](){text='Foto: Peter Linder'}`)">
+                  ![](){text="Foto: Peter Linder"}
+                </p>
+                <p><strong>Bild</strong></p>
+                <p class="list">halv hel vänster höger omslag</p>
+              </div>
+              <div>
+                <p class="copy" @click="copy(`[]()`)">[]()</p>
+                <p><strong>Länk</strong></p>
+              </div>
+              <div>
+                <div
+                  class="copy"
+                  @click="copy(`::Fifty\n\n![halv vänster]()\n\n<div>\n\n</div>\n::`)"
+                >
+                  <p>::Fifty</p>
+                  <p>![halv vänster]()</p>
+                  <p>&lt;div&gt;</p>
+                  <p>&lt;/div&gt;</p>
+                  <p>::</p>
+                </div>
+                <p><strong>Fifty fifty</strong></p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div></div>
+            <button class="bold" @click="editPlant()">Updatera</button>
+          </div>
+        </form>
+        <article class="main-content">
+          <div class="forhandsgranskning">
+            <h1>Förhandsgranskning:</h1>
+          </div>
+          <p class="ingress">{{ specificPlant.ingress }}</p>
+          <Markdown :plant="specificPlant" />
+        </article>
+      </div>
+      <div class="center-content" v-else>
+        <main>
+          <article class="main-content">
             <h2 class="ingress" v-if="specificPlant.ingress">{{ specificPlant.ingress }}</h2>
             <Markdown :plant="specificPlant" />
           </article>
-        </Transition>
 
-
-        <div class="grid-layout" v-if="(specificPlant.art === 'slakte' || false) && windowSize.width > 700">
-          <div v-if="specificPlant.text !== 'Ingen info'" class="line-spacer"></div>
-          <h1 v-if="specificPlant.text !== 'Ingen info' && specificPlant.text !== 'Kontrollera adressen' || computedList.length">Växter i släktet:</h1>
-          <SearchCard v-for="växt in computedList" :key="växt.id" :plant="växt" />
-        </div>
-
-
-      </main>
-      <aside class="sidebar">
-
-        <ul>
-          <li class="slakte"><nuxt-link :to="`/planta/${$route.params.slakte}/slakte`">Släkte: {{ $route.params.slakte
-              }}</nuxt-link></li>
-          <li v-for="plant in plantsInSlakte" :class="{ 'muted': plant.text === 'Ingen info' }">
-            <nuxt-link :to="`/planta/${plant.slakte}/${plant.art}/${plant.sortnamn}`">
-              {{ plant.slakte }} {{ plant.art === '-' ? '' : plant.art }} {{ plant.sortnamn ? `'${plant.sortnamn}'` : ''
-              }}{{ plant.hidden ? ` -
-              ( Dold växt )` : "" }}
-            </nuxt-link>
-          </li>
-        </ul>
-
-      </aside>
-    </div>
+          <div
+            class="grid-layout"
+            v-if="(specificPlant.art === 'slakte' || false) && windowSize.width > 700"
+          >
+            <div v-if="specificPlant.text !== 'Ingen info'" class="line-spacer"></div>
+            <h1
+              v-if="
+                (specificPlant.text !== 'Ingen info' &&
+                  specificPlant.text !== 'Kontrollera adressen') ||
+                computedList.length
+              "
+            >
+              Växter i släktet:
+            </h1>
+            <SearchCard v-for="växt in computedList" :key="växt.id" :plant="växt" />
+          </div>
+        </main>
+        <aside class="sidebar">
+          <ul>
+            <li class="slakte">
+              <nuxt-link :to="`/planta/${$route.params.slakte}/slakte`"
+                >Släkte: {{ $route.params.slakte }}</nuxt-link
+              >
+            </li>
+            <li v-for="plant in plantsInSlakte" :class="{ muted: plant.text === 'Ingen info' }">
+              <nuxt-link :to="`/planta/${plant.slakte}/${plant.art}/${plant.sortnamn}`">
+                {{ plant.slakte }} {{ plant.art === '-' ? '' : plant.art }}
+                {{ plant.sortnamn ? `'${plant.sortnamn}'` : ''
+                }}{{
+                  plant.hidden
+                    ? ` -
+              ( Dold växt )`
+                    : ''
+                }}
+              </nuxt-link>
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </Transition>
   </div>
 </template>
-
 
 <style>
 .page.plant {
@@ -445,7 +589,8 @@ onMounted(() => {
   }
 }
 
-@media screen and (max-width: 1000px) {}
+@media screen and (max-width: 1000px) {
+}
 
 .page.plant {
   display: flex;
@@ -475,23 +620,22 @@ header .content h2.fakta {
   flex-wrap: wrap;
 }
 
-@media screen and (max-width:500px) {
+@media screen and (max-width: 500px) {
   header .content h2.subtitle.fakta {
     flex-direction: column;
     gap: 0.2rem;
   }
 
-  header .content h2.fakta>span::before {
+  header .content h2.fakta > span::before {
     content: '•';
-  margin-right:0.5rem; 
-  color: var(--text);
+    margin-right: 0.5rem;
+    color: var(--text);
   }
 }
 
 header .content h2.fakta .label {
   opacity: 0.9;
 }
-
 
 @media screen and (min-width: 700px) {
   .page.plant h1 {
@@ -508,10 +652,8 @@ header .content h2.fakta .label {
 }
 
 .page.plant header {
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 }
-
-
 
 .page .top-bar {
   width: 100%;
@@ -555,17 +697,6 @@ header .content h2.fakta .label {
   background: var(--primary-green-light);
 }
 
-
-
-
-
-
-
-
-
-
-
-
 .sidebar {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
@@ -578,7 +709,7 @@ header .content h2.fakta .label {
   font-weight: bold;
 }
 
-.sidebar ul>li {
+.sidebar ul > li {
   margin-bottom: 0.2rem;
 }
 
@@ -636,14 +767,6 @@ article.main-content p {
   max-width: 70ch;
 }
 
-
-
-
-
-
-
-
-
 .plant .image-showcase {
   display: grid;
   /* grid-template-columns: repeat(2, 1fr); */
@@ -656,8 +779,6 @@ article.main-content p {
   object-fit: cover;
   border-radius: 0.5rem;
 }
-
-
 
 .page.plant .admin-panel {
   z-index: 2;
@@ -733,18 +854,23 @@ img.backdrop {
   opacity: 0.1;
 }
 
+.plant .edit article {
+  max-width: 77ch;
+  margin: 0 auto;
+}
 
+.plant .edit form {
+  max-width: 100ch;
+}
 
-
-
-.main-content.edit .forhandsgranskning h1 {
+.plant .edit .forhandsgranskning h1 {
   font-size: 2rem;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 1rem;
   margin-bottom: 0.5rem;
 }
 
-.main-content.edit form>div {
+.plant .edit form > div {
   display: grid;
   grid-template-columns: 1fr 7fr;
   gap: 1rem;
@@ -752,23 +878,23 @@ img.backdrop {
   place-items: center stretch;
 }
 
-.main-content.edit form>div.text textarea {
-  min-height: 20rem;
+.plant .edit form > div.text textarea {
+  min-height: 30rem;
 }
 
-.main-content.edit form .y-size {
+.plant .edit form .y-size {
   min-height: 7rem;
   resize: vertical;
   transition: none;
 }
 
-.main-content.edit form>div button {
+.plant .edit form > div button {
   margin-top: 1rem;
   margin-bottom: 3rem;
   /* grid-column: 1/3; */
 }
 
-.main-content.edit .three-column {
+.plant .edit .three-column {
   grid-column: 2/3;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -776,11 +902,11 @@ img.backdrop {
   place-items: center;
 }
 
-.main-content.edit .three-column>div {
+.plant .edit .three-column > div {
   text-align: center;
 }
 
-.main-content.edit .three-column input {
+.plant .edit .three-column input {
   width: 100%;
   margin-top: 0.3rem;
 }
@@ -793,8 +919,7 @@ img.backdrop {
   gap: 1rem;
 }
 
-
-.edit .guide>div {
+.edit .guide > div {
   display: flex;
   gap: 0.5rem;
   flex-direction: column;
@@ -809,17 +934,56 @@ img.backdrop {
   border-radius: 0.5rem;
 }
 
+.edit .cm-editor {
+  border-radius: 1rem;
+  background: var(--element-bg);
+  color: var(--text);
+}
 
+.edit .cm-editor,
+.edit .cm-editor * {
+  transition: none;
+}
+
+.ͼ1 .cm-scroller {
+  padding-bottom: 1rem;
+}
+
+.edit .cm-gutters {
+  background: var(--element-bg);
+  color: var(--mute-text);
+}
+
+.edit .cm-activeLineGutter {
+  background: var(--element-top-bg);
+}
+
+.edit .ͼ10.ͼv {
+  color: var(--link);
+  opacity: 0.6;
+}
+.edit .ͼ10.ͼ13 {
+  color: #118f00;
+}
+.dark .edit .ͼ10.ͼ13 {
+  color: var(--primary-green);
+}
+
+.edit .ͼ10 {
+  color: var(--primary-green-light);
+}
+
+.ͼo.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground,
+.ͼo .cm-selectionBackground,
+.ͼo .cm-content ::selection {
+  background: var(--primary-green-light);
+}
 
 .main-content .ingress {
   font-weight: bold;
   margin-bottom: 1rem;
   font-size: 1.1em;
 }
-
-
-
-
 
 .center-content .grid-layout {
   font-size: 1.15rem;
@@ -873,8 +1037,6 @@ img.backdrop {
   border-top: 1px solid var(--border-color);
 }
 
-
-
 .edit-enter-active,
 .edit-leave-active {
   transition: all 5s ease;
@@ -893,20 +1055,20 @@ img.backdrop {
 .main-enter-active,
 .main-leave-active {
   transition: all 0.4s ease;
-  position: absolute;
+  /* position: absolute; */
   z-index: -1;
-  max-width: 90ch;
+  /* max-width: 90ch; */
 }
 
 .main-enter-from {
   opacity: 0;
-  transform: translate(-50vh, 0);
-  scale: 90%;
+  transform: translate(-100vh, 0);
+  /* scale: 90%; */
 }
 
 .main-leave-to {
   opacity: 0;
-  transform: translate(50vh, 0);
-  scale: 90%;
+  transform: translate(100vh, 0);
+  /* scale: 90%; */
 }
 </style>

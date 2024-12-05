@@ -595,7 +595,7 @@ nav {
   position: sticky;
   top: 0;
   background: var(--bg-color);
-  z-index: 2;
+  z-index: 4;
   width: 100%;
   /* flex-grow: 1; */
   display: grid;
