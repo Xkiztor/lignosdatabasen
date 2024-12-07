@@ -8,7 +8,7 @@ const windowSize = useWidth();
 
 const route = useRoute();
 const router = useRouter();
-console.log(route.params);
+// console.log(route.params);
 
 const state = useGlobalState();
 
@@ -131,6 +131,8 @@ const isEditing = ref(false);
 const editablePlant = reactive(specificPlant.value);
 
 const editPlant = async () => {
+  editablePlant.ändrad = new Date().toISOString().replace('T', ' ').replace('Z', '+00');
+
   const { error } = await client
     .from('lignosdatabasen')
     .update({ ...editablePlant })

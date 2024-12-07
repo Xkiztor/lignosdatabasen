@@ -55,6 +55,11 @@ export default defineNuxtConfig({
     url: 'https://lignosdatabasen.netlify.app/',
     name: 'Lignosdatabasen',
   },
+  sitemap: {
+    sources: [
+      '/api/sitemap-urls'
+    ]
+  },
 
   // compatibilityDate: '2024-11-28',
 });

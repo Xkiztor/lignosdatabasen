@@ -6,8 +6,16 @@ useHead({
   viewport: 'width=device-width, initial-scale=1, maximum-scale=6',
   charset: 'utf-8',
   meta: [
-    { name: 'description', content: 'Samlad informationskälla om lignoser. Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter.Urvalet siktar på allt som är som är härdigt att odla utomhus i Sverige men även en del som är på gränsen mensom kan klara t.ex. innergårdar i städerna eller kallväxthus.' },
-    { name: 'ogDescription', content: 'Samlad informationskälla om lignoser. Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter.Urvalet siktar på allt som är som är härdigt att odla utomhus i Sverige men även en del som är på gränsen mensom kan klara t.ex. innergårdar i städerna eller kallväxthus.' },
+    {
+      name: 'description',
+      content:
+        'Samlad informationskälla om lignoser. Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter.Urvalet siktar på allt som är som är härdigt att odla utomhus i Sverige men även en del som är på gränsen mensom kan klara t.ex. innergårdar i städerna eller kallväxthus.',
+    },
+    {
+      name: 'ogDescription',
+      content:
+        'Samlad informationskälla om lignoser. Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter.Urvalet siktar på allt som är som är härdigt att odla utomhus i Sverige men även en del som är på gränsen mensom kan klara t.ex. innergårdar i städerna eller kallväxthus.',
+    },
     // { name: 'keywords', content: 'Lista, Lindersplantskola, superlista, Växter, ovanliga växter, lista att beställa ifån, 2024' },
     { name: 'author', content: 'Ugo Linder, Peter Linder' },
   ],
@@ -20,71 +28,73 @@ useHead({
   link: [
     {
       rel: 'preconnect',
-      href: 'https://fonts.googleapis.com'
+      href: 'https://fonts.googleapis.com',
     },
     {
       rel: 'stylesheet',
       href: 'https://fonts.googleapis.com/css2?family=Salsa&display=swap',
-      crossorigin: ''
+      crossorigin: '',
     },
     {
       rel: 'stylesheet',
       href: 'https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap',
-      crossorigin: ''
+      crossorigin: '',
     },
     {
       rel: 'stylesheet',
       href: 'https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap',
-      crossorigin: ''
+      crossorigin: '',
     },
     {
       rel: 'canonical',
-      href: 'https://lignosdatabasen.se'
+      href: 'https://lignosdatabasen.se',
     },
   ],
-})
+});
 
 useSeoMeta({
-  ogImage: 'https://res.cloudinary.com/dxwhmugdr/image/upload/t_1500bred/v1731606845/Li_102332_zk7mww.jpg',
+  ogImage:
+    'https://res.cloudinary.com/dxwhmugdr/image/upload/t_1500bred/v1731606845/Li_102332_zk7mww.jpg',
   ogImageAlt: 'Körsbärsbakgrund',
   // Optional
   ogImageWidth: 1500,
   ogImageHeight: 2250,
   ogImageType: 'image/jpeg',
-  ogImageUrl: 'https://res.cloudinary.com/dxwhmugdr/image/upload/t_1500bred/v1731606845/Li_102332_zk7mww.jpg',
-  keywords: 'Lista, Lindersplantskola, Växter, ovanliga växter, bilder'
-})
+  ogImageUrl:
+    'https://res.cloudinary.com/dxwhmugdr/image/upload/t_1500bred/v1731606845/Li_102332_zk7mww.jpg',
+  keywords: 'Lista, Lindersplantskola, Växter, ovanliga växter, bilder',
+});
 
 const runtimeConfig = useRuntimeConfig();
 const enteredPassword = useCookie('enteredPassword', { maxAge: 60604800 });
 
-const state = useGlobalState()
+const state = useGlobalState();
 
-const isDark = useDark()
-const toggleDark = useToggle(isDark)
+const isDark = useDark();
+const toggleDark = useToggle(isDark);
 
-const isSökOpen = ref(false)
+const isSökOpen = ref(false);
 
 // const { width, height } = useWindowSize()
-const windowSize = useWidth()
+const windowSize = useWidth();
 
-const showMobileMenu = ref(false)
+const showMobileMenu = ref(false);
 
-const client = useSupabaseClient()
+const client = useSupabaseClient();
 
 const { data: plants } = await useAsyncData('plantor', async () => {
-  const { data, error } = await client.from('lignosdatabasen').select()
+  const { data, error } = await client.from('lignosdatabasen').select();
 
   if (error) {
     console.log(error);
   }
   if (runtimeConfig.public.ADMIN_PASSWORD === enteredPassword.value) {
     // console.log(data);
-    return data
+    return data;
   } else {
-    return data.filter(e => e.hidden !== true)
+    return data.filter((e) => e.hidden !== true);
   }
-})
+});
 
 // -------------  Filtera bort null / mellanslag ---------------------
 // const { error } = await client.from('lignosdatabasen').update({ art: '' }).eq('art', ' ').select()
@@ -100,144 +110,150 @@ const { data: plants } = await useAsyncData('plantor', async () => {
 //   console.log(error);
 // }
 
-
 const slakteGen = () => {
   // Funktion för att generara en extra av varje släkte med artnamnet "slakte"
 
-  let array = plants.value
+  let array = plants.value;
 
-  let oneOfEverySlakte = []
+  let oneOfEverySlakte = [];
 
   for (let i = 0; i < array.length; i++) {
-    if (oneOfEverySlakte.some(plant => plant === array[i].slakte)) {
+    if (oneOfEverySlakte.some((plant) => plant === array[i].slakte)) {
       console.log('already contains');
     } else {
-      oneOfEverySlakte.push(array[i].slakte)
+      oneOfEverySlakte.push(array[i].slakte);
       console.log('added');
     }
   }
 
-  console.log(array);
-  console.log(oneOfEverySlakte);
+  // console.log(array);
+  // console.log(oneOfEverySlakte);
 
   oneOfEverySlakte.forEach(async (plant) => {
     const { data, error } = await client
       .from('lignosdatabasen')
-      .insert([{
-        slakte: `${plant}`, art: `slakte`, text: `Ingen info`
-      }])
-      .select()
+      .insert([
+        {
+          slakte: `${plant}`,
+          art: `slakte`,
+          text: `Ingen info`,
+        },
+      ])
+      .select();
     if (error) {
       console.error(error);
     }
     if (data) {
       console.log(data);
     }
-  })
-}
+  });
+};
 
-const outsideNavRef = ref()
+const outsideNavRef = ref();
 
 onClickOutside(outsideNavRef, () => {
   console.log('outside');
-  showMobileMenu.value = false
+  showMobileMenu.value = false;
+});
 
-})
-
-
-
-const sökInput = useTemplateRef('sökInput')
+const sökInput = useTemplateRef('sökInput');
 const openSök = async () => {
-  isSökOpen.value = true
-  showMobileMenu.value = false
-  query.value = ''
-  await nextTick()
-  sökInput.value.focus()
-}
-const query = ref('')
-const fullPlantList = ref([])
+  isSökOpen.value = true;
+  showMobileMenu.value = false;
+  query.value = '';
+  await nextTick();
+  sökInput.value.focus();
+};
+const query = ref('');
+const fullPlantList = ref([]);
 const fetchList = async () => {
-  const { data, error } = await client
-    .from('lignosdatabasen')
-    .select()
+  const { data, error } = await client.from('lignosdatabasen').select();
 
   if (error) {
     console.error(error);
   }
-  fullPlantList.value = data
-}
+  fullPlantList.value = data;
+};
 onMounted(async () => {
-  await nextTick()
-  fetchList()
-})
+  await nextTick();
+  fetchList();
+});
 const searchResult = computed(() => {
-  let newList = fullPlantList.value
+  let newList = fullPlantList.value;
 
-  let queryArray = query.value.toLowerCase().split(" ")
+  let queryArray = query.value.toLowerCase().split(' ');
   if (query.value) {
     // newList = newList.filter(e => e.text.toLowerCase().contains(searchQuery.value.toLowerCase()))
-    newList = newList.filter(item => queryArray.every(str => `${item.slakte} ${item.art} ${item.sortnamn} ${item.svensktnamn} ${item.synonymer}`.toLowerCase().includes(str)))
+    newList = newList.filter((item) =>
+      queryArray.every((str) =>
+        `${item.slakte} ${item.art} ${item.sortnamn} ${item.svensktnamn} ${item.synonymer}`
+          .toLowerCase()
+          .includes(str)
+      )
+    );
   }
 
-  newList = newList.filter(e => e.text !== 'Ingen info')
-  newList = newList.filter(e => e.art !== 'slakte')
-  newList = newList.filter(e => e.hidden === false)
+  newList = newList.filter((e) => e.text !== 'Ingen info');
+  newList = newList.filter((e) => e.art !== 'slakte');
+  newList = newList.filter((e) => e.hidden === false);
 
-  newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn))
-  newList = newList.sort((a, b) => a.art.localeCompare(b.art))
-  newList = newList.sort((a, b) => a.slakte.localeCompare(b.slakte))
+  newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn));
+  newList = newList.sort((a, b) => a.art.localeCompare(b.art));
+  newList = newList.sort((a, b) => a.slakte.localeCompare(b.slakte));
 
-  return newList
-})
-const sökContainer = ref()
-onClickOutside(sökContainer, () => isSökOpen.value = false)
-
+  return newList;
+});
+const sökContainer = ref();
+onClickOutside(sökContainer, () => (isSökOpen.value = false));
 </script>
-
 
 <template>
   <Transition name="sök">
     <div class="sök-cover" v-if="isSökOpen">
       <div class="sök-container" ref="sökContainer">
-            <div class="input-align">
-              <input type="text" name="" id="" placeholder="Sök" v-model="query" ref="sökInput">
-              <button @click="query ? query = '' : isSökOpen = false">
-                <Icon v-if="query" name="material-symbols:close-rounded" class="rensa-ikon" />
-                <Icon v-else name="material-symbols:close-rounded" class="stäng-ikon" />
-              </button>
-            </div>
-              <div class="expanded">
-                <ul>
-                  <SearchCard v-for="plant in searchResult" :plant="plant" @close="isSökOpen = false"/>
-                </ul>
-              </div>
-          </div>
+        <div class="input-align">
+          <input type="text" name="" id="" placeholder="Sök" v-model="query" ref="sökInput" />
+          <button @click="query ? (query = '') : (isSökOpen = false)">
+            <Icon v-if="query" name="material-symbols:close-rounded" class="rensa-ikon" />
+            <Icon v-else name="material-symbols:close-rounded" class="stäng-ikon" />
+          </button>
+        </div>
+        <div class="expanded">
+          <ul>
+            <SearchCard v-for="plant in searchResult" :plant="plant" @close="isSökOpen = false" />
+          </ul>
+        </div>
+      </div>
     </div>
   </Transition>
 
   <div class="site">
     <nav>
       <NuxtLink to="/" class="title">
-        <img class="large light" src="/logga-text-ljus.svg" alt="">
-        <img class="large dark" src="/logga-text-mörk.svg" alt="">
-        <img class="small light" src="/logga-löv-ljus.svg" alt="">
-        <img class="small dark" src="/logga-löv-mörk.svg" alt="">
+        <img class="large light" src="/logga-text-ljus.svg" alt="" />
+        <img class="large dark" src="/logga-text-mörk.svg" alt="" />
+        <img class="small light" src="/logga-löv-ljus.svg" alt="" />
+        <img class="small dark" src="/logga-löv-mörk.svg" alt="" />
         <!-- <h1>
           <Icon name="mdi:leaf-circle" />Lignosdatabasen
         </h1> -->
       </NuxtLink>
       <button v-if="windowSize.width < 700" class="hamburger-menu">
-        <Icon @click="showMobileMenu = false" v-if="showMobileMenu" name="material-symbols:close-rounded" />
+        <Icon
+          @click="showMobileMenu = false"
+          v-if="showMobileMenu"
+          name="material-symbols:close-rounded"
+        />
         <Icon @click="showMobileMenu = true" v-else name="ci:hamburger-md" />
       </button>
 
       <div class="nav-container">
         <div class="popup">
-
-
-          <div ref="outsideNavRef"
+          <div
+            ref="outsideNavRef"
             :class="{ 'large-nav': windowSize.width > 700, 'mobile-nav': windowSize.width < 700 }"
-            v-if="showMobileMenu || windowSize.width > 700">
+            v-if="showMobileMenu || windowSize.width > 700"
+          >
             <ul class="link-align">
               <ArtBokstav :bokstav="'A'" :plants="plants" />
               <ArtBokstav :bokstav="'B'" :plants="plants" />
@@ -265,9 +281,16 @@ onClickOutside(sökContainer, () => isSökOpen.value = false)
               <!-- <ArtBokstav :bokstav="'X'" :plants="plants" /> -->
               <!-- <ArtBokstav :bokstav="'Y'" :plants="plants" /> -->
               <ArtBokstav :bokstav="'Z'" :plants="plants" />
-              <button class="nav-search" @click="openSök()" v-if="windowSize.width < 700"><Icon name="material-symbols:search-rounded" /></button>
+              <button class="nav-search" @click="openSök()" v-if="windowSize.width < 700">
+                <Icon name="material-symbols:search-rounded" />
+              </button>
 
-              <NuxtLink @click="showMobileMenu = false" class="alla-växter" to="/planta/" v-if="windowSize.width < 700">
+              <NuxtLink
+                @click="showMobileMenu = false"
+                class="alla-växter"
+                to="/planta/"
+                v-if="windowSize.width < 700"
+              >
                 <!-- <Icon name="mingcute:grid-fill" /> -->
                 <Icon name="mingcute:grid-2-fill" />
                 <!-- <Icon name="mingcute:grid-2-line" /> -->
@@ -277,7 +300,10 @@ onClickOutside(sökContainer, () => isSökOpen.value = false)
 
             <div class="side">
               <ThemeToggle v-if="windowSize.width < 700" />
-              <div class="account-icon" v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword">
+              <div
+                class="account-icon"
+                v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword"
+              >
                 <NuxtLink to="/admin">
                   <Icon name="ic:baseline-person" />
                 </NuxtLink>
@@ -289,18 +315,15 @@ onClickOutside(sökContainer, () => isSökOpen.value = false)
                 </NuxtLink>
               </div>
             </div>
-
-
           </div>
           <div id="popup-location"></div>
         </div>
-
-
-
       </div>
 
       <div class="big-nav-side">
-        <button class="nav-search" @click="openSök()" v-if="windowSize.width > 700"><Icon name="material-symbols:search-rounded" /></button>
+        <button class="nav-search" @click="openSök()" v-if="windowSize.width > 700">
+          <Icon name="material-symbols:search-rounded" />
+        </button>
 
         <NuxtLink class="alla-växter" to="/planta/" v-if="windowSize.width > 700">
           <p>
@@ -312,7 +335,6 @@ onClickOutside(sökContainer, () => isSökOpen.value = false)
 
         <ThemeToggle v-if="windowSize.width > 700" />
       </div>
-
 
       <!-- <nav v-if="showMobileMenu" class="mobile-menu" @click="showMobileMenu = false">
         <NuxtLink to="/">Startsidan</NuxtLink>
@@ -376,14 +398,16 @@ h1 {
   --primary-green-dark: #8ac957;
   --primary-green-light: #76994e;
 
-  --link-light: #0645AD;
+  --link-light: #0645ad;
   --link-dark: #75b4f8;
   /* --primary-green-light: #386641; */
   /* --primary-green-light: #447c4f; */
   --primary-red: #bc4749;
 
-  --slab-font: 'Roboto Slab', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Helvetica, sans-serif;
-  --title-font: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Helvetica, sans-serif;
+  --slab-font: 'Roboto Slab', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Helvetica, sans-serif;
+  --title-font: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Helvetica, sans-serif;
 }
 
 html {
@@ -440,8 +464,6 @@ html.dark {
 html:has(#image-screen-cover) {
   overflow: clip;
 }
-
-
 
 body {
   margin: 0;
@@ -633,7 +655,6 @@ nav * {
   }
 }
 
-
 nav .link-align {
   display: flex;
   flex-direction: row;
@@ -648,14 +669,14 @@ nav .link-align {
     padding-right: 1rem;
   }
 
-  nav .link-align>li {
+  nav .link-align > li {
     width: 100%;
     text-align: center;
   }
-
 }
 
-nav .link-align>li {}
+nav .link-align > li {
+}
 
 @media screen and (min-width: 1000px) {
   nav .link-align {
@@ -663,8 +684,6 @@ nav .link-align>li {}
     /* gap: 5rem; */
   }
 }
-
-
 
 .dark nav .link-align a:hover,
 .dark .link-align .router-link-active {
@@ -712,17 +731,17 @@ nav .title img.small {
   max-height: 2.1rem;
 }
 
-@media screen and (min-width:700px) and (max-width:1000px) {
+@media screen and (min-width: 700px) and (max-width: 1000px) {
   nav .title img.large {
     display: none;
   }
 }
-@media screen and (max-width:700px){
+@media screen and (max-width: 700px) {
   nav .title img.small {
     display: none;
   }
 }
-@media screen and (min-width:1001px){
+@media screen and (min-width: 1001px) {
   nav .title img.small {
     display: none;
   }
@@ -734,7 +753,6 @@ nav .title img.small {
 html:not(.dark) img.dark {
   display: none;
 }
-
 
 nav .large-nav {
   display: flex;
@@ -763,8 +781,6 @@ nav .add-icon svg {
   }
 }
 
-
-
 nav .hamburger-menu {
   color: var(--primary-brown);
   margin: auto 0 auto auto;
@@ -780,7 +796,7 @@ nav .hamburger-menu {
   color: var(--primary-green);
 }
 
-@media screen and (min-width:700px) {
+@media screen and (min-width: 700px) {
   nav .hamburger-menu {
     grid-column: 3/4;
   }
@@ -790,20 +806,18 @@ nav .theme-toggle {
   background: none;
   padding: 0;
   margin: auto 0.5rem auto auto;
-
 }
 
-@media screen and (min-width:700px) {
-  .nav-container{
+@media screen and (min-width: 700px) {
+  .nav-container {
     display: grid;
     place-items: center;
   }
-  
+
   .nav-container .popup {
     width: 100%;
   }
 }
-
 
 nav .popup:has(.mobile-nav) {
   position: absolute;
@@ -854,14 +868,12 @@ nav .mobile-nav {
   }
 }
 
-
 nav .mobile-nav * {
   /* color: var(--text-color); */
   /* text-align: start; */
   text-decoration: none;
   margin: 0;
 }
-
 
 nav .side {
   display: flex;
@@ -879,7 +891,6 @@ nav .side {
     margin: 0 0.75rem;
     gap: 0.5rem;
   }
-
 }
 
 @media screen and (min-width: 700px) {
@@ -935,7 +946,7 @@ nav .theme-toggle svg.icon {
 }
 
 @media screen and (min-width: 1250px) {
-  .alla-växter>.icon {
+  .alla-växter > .icon {
     display: none;
   }
 
@@ -959,7 +970,6 @@ nav .theme-toggle svg.icon {
     /* background: var(--element-bg); */
     color: var(--primary-green);
   }
-
 }
 
 @media screen and (max-width: 1249px) {
@@ -984,12 +994,9 @@ ul .alla-växter {
 }
 
 nav .icon:hover {
-    /* background: var(--element-bg); */
-    color: var(--primary-green);
-  }
-
-
-
+  /* background: var(--element-bg); */
+  color: var(--primary-green);
+}
 
 .nav-search {
   padding: 0;
@@ -1015,7 +1022,7 @@ nav .icon:hover {
   height: 100%;
   width: 100%;
   background: rgba(70, 70, 70, 0.4);
-  z-index: 5; 
+  z-index: 5;
   display: grid;
   place-items: center;
   padding: 0 1rem;
@@ -1050,7 +1057,7 @@ html:has(.sök-cover) {
   /* width: 90vw; */
   width: 100%;
   max-width: 50rem;
-  margin: 0
+  margin: 0;
 }
 
 .sök-container .input-align {
@@ -1066,7 +1073,7 @@ html:has(.sök-cover) {
 }
 
 .sök-container * {
-  background: none
+  background: none;
 }
 
 .sök-container input {
@@ -1124,5 +1131,4 @@ html:has(.sök-cover) {
   border-top: 1px solid var(--border-color);
   overflow: clip scroll;
 }
-
 </style>
