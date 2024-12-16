@@ -190,6 +190,12 @@ const images = computed(() => {
   state.currentPageImages.value = specificPlant.value.text
     .split(/!\[(?!omslag\])[^]*?\]\(([^)]+)\)/g)
     .filter((str) => str !== '' && str.includes('http') && !str.includes('['));
+
+  state.currentPageBildtexter.value = specificPlant.value.text
+    .split(/(!\[[^\]]*\]\([^\)]+\)(?:\{[^}]+\})?)/)
+    .filter((str) => str !== '' && str.includes('http'))
+    .map((str) => str.match(/\{[^}]*text="([^"]+)"[^}]*\}/)?.[1] || '');
+
   return specificPlant.value.text
     .split(/!\[[^\]]*\]\(([^)]+)\)/g)
     .filter((str) => str !== '' && str.includes('http') && !str.includes('['));
@@ -389,6 +395,7 @@ const code = ref('# Hello Markdown');
           >
         </h2>
         <h2 class="subtitle">{{ specificPlant.svensktnamn }}</h2>
+        <PlantApi v-if="!isSlakte" :plant="specificPlant" />
       </div>
       <img :src="compressedUrl" alt="" />
     </header>
@@ -481,7 +488,8 @@ const code = ref('# Hello Markdown');
                   ![](){text="Foto: Peter Linder"}
                 </p>
                 <p><strong>Bild</strong></p>
-                <p class="list">halv hel vänster höger omslag</p>
+                <p class="list">halv hel vänster höger omslag kvadrat</p>
+                <p class="list">Ej höger vänster vid fifty fifty</p>
               </div>
               <div>
                 <p class="copy" @click="copy(`[]()`)">[]()</p>
@@ -499,6 +507,7 @@ const code = ref('# Hello Markdown');
                   <p>::</p>
                 </div>
                 <p><strong>Fifty fifty</strong></p>
+                <p>Endast div om du har text</p>
               </div>
             </div>
           </div>
@@ -662,7 +671,12 @@ header .content h2.fakta .label {
   height: 12rem;
   overflow: hidden;
   position: relative;
+  transition: height 250ms ease-in-out;
   /* border-radius: 1rem; */
+}
+
+.page .top-bar:has(.extra-fakta) {
+  height: 20rem;
 }
 
 .page .top-bar img {
@@ -671,6 +685,11 @@ header .content h2.fakta .label {
   height: 12rem;
   filter: blur(10px) brightness(80%);
   transform: scale(110%);
+  transition: height 250ms ease-in-out;
+}
+
+.page .top-bar:has(.extra-fakta) img {
+  height: 20rem;
 }
 
 .page .top-bar .content {
@@ -687,7 +706,8 @@ header .content h2.fakta .label {
   color: #fff;
 }
 
-.page .top-bar .content * {
+.page .top-bar .content > h2,
+.page .top-bar .content > h1 {
   margin: 0;
 }
 
@@ -705,18 +725,32 @@ header .content h2.fakta .label {
   padding-left: 1rem;
   border-left: 1px solid var(--border-color);
   height: fit-content;
+  width: fit-content;
+  max-width: 100%;
 }
 
-.sidebar .slakte {
+.sidebar .slakte * {
   font-weight: bold;
+  font-size: 1.1em;
+  /* font-style: italic; */
+}
+.sidebar .slakte {
+  /* font-weight: bold; */
+  /* margin-bottom: 0.3rem; */
 }
 
 .sidebar ul > li {
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.3rem;
+  width: fit-content;
+}
+
+.sidebar ul {
+  width: fit-content;
 }
 
 .sidebar li:hover {
-  translate: 7px 0;
+  /* translate: 7px 0; */
+  margin-left: 0.5rem;
 }
 
 html:not(.dark) .sidebar li a.router-link-active {

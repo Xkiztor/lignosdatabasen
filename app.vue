@@ -32,7 +32,7 @@ useHead({
     },
     {
       rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Salsa&display=swap',
+      href: 'https://fonts.googleapis.com/css2?family=Arimo&display=swap',
       crossorigin: '',
     },
     {
@@ -404,8 +404,9 @@ h1 {
   /* --primary-green-light: #447c4f; */
   --primary-red: #bc4749;
 
-  --slab-font: 'Roboto Slab', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Helvetica, sans-serif;
+  --slab-font: helvetica, 'Arimo', 'Roboto Slab', system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif,
+    Helvetica, sans-serif;
   --title-font: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Helvetica, sans-serif;
 }
@@ -505,6 +506,7 @@ a {
 
 h1 {
   font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 h2 {
@@ -662,6 +664,7 @@ nav .link-align {
   flex-grow: 1;
   padding-left: 1rem;
   margin: auto;
+  gap: 0.75rem 0;
 }
 
 @media screen and (min-width: 700px) {
@@ -828,8 +831,8 @@ nav .popup:has(.mobile-nav) {
 nav .mobile-nav {
   border-top: 1px solid var(--border-color);
   margin-top: 0.5rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   border-bottom: 1px solid var(--border-color);
   display: grid;
   grid-column: 1/3;
@@ -918,8 +921,8 @@ nav .theme-toggle svg.icon {
 
 #popup-location:has(.dropdown) {
   /* margin-top: 0.5rem; */
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   border-bottom: 1px solid var(--border-color);
 }
 

@@ -1,31 +1,26 @@
 <script setup>
-const props = defineProps(['plant'])
+const props = defineProps(['plant']);
 
-console.log(props.plant.text);
+// console.log(props.plant.text);
 
 const formattedText = computed(() => {
-  let text = props.plant.text
+  let text = props.plant.text;
 
   text = text.replace(/!\[omslag]\([^)]+\)/g, '');
 
-  return text
-})
+  return text;
+});
 </script>
-
 
 <template>
   <MDC v-if="formattedText" :value="formattedText" tag="div" />
 </template>
-
 
 <style>
 hr {
   height: 1rem;
   opacity: 0;
 }
-
-
-
 
 article.main-content .screen-cover {
   position: fixed;
@@ -39,7 +34,7 @@ article.main-content .screen-cover {
   /* justify-content: center; */
   /* flex-shrink: 1; */
   backdrop-filter: blur(2px);
-  padding: 2rem 2rem 3rem;
+  padding: 2rem 2rem 4rem;
   object-fit: scale-down;
 }
 
@@ -55,16 +50,26 @@ article.main-content .screen-cover img {
   margin: auto;
 }
 
-
 article.main-content .screen-cover a {
   position: absolute;
-  bottom: 0.75rem;
-  left: 0.75rem;
   font-size: 0.9rem;
   opacity: 0.6;
   display: flex;
   align-items: center;
   color: var(--text-color-dark);
+}
+
+@media screen and (max-width: 1000px) {
+  article.main-content .screen-cover a {
+    top: 0.75rem;
+    left: 0.75rem;
+  }
+}
+@media screen and (min-width: 1000px) {
+  article.main-content .screen-cover a {
+    bottom: 0.75rem;
+    left: 0.75rem;
+  }
 }
 
 article .screen-cover a .icon {
@@ -75,7 +80,6 @@ article .screen-cover a:hover {
   text-decoration: underline;
 }
 
-
 article.main-content img.hel {
   width: 100%;
 }
@@ -84,7 +88,9 @@ article.main-content img.halv {
   width: 100%;
 }
 
-
+article.main-content img.kvadrat {
+  aspect-ratio: 1/1;
+}
 
 article.main-content img {
   transition: none;
@@ -108,13 +114,14 @@ article.main-content img {
     margin-top: 0;
   }
 
-  article.main-content .img-div:has(img.höger)  {
+  article.main-content .img-div:has(img.höger) {
     float: right;
     margin-top: 0;
     margin-left: 1rem;
   }
 
-  article.main-content .img-div img.höger, article.main-content .img-div img.vänster {
+  article.main-content .img-div img.höger,
+  article.main-content .img-div img.vänster {
     margin-top: 0;
   }
 
