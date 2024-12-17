@@ -32,17 +32,17 @@ useHead({
     },
     {
       rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Arimo&display=swap',
-      crossorigin: '',
-    },
-    {
-      rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap',
+      href: 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap',
       crossorigin: '',
     },
     {
       rel: 'stylesheet',
       href: 'https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap',
+      crossorigin: '',
+    },
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Open+Sans&display=swap',
       crossorigin: '',
     },
     {
@@ -404,9 +404,9 @@ h1 {
   /* --primary-green-light: #447c4f; */
   --primary-red: #bc4749;
 
-  --slab-font: helvetica, 'Arimo', 'Roboto Slab', system-ui, -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif,
-    Helvetica, sans-serif;
+  --slab-font: 'Roboto', helvetica, 'Arimo', 'Roboto Slab', system-ui, -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+    sans-serif, Helvetica, sans-serif;
   --title-font: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Helvetica, sans-serif;
 }
@@ -505,7 +505,7 @@ a {
 }
 
 h1 {
-  font-weight: 700;
+  font-weight: 900;
   letter-spacing: 0.02em;
 }
 

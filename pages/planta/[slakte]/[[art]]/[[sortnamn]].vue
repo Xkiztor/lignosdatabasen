@@ -668,7 +668,7 @@ header .content h2.fakta .label {
 
 .page .top-bar {
   width: 100%;
-  height: 12rem;
+  height: 15rem;
   overflow: hidden;
   position: relative;
   transition: height 250ms ease-in-out;
@@ -682,7 +682,7 @@ header .content h2.fakta .label {
 .page .top-bar img {
   width: 100%;
   object-fit: cover;
-  height: 12rem;
+  height: 15rem;
   filter: blur(10px) brightness(80%);
   transform: scale(110%);
   transition: height 250ms ease-in-out;
