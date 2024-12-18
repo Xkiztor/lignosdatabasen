@@ -60,11 +60,15 @@ const logg = async () => {
       Engelskt namn: <span>{{ plantData?.data.main_species.common_name }}</span>
     </li>
     <li v-if="plantData?.data.author">
-      Auktor: <span>{{ plantData?.data.author }}</span>
+      Auktor:
+      <span
+        >{{ plantData?.data.author }}
+        <span v-if="plantData?.data.year">({{ plantData?.data.year }})</span></span
+      >
     </li>
-    <li v-if="plantData?.data.main_species.edible !== null">
+    <!-- <li v-if="plantData?.data.main_species.edible !== null">
       Ätbar: <span>{{ plantData?.data.main_species.edible ? 'Ja' : 'Nej' }}</span>
-    </li>
+    </li> -->
     <li v-if="plantData?.data.main_species.growth.ph_minimum">
       PH:
       <span
@@ -80,7 +84,8 @@ const logg = async () => {
     <!-- <p>{{ plantData?.data.main_species.common_names.sv }}</p> -->
   </ul>
   <div v-else-if="showExtraFakta && plantData?.error" class="fakta error">
-    Fel vid hämtning av extra fakta. Tillfälligt fel eller så finns inte växten i databasen.
+    Fel vid hämtning av extra fakta. Tillfälligt fel eller så finns inte växten i databasen. Olika
+    sorter finns inte med.
   </div>
   <div v-else-if="showExtraFakta" class="fakta loading">
     <Icon name="line-md:loading-twotone-loop" />

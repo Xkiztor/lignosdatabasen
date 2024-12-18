@@ -1,32 +1,38 @@
 <script setup>
-const props = defineProps(['plant'])
+const props = defineProps(['plant']);
 
 console.log(props.plant);
 
 const image = computed(() => {
-  const images = props.plant.text.split(/!\[[^\]]*\]\(([^)]+)\)/g).filter(str => str !== '' && str.includes('http') && !str.includes('['))
+  const images = props.plant.text
+    .split(/!\[[^\]]*\]\(([^)]+)\)/g)
+    .filter((str) => str !== '' && str.includes('http') && !str.includes('['));
   if (images.length) {
-    return images[0].replace('/upload/', '/upload/t_300bred/')
+    return images[0].replace('/upload/', '/upload/t_300bred/');
   } else {
-    return ''
+    return '';
   }
-  return images
+  return images;
   // return specificPlant.value.text.split(/[\[\]]/).filter(str => str !== '' && str.includes('http'))
-})
+});
 </script>
-
 
 <template>
   <li class="search-card">
-    <img v-if="image" :src="image" alt="">
+    <img v-if="image" :src="image" alt="" />
     <div v-else class="skeleton"></div>
     <div class="text">
-      <NuxtLink :to="plant.synonymtill ? plant.synonymtill : `/planta/${plant.slakte}/${plant.art}/${plant.sortnamn}`" @click="$emit('close')">
+      <NuxtLink
+        :to="
+          plant.synonymtill
+            ? plant.synonymtill
+            : `/planta/${plant.slakte}/${plant.art}/${plant.sortnamn}`
+        "
+        @click="$emit('close')"
+      >
         <span>
-          {{ plant.slakte }}{{ plant.art ? ' ' : ''
-          }}{{ plant.art }}{{ plant.sortnamn ? " '" : '' }}{{
-            plant.sortnamn
-          }}{{ plant.sortnamn ? "'" : '' }}
+          {{ plant.slakte }}{{ plant.art ? ' ' : '' }}{{ plant.art }}{{ plant.sortnamn ? " '" : ''
+          }}{{ plant.sortnamn }}{{ plant.sortnamn ? "'" : '' }}
           <!-- {{ plant.slakte }}{{ plant.art ? ' ' : ''
           }}{{ plant.art.replace(/\([^()]*\)/g, '') }}{{ plant.sortnamn ? " '" : '' }}{{
             plant.sortnamn
@@ -44,7 +50,6 @@ const image = computed(() => {
   </li>
 </template>
 
-
 <style>
 .search-card {
   display: grid;
@@ -52,7 +57,7 @@ const image = computed(() => {
   gap: 1rem;
   place-items: center;
   height: fit-content;
-  margin-bottom: 1rem
+  margin-bottom: 1rem;
 }
 
 .expanded ul li.search-card *,
@@ -69,7 +74,6 @@ const image = computed(() => {
   align-items: center;
   justify-content: space-between;
 }
-
 
 .search-card a span {
   display: block;
@@ -99,7 +103,8 @@ const image = computed(() => {
   width: 100%;
 }
 
-.search-card img {}
+.search-card img {
+}
 
 .search-card div.skeleton {
   border-radius: 0.5rem;
@@ -114,11 +119,19 @@ const image = computed(() => {
   width: 100%;
 }
 
-.search-card .text {}
+.search-card .text {
+}
 
 .search-card .text p {
+  margin-top: 0.2rem;
   font-size: 1rem;
   max-height: 100%;
   overflow-y: clip;
+}
+
+@media screen and (min-width: 700px) {
+  .search-card .text p {
+    font-size: 1.1rem;
+  }
 }
 </style>

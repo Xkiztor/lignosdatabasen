@@ -1,64 +1,70 @@
 <script setup>
-const client = useSupabaseClient()
+const client = useSupabaseClient();
 
-const smallImg = 'https://res.cloudinary.com/dxwhmugdr/image/upload/t_1000bred/v1731606845/Li_102332_zk7mww.jpg'
-const bigImg = 'https://res.cloudinary.com/dxwhmugdr/image/upload/t_2000bred/v1731606845/Li_102332_zk7mww.jpg'
+const smallImg =
+  'https://res.cloudinary.com/dxwhmugdr/image/upload/t_1000bred/v1731606845/Li_102332_zk7mww.jpg';
+const bigImg =
+  'https://res.cloudinary.com/dxwhmugdr/image/upload/t_2000bred/v1731606845/Li_102332_zk7mww.jpg';
 
-const windowSize = useWidth()
+const windowSize = useWidth();
 
-const query = ref('')
+const query = ref('');
 
-const fullPlantList = ref([])
+const fullPlantList = ref([]);
 
 const fetchList = async () => {
-  const { data, error } = await client
-    .from('lignosdatabasen')
-    .select()
+  const { data, error } = await client.from('lignosdatabasen').select();
 
   if (error) {
     console.error(error);
   }
-  fullPlantList.value = data
-}
+  fullPlantList.value = data;
+};
 
 onMounted(async () => {
-  await nextTick()
-  fetchList()
-})
+  await nextTick();
+  fetchList();
+});
 
 const searchResult = computed(() => {
-  let newList = fullPlantList.value
+  let newList = fullPlantList.value;
 
-  let queryArray = query.value.toLowerCase().split(" ")
+  let queryArray = query.value.toLowerCase().split(' ');
   if (query.value) {
     // newList = newList.filter(e => e.text.toLowerCase().contains(searchQuery.value.toLowerCase()))
-    newList = newList.filter(item => queryArray.every(str => `${item.slakte} ${item.art} ${item.sortnamn}  ${item.svensktnamn}`.toLowerCase().includes(str)))
+    newList = newList.filter((item) =>
+      queryArray.every((str) =>
+        `${item.slakte} ${item.art} ${item.sortnamn}  ${item.svensktnamn}`
+          .toLowerCase()
+          .includes(str)
+      )
+    );
   }
 
-  newList = newList.filter(e => e.text !== 'Ingen info')
-  newList = newList.filter(e => e.art !== 'slakte')
-  newList = newList.filter(e => e.hidden === false)
+  newList = newList.filter((e) => e.text !== 'Ingen info');
+  newList = newList.filter((e) => e.art !== 'slakte');
+  newList = newList.filter((e) => e.hidden === false);
 
-  newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn))
-  newList = newList.sort((a, b) => a.art.localeCompare(b.art))
-  newList = newList.sort((a, b) => a.slakte.localeCompare(b.slakte))
+  newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn));
+  newList = newList.sort((a, b) => a.art.localeCompare(b.art));
+  newList = newList.sort((a, b) => a.slakte.localeCompare(b.slakte));
 
-  return newList
-})
+  return newList;
+});
 
 useSeoMeta({
   title: 'Lignosdatabasen - Samlad informationskälla om lignoser',
-  description: 'Samlad informationskälla om lignoser. Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter.Urvalet siktar på allt som är som är härdigt att odla utomhus i Sverige men även en del som är på gränsen mensom kan klara t.ex. innergårdar i städerna eller kallväxthus.',
-})
+  description:
+    'Samlad informationskälla om lignoser. Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter.Urvalet siktar på allt som är som är härdigt att odla utomhus i Sverige men även en del som är på gränsen mensom kan klara t.ex. innergårdar i städerna eller kallväxthus.',
+});
 </script>
-
 
 <template>
   <div class="page index" ref="page">
     <header class="hero">
       <div>
         <div class="image-align small">
-          <img class="hero-image" :src="windowSize.width > 700 ? bigImg : smallImg" alt="">
+          <img class="hero-image" :src="windowSize.width > 700 ? bigImg : smallImg" alt="" />
           <div class="fade"></div>
           <!-- <img class="index-backdrop"
             src="https://res.cloudinary.com/dxwhmugdr/image/upload/t_300bred/v1731606845/Li_102332_zk7mww.jpg" alt=""> -->
@@ -71,7 +77,7 @@ useSeoMeta({
           <p>Samlad informationskälla om lignoser</p>
 
           <div class="sök">
-            <input type="text" name="" id="" placeholder="Sök" v-model="query">
+            <input type="text" name="" id="" placeholder="Sök" v-model="query" />
             <button @click="query = ''">
               <Icon v-if="query" name="material-symbols:close-rounded" class="stäng-ikon" />
               <Icon v-else name="material-symbols:search-rounded" class="sök-ikon" />
@@ -84,7 +90,6 @@ useSeoMeta({
               </div>
             </Transition>
           </div>
-
         </div>
       </div>
       <Icon class="dots" name="mdi:dots-horizontal" />
@@ -92,35 +97,35 @@ useSeoMeta({
 
     <header class="about">
       <article class="text">
-        <p class="välkommen">
-          Välkommen till Lignosdatabasen! 
+        <p class="välkommen">Välkommen till Lignosdatabasen!</p>
+        <p>
+          Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter. Urvalet siktar
+          på allt som är som är härdigt att odla utomhus i Sverige men även en del som är på gränsen
+          men som kan klara t.ex. innergårdar i städerna eller kallväxthus.
         </p>
         <p>
-          Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter.
-          Urvalet siktar på allt som är som är härdigt att odla utomhus i Sverige men även en del som är på gränsen men
-          som kan klara t.ex. innergårdar i städerna eller kallväxthus.
+          Många bra foton finns och flertalet är till salu om du är intresserad. I vissa fall finns
+          också tips om var du kan köpa de olika växterna.
         </p>
         <p>
-          Många bra foton finns och flertalet är till salu om du är intresserad. I vissa fall finns också tips om var du
-          kan köpa de olika växterna.
+          Hör gärna av dig om du har synpunkter eller kompletterande information om någon art eller
+          sort. Alltid intressant att höra om odlingserfarenheter av de mer oprövade växterna, t.ex.
+          om hur långt norrut de går att odla i Sverige.
         </p>
         <p>
-          Hör gärna av dig om du har synpunkter eller kompletterande information om någon art eller sort. Alltid
-          intressant att höra om odlingserfarenheter av de mer oprövade växterna, t.ex. om hur långt norrut de går att
-          odla i Sverige.
-        </p>
-        <p>
-          Välkommen att botanisera runt i databasen. Klicka dig fram till ett släkte via alfabetet eller skriv i
-          sökrutan.
+          Välkommen att botanisera runt i databasen. Klicka dig fram till ett släkte via alfabetet
+          eller skriv i sökrutan.
         </p>
       </article>
-      <img src="https://res.cloudinary.com/dxwhmugdr/image/upload/t_1000bred/v1732986145/Li_69394_gnk58o.jpg" alt="" v-if="windowSize.width > 800">
+      <img
+        src="https://res.cloudinary.com/dxwhmugdr/image/upload/t_1000bred/v1732986145/Li_69394_gnk58o.jpg"
+        alt=""
+        v-if="windowSize.width > 800"
+      />
       <!-- <img src="https://res.cloudinary.com/dxwhmugdr/image/upload/t_1000bred/v1732985680/Li_54974_cpkjcz.jpg" alt=""> -->
     </header>
-
   </div>
 </template>
-
 
 <style>
 .page.index {
@@ -134,7 +139,6 @@ useSeoMeta({
   display: grid;
   grid-template-rows: 93% 7%;
 }
-
 
 /* @media screen and (min-width: 700px) {
   .index .hero {
@@ -174,7 +178,7 @@ useSeoMeta({
     display: none;
   }
 
-  .index .hero p {
+  .index .content > p {
     font-size: 1.5rem;
   }
 }
@@ -184,7 +188,7 @@ useSeoMeta({
     line-height: 0.95;
   }
 
-  .index .hero p {
+  .index .content > p {
     margin-top: 1rem;
   }
 }
@@ -198,14 +202,14 @@ useSeoMeta({
   /* filter: brightness(0.8); */
 }
 
-.index .hero>div {
+.index .hero > div {
   position: relative;
   display: flex;
   flex-direction: column;
 }
 
 @media screen and (min-width: 700px) {
-  .index .hero>div {
+  .index .hero > div {
     display: grid;
     grid-template-rows: 80% 20%;
   }
@@ -257,7 +261,12 @@ useSeoMeta({
   bottom: 0;
 
   padding-top: 140%;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 60%, var(--primary-green) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0) 60%,
+    var(--primary-green) 100%
+  );
   /* background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 10%, rgba(118, 153, 78, 1) 100%); */
   color: white;
 }
@@ -265,7 +274,12 @@ useSeoMeta({
 .dark .index .image-align .fade {
   color: white;
   padding-top: 120%;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 30%, var(--bg-color) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0) 30%,
+    var(--bg-color) 100%
+  );
 }
 
 @media screen and (min-width: 700px) {
@@ -305,7 +319,6 @@ useSeoMeta({
   }
 }
 
-
 .dark .index .hero .content * {
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
@@ -323,8 +336,6 @@ useSeoMeta({
 .dark .index img {
   box-shadow: none;
 }
-
-
 
 .index .dots {
   margin: auto;
@@ -359,7 +370,7 @@ useSeoMeta({
 }
 
 .index .content .sök * {
-  background: none
+  background: none;
 }
 
 .index .content .sök input {
@@ -425,7 +436,7 @@ useSeoMeta({
   max-width: 50rem;
 }
 
-@media screen and (min-width:700px) {
+@media screen and (min-width: 700px) {
   .index .content .sök:has(.expanded) {
     width: 75vw;
   }
@@ -457,16 +468,14 @@ useSeoMeta({
   overflow: clip scroll;
 }
 
-
 .index .about {
   padding: 0 1rem;
   display: grid;
 }
 
 .index .about div.text {
-  max-width: 60ch
+  max-width: 60ch;
 }
-
 
 .sök .expanded.expand-enter-active {
   transition: height 0.5s ease;
@@ -479,7 +488,7 @@ useSeoMeta({
 .sök .expanded.expand-enter-from,
 .sök .expanded.expand-leave-to {
   height: 0rem;
-  overflow: hidden
+  overflow: hidden;
 }
 
 header.about {
@@ -489,20 +498,19 @@ header.about {
   max-width: 60ch;
 }
 
-@media screen and (min-width:800px) {
+@media screen and (min-width: 800px) {
   header.about {
-    
     margin: 0 auto;
     display: grid;
     place-items: center;
     grid-template-columns: 1fr 1fr;
     max-width: 110ch;
     gap: 3rem;
-    padding: 0 2rem
+    padding: 0 2rem;
   }
 }
 
-@media screen and (min-width:1200px) {
+@media screen and (min-width: 1200px) {
   header.about {
     margin: 0 auto;
     display: grid;

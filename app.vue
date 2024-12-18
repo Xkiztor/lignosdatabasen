@@ -212,7 +212,14 @@ onClickOutside(sökContainer, () => (isSökOpen.value = false));
     <div class="sök-cover" v-if="isSökOpen">
       <div class="sök-container" ref="sökContainer">
         <div class="input-align">
-          <input type="text" name="" id="" placeholder="Sök" v-model="query" ref="sökInput" />
+          <input
+            type="text"
+            name=""
+            id=""
+            placeholder="Sök efter vetenskapligt eller svenskt namn"
+            v-model="query"
+            ref="sökInput"
+          />
           <button @click="query ? (query = '') : (isSökOpen = false)">
             <Icon v-if="query" name="material-symbols:close-rounded" class="rensa-ikon" />
             <Icon v-else name="material-symbols:close-rounded" class="stäng-ikon" />
