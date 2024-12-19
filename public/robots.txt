@@ -8,4 +8,4 @@ Disallow: /admin
 User-agent: Bingbot
 Disallow: /admin
 
-Sitemap: https://superlistan.lindersplantskola.se/sitemap.xml
+Sitemap: https://lignosdatabasen.se/sitemap.xml

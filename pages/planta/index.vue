@@ -165,6 +165,9 @@ const computedList = computed(() => {
   }
 
   newList = newList.filter((e) => e.text !== 'Ingen info');
+  newList = newList.filter((e) => e.text !== '');
+
+  newList = newList.filter((e) => !e.art.includes('synonym'));
 
   newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn));
   newList = newList.sort((a, b) => a.art.localeCompare(b.art));
