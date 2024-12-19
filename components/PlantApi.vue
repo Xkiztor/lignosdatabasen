@@ -28,7 +28,7 @@ const fetchPlant = async () => {
 };
 
 onMounted(() => {
-  // fetchPlant();
+  fetchPlant();
 });
 
 const logg = async () => {
@@ -40,59 +40,65 @@ const logg = async () => {
 </script>
 
 <template>
-  <button
-    class="extra-fakta-titel"
-    :class="{ 'extra-fakta-shown': showExtraFakta }"
-    @click="(showExtraFakta = !showExtraFakta), fetchPlant()"
-  >
-    <Icon name="flowbite:circle-plus-outline" v-if="!showExtraFakta" />
-    <Icon name="flowbite:circle-minus-outline" v-else />
-    <p>
-      Extra fakta
-      <span v-if="showExtraFakta">
-        - För {{ props.plant.slakte }} {{ props.plant.art }} - från trefle.io</span
-      >
-    </p>
-  </button>
-  <ul class="extra-fakta" v-if="showExtraFakta && plantData && !plantData?.error">
-    <!-- <p @click="logg">Api test</p> -->
-    <li v-if="plantData?.data.main_species.common_name">
-      Engelskt namn: <span>{{ plantData?.data.main_species.common_name }}</span>
-    </li>
-    <li v-if="plantData?.data.author">
-      Auktor:
-      <span
-        >{{ plantData?.data.author }}
-        <span v-if="plantData?.data.year">({{ plantData?.data.year }})</span></span
-      >
-    </li>
-    <!-- <li v-if="plantData?.data.main_species.edible !== null">
+  <div class="extra-fakta-container">
+    <button
+      class="extra-fakta-titel"
+      :class="{ 'extra-fakta-shown': showExtraFakta }"
+      @click="showExtraFakta = !showExtraFakta"
+      v-if="plantData && !plantData?.error"
+    >
+      <Icon name="flowbite:circle-plus-outline" v-if="!showExtraFakta" />
+      <Icon name="flowbite:circle-minus-outline" v-else />
+      <p>
+        Extra fakta
+        <span v-if="showExtraFakta"> - från trefle.io</span>
+      </p>
+    </button>
+    <ul class="extra-fakta" v-if="showExtraFakta && plantData && !plantData?.error">
+      <!-- <p @click="logg">Api test</p> -->
+      <li v-if="plantData?.data.main_species.common_name">
+        Engelskt namn: <span>{{ plantData?.data.main_species.common_name }}</span>
+      </li>
+      <li v-if="plantData?.data.author">
+        Auktor:
+        <span
+          >{{ plantData?.data.author }}
+          <!-- <span v-if="plantData?.data.year">({{ plantData?.data.year }})</span> -->
+          <span v-if="plantData?.data.bibliography">({{ plantData?.data.bibliography }})</span>
+        </span>
+      </li>
+      <!-- <li v-if="plantData?.data.main_species.edible !== null">
       Ätbar: <span>{{ plantData?.data.main_species.edible ? 'Ja' : 'Nej' }}</span>
     </li> -->
-    <li v-if="plantData?.data.main_species.growth.ph_minimum">
-      PH:
-      <span
-        >{{ plantData?.data.main_species.growth.ph_minimum }} -
-        {{ plantData?.data.main_species.growth.ph_maximum }}</span
-      >
-    </li>
-    <li v-if="plantData?.data.main_species.distribution.native">
-      Ursprung:
-      <span v-for="land in plantData?.data.main_species.distribution.native">{{ land }}, </span>
-    </li>
-    <!-- <p>{{ plantData?.data.main_species.distribution.native }}</p> -->
-    <!-- <p>{{ plantData?.data.main_species.common_names.sv }}</p> -->
-  </ul>
-  <div v-else-if="showExtraFakta && plantData?.error" class="fakta error">
-    Fel vid hämtning av extra fakta. Tillfälligt fel eller så finns inte växten i databasen. Olika
-    sorter finns inte med.
-  </div>
-  <div v-else-if="showExtraFakta" class="fakta loading">
-    <Icon name="line-md:loading-twotone-loop" />
+      <li v-if="plantData?.data.main_species.growth.ph_minimum">
+        PH:
+        <span
+          >{{ plantData?.data.main_species.growth.ph_minimum }} -
+          {{ plantData?.data.main_species.growth.ph_maximum }}</span
+        >
+      </li>
+      <li v-if="plantData?.data.main_species.distribution.native">
+        Ursprung:
+        <span v-for="land in plantData?.data.main_species.distribution.native">{{ land }}, </span>
+      </li>
+      <!-- <p>{{ plantData?.data.main_species.distribution.native }}</p> -->
+      <!-- <p>{{ plantData?.data.main_species.common_names.sv }}</p> -->
+    </ul>
+    <div v-else-if="showExtraFakta && plantData?.error" class="fakta error">
+      Fel vid hämtning av extra fakta. Tillfälligt fel eller så finns inte växten i databasen. Olika
+      sorter finns inte med.
+    </div>
+    <div v-else-if="showExtraFakta" class="fakta loading">
+      <Icon name="line-md:loading-twotone-loop" />
+    </div>
   </div>
 </template>
 
 <style>
+.extra-fakta-container {
+  min-height: 1.9rem;
+}
+
 .extra-fakta-titel {
   background: none;
   padding: 0;
@@ -105,10 +111,12 @@ const logg = async () => {
   align-items: center;
   gap: 0.4rem;
   font-size: 1.3rem;
+  border: none;
 }
 
 .extra-fakta-titel:hover {
   opacity: 1;
+  border: none;
 }
 
 .extra-fakta-titel p {

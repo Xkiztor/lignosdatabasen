@@ -334,8 +334,6 @@ import { Codemirror } from 'vue-codemirror';
 import { markdown } from '@codemirror/lang-markdown';
 import { oneDark } from '@codemirror/theme-one-dark';
 const extensions = [markdown(), oneDark];
-
-const code = ref('# Hello Markdown');
 </script>
 
 <template>
@@ -395,7 +393,7 @@ const code = ref('# Hello Markdown');
           >
         </h2>
         <h2 class="subtitle">{{ specificPlant.svensktnamn }}</h2>
-        <PlantApi v-if="!isSlakte" :plant="specificPlant" />
+        <PlantApi v-if="!isSlakte && !specificPlant.sortnamn" :plant="specificPlant" />
       </div>
       <img :src="compressedUrl" alt="" />
     </header>

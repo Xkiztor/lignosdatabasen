@@ -1,47 +1,47 @@
 <script setup>
-const props = defineProps(['växt'])
+const props = defineProps(['växt']);
 
 // console.log(props.växt);
 
-
-const descriptionLenght = 70
-const ingressLenght = 120
+const descriptionLenght = 70;
+const ingressLenght = 120;
 const formattedDescription = computed(() => {
   if (props.växt.ingress) {
-    let ingress = props.växt.ingress
-    ingress = ingress.slice(0, ingressLenght)
+    let ingress = props.växt.ingress;
+    ingress = ingress.slice(0, ingressLenght);
     if (ingress !== props.växt.ingress) {
-      ingress = ingress + '...'
+      ingress = ingress + '...';
     }
-    return ingress
+    return ingress;
   } else {
-    let desc = props.växt.text
+    let desc = props.växt.text;
 
     // let desclenght = desc.lenght
 
     desc = desc.replace(/!\[.*?\]\(.*?\)|\[.*?\]\(.*?\)/g, '');
-    desc = desc.replace(/[*\-_#{}\[\]]/g, "");;
+    desc = desc.replace(/[*\-_#{}\[\]]/g, '');
 
-    desc = desc.slice(0, descriptionLenght)
+    desc = desc.slice(0, descriptionLenght);
 
     // if (desclenght > descriptionLenght) {
     // }
     // console.log(desc);
 
     if (desc) {
-      desc = desc + '...'
+      desc = desc + '...';
     }
 
-    return desc
+    return desc;
   }
-})
+});
 
 const images = computed(() => {
-  return props.växt.text.split(/!\[[^\]]*\]\(([^)]+)\)/g).filter(str => str !== '' && str.includes('http') && !str.includes('['))
+  return props.växt.text
+    .split(/!\[[^\]]*\]\(([^)]+)\)/g)
+    .filter((str) => str !== '' && str.includes('http') && !str.includes('['));
   // return specificPlant.value.text.split(/[\[\]]/).filter(str => str !== '' && str.includes('http'))
-})
+});
 </script>
-
 
 <template>
   <div class="card">
@@ -49,7 +49,7 @@ const images = computed(() => {
       <NuxtImg v-if="images[0]" loading="lazy" :src="images[0]" alt="" />
     </NuxtLink>
     <div class="faktarutan">
-      <div v-if="växt.höjd"> 
+      <div v-if="växt.höjd">
         H: <span>{{ växt.höjd }}</span> m
       </div>
       <div v-if="växt.bredd">
@@ -60,8 +60,10 @@ const images = computed(() => {
       </div>
     </div>
     <NuxtLink :to="`/planta/${växt.slakte}/${växt.art}/${växt.sortnamn}`">
-      <h2>{{ växt.slakte }} {{ växt.art }} {{ växt.sortnamn ? `'` : '' }}{{ växt.sortnamn }}{{ växt.sortnamn ? `'` :
-      '' }}</h2>
+      <h2>
+        {{ växt.slakte }} {{ växt.art }} {{ växt.sortnamn ? `'` : '' }}{{ växt.sortnamn
+        }}{{ växt.sortnamn ? `'` : '' }}
+      </h2>
     </NuxtLink>
     <!-- <NuxtLink :to="'/planta/' + växt.slakte + '/' + växt.art + '/' + växt.sortnamn ? växt.sortnamn + '/' : ''">
       <h2>{{ växt.slakte }}</h2>
@@ -70,7 +72,6 @@ const images = computed(() => {
     <!-- {{ växt.slakte }} -->
   </div>
 </template>
-
 
 <style>
 .card img,
@@ -112,12 +113,15 @@ const images = computed(() => {
 }
 
 .card .faktarutan {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  place-items: center;
+  /* display: grid; */
+  /* grid-template-columns: 1fr 1fr 1fr; */
+  /* place-items: center; */
   border-radius: 0.5rem;
   margin-top: 0.5rem;
   opacity: 0.6;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
 }
 
 .dark .card .faktarutan {

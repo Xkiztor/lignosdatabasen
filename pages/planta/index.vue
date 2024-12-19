@@ -44,11 +44,11 @@ const defaultSlider = {
   },
   bredd: {
     min: 0,
-    max: 12,
+    max: 20,
     step: 1,
   },
   zon: {
-    min: 1,
+    min: 0,
     max: 8,
     step: 1,
   },
@@ -74,7 +74,9 @@ const zonFormat = (zon) => {
     ? 'III'
     : zon === 2
     ? 'II'
-    : 'I';
+    : zon === 1
+    ? 'I'
+    : '0';
 };
 const numberFormat = (zon) => {
   return zon === 'VIII'
@@ -91,7 +93,9 @@ const numberFormat = (zon) => {
     ? 3
     : zon === 'II'
     ? 2
-    : 1;
+    : zon === 'I'
+    ? 1
+    : 0;
 };
 
 const { data: allaVäxter } = await useAsyncData('all-plants-fetch', async () => {

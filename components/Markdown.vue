@@ -131,6 +131,12 @@ article.main-content img {
   }
 }
 
+@media screen and (max-width: 700px) {
+  article.main-content .img-div {
+    display: block;
+  }
+}
+
 article.main-content .link {
   color: var(--link);
   text-decoration: underline;
