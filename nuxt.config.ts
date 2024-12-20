@@ -52,7 +52,7 @@ export default defineNuxtConfig({
   },
 
   site: {
-    url: 'https://lignosdatabasen.netlify.app/',
+    url: 'https://lignosdatabasen.se/',
     name: 'Lignosdatabasen',
   },
   sitemap: {
