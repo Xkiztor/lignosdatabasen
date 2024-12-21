@@ -394,6 +394,7 @@ const extensions = [markdown(), oneDark];
         </h2>
         <h2 class="subtitle">{{ specificPlant.svensktnamn }}</h2>
         <PlantApi v-if="!isSlakte && !specificPlant.sortnamn" :plant="specificPlant" />
+        <div class="finns-att-kopa"><KopaSuperlistan /></div>
       </div>
       <img :src="compressedUrl" alt="" />
     </header>
@@ -627,6 +628,7 @@ header .content h2.fakta {
   margin-top: 0.1rem;
   margin-bottom: 0.15rem;
   flex-wrap: wrap;
+  height: fit-content;
 }
 
 @media screen and (max-width: 500px) {
@@ -691,7 +693,7 @@ header .content h2.fakta .label {
 }
 
 .page .top-bar .content {
-  padding-left: 1rem;
+  padding: 0 1rem;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -704,7 +706,32 @@ header .content h2.fakta .label {
   color: #fff;
 }
 
-.page .top-bar .content > h2,
+@media screen and (min-width: 800px) {
+  .page .top-bar .content {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .content .finns-att-kopa {
+    grid-column: 2/3;
+    grid-row: 1/6;
+  }
+}
+
+.content .finns-att-kopa {
+  margin-top: 0.5rem;
+}
+
+@media screen and (max-width: 800px) {
+  .content .finns-att-kopa {
+    margin-top: 1rem;
+  }
+  .page .top-bar:has(.superlistan),
+  .page .top-bar:has(.superlistan) img {
+    height: 20rem;
+  }
+}
+
+/* .page .top-bar .content > h2, */
 .page .top-bar .content > h1 {
   margin: 0;
 }
@@ -816,7 +843,8 @@ article.main-content p {
 
 .page.plant .admin-panel {
   z-index: 2;
-  right: 1rem;
+  /* top: 3rem; */
+  right: 0;
   padding: 1rem 1rem 1rem 0;
   display: flex;
   gap: 1rem;
