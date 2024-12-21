@@ -48,7 +48,7 @@ if (data && data.length > 0) {
 </template>
 
 <style>
-.finns-att-kopa .superlistan {
+.content .finns-att-kopa .superlistan {
   border: 1px solid var(--border-color-light);
   padding: 1rem;
   border-radius: 1rem;
@@ -56,12 +56,12 @@ if (data && data.length > 0) {
   gap: 0.75rem;
 }
 
-.finns-att-kopa .superlistan h1 {
+.content .finns-att-kopa .superlistan h1 {
   font-size: 1.5rem;
   margin: 0;
 }
 
-.finns-att-kopa .superlistan a {
+.content .finns-att-kopa .superlistan a {
   color: var(--text-color-dark);
   text-decoration: underline;
 }
