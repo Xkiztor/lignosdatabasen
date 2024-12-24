@@ -104,7 +104,7 @@ const images = computed(() => {
   border-radius: 1rem;
   padding: 1rem;
   border: 2px solid var(--border-color);
-  box-shadow: 0 0 15px 0px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 15px 0px rgba(0, 0, 0, 0.1);
 }
 
 .dark .card {

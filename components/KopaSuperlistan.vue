@@ -35,15 +35,26 @@ if (data && data.length > 0) {
 
 <template>
   <div class="superlistan" v-if="isOnSuperlistan">
-    <h1>Finns att köpa på Linders Superlista</h1>
-    <a
+    <Icon name="material-symbols:shopping-cart-rounded" />
+    <h1>
+      Finns att köpa på:
+      <a
+        :href="`https://superlistan.lindersplantskola.se/lista?s=${superlistan.Namn.replace(
+          /\s+/g,
+          '+'
+        )}`"
+        target="_blank"
+        ><span>Linders Superlista</span> <Icon name="material-symbols:open-in-new-rounded"
+      /></a>
+    </h1>
+    <!-- <a
       :href="`https://superlistan.lindersplantskola.se/lista?s=${superlistan.Namn.replace(
         /\s+/g,
         '+'
       )}`"
       target="_blank"
       >Till superlistan <Icon name="material-symbols:open-in-new-rounded"
-    /></a>
+    /></a> -->
   </div>
 </template>
 
@@ -53,16 +64,26 @@ if (data && data.length > 0) {
   padding: 1rem;
   border-radius: 1rem;
   display: grid;
+  grid-template-columns: min-content 1fr;
   gap: 0.75rem;
+  place-items: center start;
+}
+
+.content .finns-att-kopa .superlistan > .icon {
+  font-size: 2.5rem;
 }
 
 .content .finns-att-kopa .superlistan h1 {
-  font-size: 1.5rem;
   margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
 }
-
-.content .finns-att-kopa .superlistan a {
-  color: var(--text-color-dark);
+.content .finns-att-kopa .superlistan h1 a {
+  margin-top: 0.25rem;
+  font-weight: 800;
+  font-size: 1.5rem;
+  display: block;
+  color: #fff;
   text-decoration: underline;
 }
 </style>

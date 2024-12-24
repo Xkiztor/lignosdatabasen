@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     // '@nuxtjs/device',
     // { src: '@nuxtjs/device', ssr: false },
     '@nuxtjs/sitemap',
+    '@nuxt/fonts',
   ],
 
   supabase: {
@@ -60,6 +61,10 @@ export default defineNuxtConfig({
       '/api/sitemap-urls'
     ]
   },
-
+  fonts: {
+    defaults: {
+      weights: [400,600,  700, 800,900],
+    },
+  }
   // compatibilityDate: '2024-11-28',
 });

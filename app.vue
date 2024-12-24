@@ -26,25 +26,25 @@ useHead({
     lang: 'se',
   },
   link: [
-    {
-      rel: 'preconnect',
-      href: 'https://fonts.googleapis.com',
-    },
-    {
-      rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap',
-      crossorigin: '',
-    },
-    {
-      rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap',
-      crossorigin: '',
-    },
-    {
-      rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Open+Sans&display=swap',
-      crossorigin: '',
-    },
+    // {
+    //   rel: 'preconnect',
+    //   href: 'https://fonts.googleapis.com',
+    // },
+    // {
+    //   rel: 'stylesheet',
+    //   href: 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap',
+    //   crossorigin: '',
+    // },
+    // {
+    //   rel: 'stylesheet',
+    //   href: 'https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap',
+    //   crossorigin: '',
+    // },
+    // {
+    //   rel: 'stylesheet',
+    //   href: 'https://fonts.googleapis.com/css2?family=Open+Sans&display=swap',
+    //   crossorigin: '',
+    // },
     {
       rel: 'canonical',
       href: 'https://lignosdatabasen.se',
@@ -411,11 +411,8 @@ h1 {
   /* --primary-green-light: #447c4f; */
   --primary-red: #bc4749;
 
-  --slab-font: 'Roboto', helvetica, 'Arimo', 'Roboto Slab', system-ui, -apple-system,
-    BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
-    sans-serif, Helvetica, sans-serif;
-  --title-font: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Helvetica, sans-serif;
+  /* --slab-font: 'Roboto', sans-serif; */
+  /* --title-font: Kanit, 'Satoshi', 'times new roman', 'Inter', 'Roboto', sans-serif; */
 }
 
 html {
@@ -462,6 +459,7 @@ html {
   background: var(--bg-color);
   color: var(--text-color);
   overflow-x: hidden;
+  font-family: 'Switzer', 'Roboto', sans-serif;
 }
 
 html.dark {
@@ -512,7 +510,7 @@ a {
 }
 
 h1 {
-  font-weight: 900;
+  font-weight: 800;
   letter-spacing: 0.02em;
 }
 

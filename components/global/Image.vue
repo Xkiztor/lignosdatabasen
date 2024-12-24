@@ -24,10 +24,10 @@ onClickOutside(target, () => {
 });
 
 const compressedUrl = computed(() => {
-  return source.replace('/upload/', '/upload/t_700bred/');
+  return source.replace('/upload/', '/upload/t_700bred,f_auto,q_auto/');
 });
 const bigImageUrl = computed(() => {
-  return source.replace('/upload/', '/upload/t_2000bred/');
+  return source.replace('/upload/', '/upload/t_2000bred,f_auto,q_auto/');
 });
 
 const getImage = (i) => {

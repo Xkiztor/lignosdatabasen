@@ -142,16 +142,18 @@ p.muted {
   }
 
   .dropdown {
-    padding: 0.75rem 0.75rem 1rem;
+    padding: 1rem;
     border-radius: 0.5rem;
     background: var(--element-bg);
     border: 1px solid var(--element-bg);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.75rem;
+    gap: 0.85rem;
     line-height: 1;
     z-index: 5;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    font-size: 1.1em;
   }
 
   .dropdown::before {
