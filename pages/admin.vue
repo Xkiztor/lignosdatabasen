@@ -1,10 +1,10 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 const runtimeConfig = useRuntimeConfig();
 const enteredPassword = useCookie('enteredPassword', { maxAge: 60604800 });
 
-const wrongPassword = ref(false)
+const wrongPassword = ref(false);
 
-const passwordInputValue = ref('')
+const passwordInputValue = ref('');
 
 const login = () => {
   enteredPassword.value = passwordInputValue.value;
@@ -12,22 +12,21 @@ const login = () => {
   if (passwordInputValue.value === runtimeConfig.public.ADMIN_PASSWORD) {
     navigateTo('/');
   } else {
-    wrongPassword.value = true
+    wrongPassword.value = true;
   }
 };
 
 const logout = () => {
-  enteredPassword.value = ''
-}
+  enteredPassword.value = '';
+};
 </script>
-
 
 <template>
   <div class="admin-page page" v-if="enteredPassword !== runtimeConfig.public.ADMIN_PASSWORD">
     <h1>Admin Login</h1>
     <p class="error" v-if="wrongPassword">Fel lösenord</p>
     <div class="flex">
-      <input type="password" placeholder="Lösenord" v-model="passwordInputValue">
+      <input type="password" placeholder="Lösenord" v-model="passwordInputValue" />
       <button @click="login()">Login</button>
     </div>
   </div>
@@ -38,7 +37,6 @@ const logout = () => {
     </div>
   </div>
 </template>
-
 
 <style>
 .admin-page {
@@ -62,6 +60,7 @@ const logout = () => {
 
 .admin-page .flex {
   display: flex;
+  gap: 0.5rem;
 }
 
 .admin-page .error {

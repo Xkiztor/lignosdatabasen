@@ -35,10 +35,18 @@ const formattedDescription = computed(() => {
   }
 });
 
-const images = computed(() => {
-  return props.växt.text
+const image = computed(() => {
+  let images = props.växt.text
     .split(/!\[[^\]]*\]\(([^)]+)\)/g)
     .filter((str) => str !== '' && str.includes('http') && !str.includes('['));
+
+  if (images.length && images[0].includes('cloudinary')) {
+    return images[0].replace('/upload/', '/upload/t_500bred,f_auto,q_auto/');
+  } else if (images.length) {
+    return images[0];
+  } else {
+    return '';
+  }
   // return specificPlant.value.text.split(/[\[\]]/).filter(str => str !== '' && str.includes('http'))
 });
 </script>
@@ -46,7 +54,7 @@ const images = computed(() => {
 <template>
   <div class="card">
     <NuxtLink class="image" :to="`/planta/${växt.slakte}/${växt.art}/${växt.sortnamn}`">
-      <NuxtImg v-if="images[0]" loading="lazy" :src="images[0]" alt="" />
+      <NuxtImg v-if="image" loading="lazy" :src="image" alt="Laddar..." />
     </NuxtLink>
     <div class="faktarutan">
       <div v-if="växt.höjd">

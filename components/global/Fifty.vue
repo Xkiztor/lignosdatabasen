@@ -1,5 +1,4 @@
-<script setup>
-</script>
+<script setup></script>
 
 <template>
   <div class="fifty-container">
@@ -7,13 +6,12 @@
   </div>
 </template>
 
-
 <style>
 @media (min-width: 700px) {
   .fifty-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: 1.5rem;
     width: 100%;
     padding-right: 1rem;
   }
@@ -28,5 +26,4 @@
     grid-column: 2/3;
   }
 }
-
 </style>

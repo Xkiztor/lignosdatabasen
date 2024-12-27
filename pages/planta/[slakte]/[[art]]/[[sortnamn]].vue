@@ -485,11 +485,11 @@ const extensions = [markdown(), oneDark];
             <div></div>
             <div class="guide">
               <div>
-                <p class="copy" @click="copy(`![](){text='Foto: Peter Linder'}`)">
+                <p class="copy" @click="copy(`![](){text=&quot;Foto: Peter Linder&quot;}`)">
                   ![](){text="Foto: Peter Linder"}
                 </p>
                 <p><strong>Bild</strong></p>
-                <p class="list">halv hel vänster höger omslag kvadrat</p>
+                <p class="list">halv hel omslag kvadrat</p>
                 <p class="list">Ej höger vänster vid fifty fifty</p>
               </div>
               <div>
@@ -497,30 +497,41 @@ const extensions = [markdown(), oneDark];
                 <p><strong>Länk</strong></p>
               </div>
               <div>
-                <div
-                  class="copy"
-                  @click="copy(`::Fifty\n\n![halv vänster]()\n\n<div>\n\n</div>\n::`)"
-                >
+                <div class="copy" @click="copy(`::Fifty\n\n![halv]()\n\n<div>\n\n</div>\n::`)">
                   <p>::Fifty</p>
-                  <p>![halv vänster]()</p>
+                  <p>![halv]()</p>
                   <p>&lt;div&gt;</p>
                   <p>&lt;/div&gt;</p>
                   <p>::</p>
                 </div>
                 <p><strong>Fifty fifty</strong></p>
                 <p>Endast div om du har text</p>
+                <p>Först = vänster</p>
+              </div>
+              <div>
+                <div class="copy" @click="copy(`::Fifty\n\n![halv]()\n\n![halv]()\n\n::`)">
+                  <p>::Fifty</p>
+                  <p>![halv]()</p>
+                  <p>![halv]()</p>
+                  <p>::</p>
+                </div>
+                <p><strong>Fifty fifty</strong></p>
+                <p>Två bilder</p>
               </div>
             </div>
           </div>
           <div>
             <div></div>
-            <button class="bold" @click="editPlant()">Updatera</button>
+            <div>
+              <p>&amp;quot&semi; = "</p>
+            </div>
+          </div>
+          <div>
+            <div></div>
+            <button class="bold uppdatera" @click="editPlant()">Uppdatera</button>
           </div>
         </form>
         <article class="main-content">
-          <div class="forhandsgranskning">
-            <h1>Förhandsgranskning:</h1>
-          </div>
           <p class="ingress">{{ specificPlant.ingress }}</p>
           <Markdown :plant="specificPlant" />
         </article>
@@ -805,7 +816,7 @@ html:not(.dark) .sidebar li a.router-link-active {
 }
 
 article.main-content .article-image {
-  max-height: 35rem;
+  /* max-height: 35rem; */
   max-width: 100%;
   margin: 0.5rem 0;
   object-fit: cover;
@@ -918,6 +929,15 @@ img.backdrop {
   opacity: 0.1;
 }
 
+@media screen and (min-width: 1450px) {
+  .plant .edit {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-top: 1rem;
+    padding-left: 1rem;
+  }
+}
+
 .plant .edit article {
   max-width: 77ch;
   margin: 0 auto;
@@ -925,6 +945,12 @@ img.backdrop {
 
 .plant .edit form {
   max-width: 100ch;
+}
+
+.plant .edit .uppdatera {
+  background: var(--primary-green-light);
+  color: var(--text-color-light);
+  /* border: 1px solid var(--primary-green); */
 }
 
 .plant .edit .forhandsgranskning h1 {

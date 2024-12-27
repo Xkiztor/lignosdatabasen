@@ -237,10 +237,10 @@ onClickOutside(sökContainer, () => (isSökOpen.value = false));
   <div class="site">
     <nav>
       <NuxtLink to="/" class="title">
-        <img class="large light" src="/logga-text-ljus.svg" alt="" />
-        <img class="large dark" src="/logga-text-mörk.svg" alt="" />
-        <img class="small light" src="/logga-löv-ljus.svg" alt="" />
-        <img class="small dark" src="/logga-löv-mörk.svg" alt="" />
+        <img class="logo large light" src="/logga-text-ljus.svg" alt="" />
+        <img class="logo large dark" src="/logga-text-mörk.svg" alt="" />
+        <img class="logo small light" src="/logga-löv-ljus.svg" alt="" />
+        <img class="logo small dark" src="/logga-löv-mörk.svg" alt="" />
         <!-- <h1>
           <Icon name="mdi:leaf-circle" />Lignosdatabasen
         </h1> -->
@@ -492,12 +492,12 @@ body {
   }
 }
 
-img {
+img:not(.logo) {
   border-radius: 0.5rem;
   box-shadow: 0 0 20px 3px rgba(0, 0, 0, 0.025);
 }
 
-.dark img {
+.dark img:not(.logo) {
   box-shadow: 0 0 20px 3px rgba(0, 0, 0, 0.5);
 }
 
@@ -1059,13 +1059,17 @@ html:has(.sök-cover) {
 
 .sök-container {
   margin-top: 1rem;
-  background: var(--element-bg);
+  background: var(--bg-color);
   border-radius: 1rem;
   box-shadow: 0 1px 40px 0px rgba(0, 0, 0, 0.4);
   /* width: 90vw; */
   width: 100%;
   max-width: 50rem;
   margin: 0;
+}
+
+.dark .sök-container {
+  background: var(--element-bg);
 }
 
 .sök-container .input-align {

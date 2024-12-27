@@ -1,16 +1,14 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 const currentYear = new Date().getFullYear();
 </script>
-
 
 <template>
   <footer>
     <div class="grid-align">
       <div>
-        <p>© {{currentYear}} Lignosdatabasen.</p>
-        <p>Alla rättigheter tillhör Peter Linder / Lindersplantskola.</p>
+        <p>© {{ currentYear }} Lignosdatabasen.</p>
         <p>Material från denna sida får ej användas utan tillåtelse.</p>
-        <p>peter@lindersplantskola.se  -  0733 518 716</p>
+        <p>Peter Linder - peter@lindersplantskola.se - 0733 518 716</p>
       </div>
       <div>
         Se även
@@ -21,7 +19,6 @@ const currentYear = new Date().getFullYear();
     </div>
   </footer>
 </template>
-
 
 <style>
 footer {
@@ -48,7 +45,7 @@ footer .grid-align {
   gap: 2rem;
 }
 
-footer .grid-align>div {
+footer .grid-align > div {
   width: 100%;
 }
 
@@ -58,12 +55,16 @@ footer .grid-align>div {
     gap: 1rem;
   }
 
-  footer .grid-align>div {
+  footer .grid-align > div {
     width: fit-content;
   }
 }
 
 footer a {
   font-weight: 600;
+}
+
+footer p {
+  line-height: 1.4;
 }
 </style>

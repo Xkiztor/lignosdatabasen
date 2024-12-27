@@ -355,7 +355,7 @@ useSeoMeta({
 
 .index .content .sök {
   margin-top: 1rem;
-  background: var(--element-bg);
+  background: var(--bg-color);
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -363,6 +363,10 @@ useSeoMeta({
   border-radius: 10000rem;
   position: relative;
   transition: max-width 300ms ease-in-out;
+}
+
+.dark .index .content .sök {
+  background: var(--element-bg);
 }
 
 .index .content .sök:has(.expanded) {

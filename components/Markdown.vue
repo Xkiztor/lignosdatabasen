@@ -112,12 +112,13 @@ article.main-content img {
   article.main-content .img-div:has(img.vänster) {
     float: left;
     margin-top: 0;
+    margin-right: 1.5rem;
   }
 
   article.main-content .img-div:has(img.höger) {
     float: right;
     margin-top: 0;
-    margin-left: 1rem;
+    margin-left: 1.5rem;
   }
 
   article.main-content .img-div img.höger,

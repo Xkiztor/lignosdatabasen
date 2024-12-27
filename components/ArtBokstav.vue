@@ -145,15 +145,19 @@ p.muted {
     padding: 1rem;
     border-radius: 0.5rem;
     background: var(--element-bg);
-    border: 1px solid var(--element-bg);
+    border: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 0.85rem;
     line-height: 1;
     z-index: 5;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-    font-size: 1.1em;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    /* font-size: 1.05em; */
+  }
+
+  .dark .dropdown {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
   }
 
   .dropdown::before {

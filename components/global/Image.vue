@@ -24,7 +24,11 @@ onClickOutside(target, () => {
 });
 
 const compressedUrl = computed(() => {
-  return source.replace('/upload/', '/upload/t_700bred,f_auto,q_auto/');
+  if (props.alt.includes('hel')) {
+    return source.replace('/upload/', '/upload/t_1000bred,f_auto,q_auto/');
+  } else {
+    return source.replace('/upload/', '/upload/t_500bred,f_auto,q_auto/');
+  }
 });
 const bigImageUrl = computed(() => {
   return source.replace('/upload/', '/upload/t_2000bred,f_auto,q_auto/');
@@ -122,12 +126,12 @@ const previous = () => {
 }
 
 .switch.previous {
-  left: -1.2rem;
+  left: -1.5rem;
   top: 50%;
   transform: translate(0, -50%);
 }
 .switch.next {
-  right: -1.2rem;
+  right: -1.5rem;
   top: 50%;
   transform: translate(0, -50%);
 }
@@ -163,12 +167,16 @@ article.main-content div.img-div:has(.bildtext) img.article-image {
 .screen-cover .bildtext-big-image {
   position: absolute;
   bottom: 0.75rem;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  width: 100%;
+  /* transform: translateX(-50%); */
   color: var(--text-color-dark);
   opacity: 0.7;
   text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
   /* width: 90vw; */
   text-align: center;
+  max-width: none;
+  padding: 0 10%;
 }
 </style>
