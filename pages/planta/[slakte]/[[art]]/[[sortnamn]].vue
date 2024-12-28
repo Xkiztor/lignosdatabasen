@@ -518,6 +518,21 @@ const extensions = [markdown(), oneDark];
                 <p><strong>Fifty fifty</strong></p>
                 <p>Två bilder</p>
               </div>
+              <div>
+                <div
+                  class="copy"
+                  @click="copy(`::Kolumner2{del=&quot;8020&quot;}\n\n<div>\n\n</div>\n\n::`)"
+                >
+                  <p>::Kolumner2{del=8020}</p>
+                  <p></p>
+                  <p>&lt;div&gt;</p>
+                  <p>&lt;/div&gt;</p>
+                  <p></p>
+                  <p>::</p>
+                </div>
+                <p><strong>Fifty fifty</strong></p>
+                <p>Två bilder</p>
+              </div>
             </div>
           </div>
           <div>
@@ -1078,6 +1093,14 @@ img.backdrop {
 .ͼo .cm-selectionBackground,
 .ͼo .cm-content ::selection {
   background: var(--primary-green-light);
+}
+
+.edit .ͼu {
+  color: #ca8a00;
+}
+
+.edit .ͼ11 {
+  font-size: var(--font-h3);
 }
 
 .main-content .ingress {
