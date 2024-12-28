@@ -52,7 +52,7 @@ article.main-content .screen-cover img {
 
 article.main-content .screen-cover a {
   position: absolute;
-  font-size: 0.9rem;
+  font-size: var(--font-base);
   opacity: 0.6;
   display: flex;
   align-items: center;

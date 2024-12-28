@@ -2,6 +2,138 @@
 /* @tailwind components;
 @tailwind utilities; */
 
+:root {
+  --title-color-light: #000000;
+  --title-color-dark: #fef6ec;
+
+  --text-color-light: #4c392f;
+  --text-color-dark: #eae0d4;
+
+  --mute-text-light: #b0a99f;
+  --mute-text-dark: #9a9087;
+
+  --bg-color-light: #edebe6;
+  --bg-color-dark: #181410;
+
+  --element-bg-light: #dddad1;
+  --element-bg-dark: #261f18;
+
+  --element-top-bg-light: #dddad1;
+  --element-top-bg-dark: #312a22;
+
+  --border-color-dark: #312a22;
+  /* --border-color-dark: #27272a; */
+  --border-color-light: #ccc9c2;
+
+  --primary-brown: #6b5e0a;
+  --primary-green-dark: #8ac957;
+  --primary-green-light: #76994e;
+
+  --link-light: #0645ad;
+  --link-dark: #75b4f8;
+  /* --primary-green-light: #386641; */
+  /* --primary-green-light: #447c4f; */
+  --primary-red: #bc4749;
+
+  /* --slab-font: 'Roboto', sans-serif; */
+  /* --title-font: Kanit, 'Satoshi', 'times new roman', 'Inter', 'Roboto', sans-serif; */
+
+  --shadow-light: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-dark: 0 1px 3px 0 rgba(0, 0, 0, 0.45), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-md-dark: 0 4px 6px -1px rgba(0, 0, 0, 0.45), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg-light: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg-dark: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-xl-light: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-xl-dark: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+  --shadow-2xl-light: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-2xl-dark: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  --shadow-outline: 0 0 0 3px rgba(118, 153, 78, 0.5);
+
+
+  --font-base: 0.8125rem;
+  --font-xs: 0.5625rem;
+  --font-sm: 0.6875rem;
+  --font-regular: 0.75rem;
+  --font-md: 1rem;
+  --font-lg: 1.1875rem;
+  --font-2xl: 1.3125rem;
+  --font-3xl: 1.5625rem;
+  --font-4xl: 2.5625rem;
+  --font-body: 1.125rem;
+  --font-tagline-ideal: 7.5vw;
+  --font-tagline-max: 5rem;
+  --font-tagline-min: 2.75rem;
+  --font-tagline-clamp: clamp(var(--font-tagline-min), var(--font-tagline-ideal), var(--font-tagline-max));
+  --font-hero: 1.4rem;
+  --font-cta: 5rem;
+  --font-h1: 3.15rem;
+  --font-h2: 2.75rem;
+  --font-h3: 2rem;
+  --font-h4: 1.25rem;
+}
+
+html {
+  --title-color: var(--title-color-light);
+
+  --text-color: var(--text-color-light);
+
+  --mute-text: var(--mute-text-light);
+
+  --bg-color: var(--bg-color-light);
+
+  --element-bg: var(--element-bg-light);
+
+  --element-top-bg: var(--element-top-bg-light);
+
+  --border-color: var(--border-color-light);
+
+  --primary-green: var(--primary-green-light);
+
+  --link: var(--link-light);
+
+  --shadow: var(--shadow-light);
+
+  --shadow-md: var(--shadow-md-light);
+
+  --shadow-lg: var(--shadow-lg-light);
+
+  --shadow-xl: var(--shadow-xl-light);
+
+  --shadow-2xl: var(--shadow-2xl-light);
+}
+
+.dark {
+  --title-color: var(--title-color-dark);
+
+  --text-color: var(--text-color-dark);
+
+  --mute-text: var(--mute-text-dark);
+
+  --bg-color: var(--bg-color-dark);
+
+  --element-bg: var(--element-bg-dark);
+
+  --element-top-bg: var(--element-top-bg-dark);
+
+  --border-color: var(--border-color-dark);
+
+  --primary-green: var(--primary-green-dark);
+
+  --link: var(--link-dark);
+
+  --shadow: var(--shadow-dark);
+  
+  --shadow-md: var(--shadow-md-dark);
+
+  --shadow-lg: var(--shadow-lg-dark);
+
+  --shadow-xl: var(--shadow-xl-dark);
+
+  --shadow-2xl: var(--shadow-2xl-dark);
+}
+
 *,
 ::before,
 ::after {

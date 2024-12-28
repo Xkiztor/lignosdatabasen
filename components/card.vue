@@ -18,8 +18,10 @@ const formattedDescription = computed(() => {
 
     // let desclenght = desc.lenght
 
-    desc = desc.replace(/!\[.*?\]\(.*?\)|\[.*?\]\(.*?\)/g, '');
-    desc = desc.replace(/[*\-_#{}\[\]]/g, '');
+    desc = desc.replace(/!\[.*?\]\(.*?\)|\[.*?\]\(.*?\)/g, ''); // Remove markdown image and link syntax
+    desc = desc.replace(/[*\-_#{}\[\]]/g, ''); // Remove markdown formatting characters
+    desc = desc.replace(/::\w+/g, ''); // Remove ::Fify
+    desc = desc.replace(/::/g, ''); // Remove ::
 
     desc = desc.slice(0, descriptionLenght);
 
@@ -99,7 +101,7 @@ const image = computed(() => {
 }
 
 .card h2 {
-  font-size: 1.5rem;
+  font-size: var(--font-3xl);
   font-family: var(--title-font);
   margin-top: 0.2rem;
 }
@@ -112,12 +114,12 @@ const image = computed(() => {
   border-radius: 1rem;
   padding: 1rem;
   border: 2px solid var(--border-color);
-  box-shadow: 0 0 15px 0px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
 }
 
 .dark .card {
   background: var(--element-bg);
-  box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.5);
+  /* box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.5); */
 }
 
 .card .faktarutan {
@@ -148,7 +150,7 @@ const image = computed(() => {
 
 .card .faktarutan span {
   opacity: 1;
-  font-size: 1.3rem;
+  font-size: var(--font-2xl);
   font-weight: 800;
 }
 </style>

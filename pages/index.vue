@@ -55,7 +55,7 @@ const searchResult = computed(() => {
 useSeoMeta({
   title: 'Lignosdatabasen - Samlad informationskälla om lignoser',
   description:
-    'Samlad informationskälla om lignoser. Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter.Urvalet siktar på allt som är som är härdigt att odla utomhus i Sverige men även en del som är på gränsen mensom kan klara t.ex. innergårdar i städerna eller kallväxthus.',
+    'Samlad informationskälla om lignoser. Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter. Urvalet siktar på allt som är härdigt att odla utomhus i Sverige men även en del som är på gränsen mensom kan klara t.ex. innergårdar i städerna eller kallväxthus.',
 });
 </script>
 
@@ -100,8 +100,8 @@ useSeoMeta({
         <p class="välkommen">Välkommen till Lignosdatabasen!</p>
         <p>
           Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter. Urvalet siktar
-          på allt som är som är härdigt att odla utomhus i Sverige men även en del som är på gränsen
-          men som kan klara t.ex. innergårdar i städerna eller kallväxthus.
+          på allt som är härdigt att odla utomhus i Sverige men även en del som är på gränsen men
+          som kan klara t.ex. innergårdar i städerna eller kallväxthus.
         </p>
         <p>
           Många bra foton finns och flertalet är till salu om du är intresserad. I vissa fall finns
@@ -153,7 +153,6 @@ useSeoMeta({
 .index .hero h1 {
   margin: 0;
   /* margin-bottom: 1rem; */
-  font-size: 12.5vw;
   font-weight: 900;
   /* font-size: 2rem; */
 }
@@ -162,15 +161,26 @@ useSeoMeta({
   .index .hero h1.lignos {
     font-size: 20vw;
   }
+  .index .hero h1.databas {
+    font-size: 12vw;
+  }
 
   .index .hero h1.lignos-databas {
     display: none;
+  }
+  .index .hero h1 {
+    line-height: 1;
+  }
+
+  .index .content > p {
+    margin-top: 1rem;
   }
 }
 
 @media screen and (min-width: 700px) {
   .index .hero h1 {
-    font-size: 5rem;
+    /* font-size: var(--font-cta); */
+    font-size: var(--font-tagline-clamp);
   }
 
   .index .hero h1.lignos,
@@ -179,17 +189,7 @@ useSeoMeta({
   }
 
   .index .content > p {
-    font-size: 1.5rem;
-  }
-}
-
-@media screen and (max-width: 700px) {
-  .index .hero h1 {
-    line-height: 0.95;
-  }
-
-  .index .content > p {
-    margin-top: 1rem;
+    font-size: var(--font-hero);
   }
 }
 
@@ -497,7 +497,7 @@ useSeoMeta({
 
 header.about {
   margin: 1rem auto 0;
-  font-size: 1.05rem;
+  font-size: var(--font-md);
   margin-bottom: 3rem;
   max-width: 60ch;
 }
@@ -529,8 +529,12 @@ header.about p {
   margin-bottom: 1rem;
 }
 header.about p.välkommen {
-  font-size: 1.4rem;
+  font-size: var(--font-hero);
   font-weight: 900;
   font-family: var(--title-font);
+}
+
+header.about img {
+  box-shadow: var(--shadow-2xl);
 }
 </style>

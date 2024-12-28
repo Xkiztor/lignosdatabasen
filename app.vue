@@ -378,93 +378,11 @@ h1 {
   font-weight: 900;
 }
 
-:root {
-  --title-color-light: #000000;
-  --title-color-dark: #fef6ec;
-
-  --text-color-light: #4c392f;
-  --text-color-dark: #eae0d4;
-
-  --mute-text-light: #b0a99f;
-  --mute-text-dark: #9a9087;
-
-  --bg-color-light: #edebe6;
-  --bg-color-dark: #181410;
-
-  --element-bg-light: #dddad1;
-  --element-bg-dark: #261f18;
-
-  --element-top-bg-light: #dddad1;
-  --element-top-bg-dark: #312a22;
-
-  --border-color-dark: #312a22;
-  /* --border-color-dark: #27272a; */
-  --border-color-light: #ccc9c2;
-
-  --primary-brown: #6b5e0a;
-  --primary-green-dark: #8ac957;
-  --primary-green-light: #76994e;
-
-  --link-light: #0645ad;
-  --link-dark: #75b4f8;
-  /* --primary-green-light: #386641; */
-  /* --primary-green-light: #447c4f; */
-  --primary-red: #bc4749;
-
-  /* --slab-font: 'Roboto', sans-serif; */
-  /* --title-font: Kanit, 'Satoshi', 'times new roman', 'Inter', 'Roboto', sans-serif; */
-}
-
-html {
-  --title-color: var(--title-color-light);
-
-  --text-color: var(--text-color-light);
-
-  --mute-text: var(--mute-text-light);
-
-  --bg-color: var(--bg-color-light);
-
-  --element-bg: var(--element-bg-light);
-
-  --element-top-bg: var(--element-top-bg-light);
-
-  --border-color: var(--border-color-light);
-
-  --primary-green: var(--primary-green-light);
-
-  --link: var(--link-light);
-}
-
-.dark {
-  --title-color: var(--title-color-dark);
-
-  --text-color: var(--text-color-dark);
-
-  --mute-text: var(--mute-text-dark);
-
-  --bg-color: var(--bg-color-dark);
-
-  --element-bg: var(--element-bg-dark);
-
-  --element-top-bg: var(--element-top-bg-dark);
-
-  --border-color: var(--border-color-dark);
-
-  --primary-green: var(--primary-green-dark);
-
-  --link: var(--link-dark);
-}
-
 html {
   background: var(--bg-color);
   color: var(--text-color);
   overflow-x: hidden;
   font-family: 'Switzer', 'Roboto', sans-serif;
-}
-
-html.dark {
-  background: var(--bg-color);
-  color: var(--text-color);
 }
 
 html:has(#image-screen-cover) {
@@ -473,6 +391,8 @@ html:has(#image-screen-cover) {
 
 body {
   margin: 0;
+  font-size: var(--font-body);
+  line-height: 1.5;
 }
 
 .site {
@@ -494,15 +414,15 @@ body {
 
 img:not(.logo) {
   border-radius: 0.5rem;
-  box-shadow: 0 0 20px 3px rgba(0, 0, 0, 0.025);
+  box-shadow: var(--shadow-lg);
 }
 
 .dark img:not(.logo) {
-  box-shadow: 0 0 20px 3px rgba(0, 0, 0, 0.5);
+  /* box-shadow: 0 0 20px 3px rgba(0, 0, 0, 0.5); */
 }
 
 p {
-  font-size: 1.1em;
+  /* font-size: 1.1em; */
 }
 
 a {
@@ -537,7 +457,7 @@ textarea,
   border-radius: 0.5rem;
   transition: all 150ms;
   /* font-size: 105%; */
-  font-size: 0.95em;
+  /* font-size: 0.95em; */
   cursor: pointer;
 }
 
@@ -629,7 +549,7 @@ nav {
   /* flex-grow: 1; */
   display: grid;
   grid-template-columns: 20% 60% 20%;
-  font-size: 1.4rem;
+  font-size: var(--font-3xl);
   padding: 0.5rem;
   border-bottom: 1px solid var(--border-color);
   height: fit-content;
@@ -712,12 +632,12 @@ nav h1 {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  font-size: 1em;
+  /* font-size: 1em; */
 }
 
 @media screen and (min-width: 900px) {
   nav h1 {
-    font-size: 1.2em;
+    /* font-size: 1.2em; */
   }
 }
 
@@ -963,11 +883,11 @@ nav .theme-toggle svg.icon {
     align-items: center;
     gap: 0.25rem;
     flex-direction: row;
-    font-size: 1.3rem;
+    font-size: var(--font-lg);
   }
 
   .alla-växter p .icon {
-    font-size: 1.3em;
+    font-size: 1.4em;
   }
 
   .alla-växter {
@@ -998,7 +918,7 @@ a.alla-växter.router-link-exact-active {
 ul .alla-växter {
   width: fit-content;
   height: fit-content;
-  font-size: 1.15em;
+  /* font-size: 1.15em; */
 }
 
 nav .icon:hover {
@@ -1097,7 +1017,8 @@ html:has(.sök-cover) {
   border-color: transparent;
   border-width: 0;
   border-radius: 0;
-  font-size: 1.15em;
+  /* font-size: 1.15em; */
+  font-size: var(--font-2xl);
 }
 
 .sök-container input::placeholder {
@@ -1128,7 +1049,7 @@ html:has(.sök-cover) {
 
 .sök-container button:has(.icon) {
   padding: 0.5rem;
-  font-size: 1.4rem;
+  font-size: var(--font-3xl);
 }
 
 .sök-container .expanded {

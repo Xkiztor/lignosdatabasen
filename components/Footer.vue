@@ -8,7 +8,11 @@ const currentYear = new Date().getFullYear();
       <div>
         <p>© {{ currentYear }} Lignosdatabasen.</p>
         <p>Material från denna sida får ej användas utan tillåtelse.</p>
-        <p>Peter Linder - peter@lindersplantskola.se - 0733 518 716</p>
+        <p class="mobile-line-break">
+          <span>Peter Linder</span><span class="dash"> - </span
+          ><span>peter@lindersplantskola.se</span><span class="dash"> - </span>
+          <span>0733 518 716</span>
+        </p>
       </div>
       <div>
         Se även
@@ -65,6 +69,23 @@ footer a {
 }
 
 footer p {
-  line-height: 1.4;
+  line-height: 1.5;
+}
+
+@media screen and (min-width: 1100px) {
+  .mobile-line-break span {
+    display: inline;
+  }
+}
+@media screen and (max-width: 1100px) {
+  .mobile-line-break span {
+    display: block;
+  }
+  .mobile-line-break span.dash {
+    display: none;
+  }
+  .mobile-line-break {
+    margin-top: 0.5rem;
+  }
 }
 </style>

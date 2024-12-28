@@ -193,7 +193,7 @@ const images = computed(() => {
 
   state.currentPageBildtexter.value = specificPlant.value.text
     .split(/(!\[[^\]]*\]\([^\)]+\)(?:\{[^}]+\})?)/)
-    .filter((str) => str !== '' && str.includes('http'))
+    .filter((str) => str !== '' && str.includes('http') && str.includes('!['))
     .map((str) => str.match(/\{[^}]*text="([^"]+)"[^}]*\}/)?.[1] || '');
 
   return specificPlant.value.text
@@ -359,7 +359,7 @@ const extensions = [markdown(), oneDark];
         <Icon name="material-symbols:delete-forever-outline-rounded" />Ta bort
       </button>
       <!-- <button @click="duplicate()">Dublicera</button> -->
-      <button v-if="showHide === false" @click="unHide()">
+      <button v-if="showHide === false" @click="unHide()" class="visa">
         <Icon name="zondicons:view-show" />Visa växt
       </button>
       <button v-else @click="hide()"><Icon name="zondicons:view-hide" />Dölj växt</button>
@@ -624,13 +624,13 @@ const extensions = [markdown(), oneDark];
 }
 
 .page.plant h1 {
-  font-size: 2rem;
+  font-size: var(--font-h3);
   margin: 0;
   margin-top: 1rem;
 }
 
 header h2.subtitle {
-  font-size: 1.2em;
+  font-size: var(--font-2xl);
 }
 
 header .content h2.fakta {
@@ -663,15 +663,15 @@ header .content h2.fakta .label {
 
 @media screen and (min-width: 700px) {
   .page.plant h1 {
-    font-size: 3rem;
+    font-size: var(--font-h1);
   }
 
   .page.plant .main-content h1 {
-    font-size: 2.5rem;
+    font-size: var(--font-4xl);
   }
 
   header h2.subtitle {
-    font-size: 1.4rem;
+    font-size: var(--font-2xl);
   }
 }
 
@@ -830,11 +830,18 @@ article.main-content p {
   max-width: 70ch;
   line-height: 1.4;
 }
+article.main-content h1 {
+  font-size: var(--font-h1);
+}
+article.main-content h2:not(.ingress) {
+  font-size: var(--font-h3);
+  font-weight: 700;
+}
 
 .center-content main,
 .center-content main *,
 .center-content .grid-layout {
-  font-size: 1.15rem;
+  /* font-size: 1.15rem; */
 }
 
 .center-content main {
@@ -883,6 +890,10 @@ article.main-content p {
   }
 }
 
+.admin-panel .visa {
+  color: var(--primary-red);
+}
+
 .model {
   width: 100vw;
   height: 100vh;
@@ -911,7 +922,7 @@ article.main-content p {
 }
 
 .model .buttons button {
-  font-size: 1.2rem;
+  /* font-size: 1.2rem; */
   width: 4em;
 }
 
@@ -1072,11 +1083,11 @@ img.backdrop {
 .main-content .ingress {
   font-weight: bold;
   margin-bottom: 1rem;
-  font-size: 1.1em;
+  /* font-size: 1.1em; */
 }
 
 .center-content .grid-layout {
-  font-size: 1.15rem;
+  /* font-size: 1.15rem; */
 
   /* max-width: 70ch; */
   /* grid-template-columns: 1fr; */
@@ -1118,6 +1129,7 @@ img.backdrop {
   margin: 1rem 0;
   line-height: 1;
   font-size: 2.25rem;
+  font-size: var(--font-h2);
 }
 
 .center-content .grid-layout .line-spacer {

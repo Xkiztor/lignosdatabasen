@@ -36,7 +36,7 @@ const bigImageUrl = computed(() => {
 
 const getImage = (i) => {
   source = state.currentPageImages.value[i];
-  bildtext.value = state.currentPageBildtexter.value[i];
+  bildtext.value = state.currentPageBildtexter.value[i].replace(/&quot;/g, '"');
 };
 
 const next = () => {
@@ -158,7 +158,7 @@ article.main-content div.img-div:has(.bildtext) img.article-image {
 
 .img-div .bildtext {
   margin-bottom: 0.5rem;
-  font-size: 0.85em;
+  /* font-size: 0.85em; */
   width: fit-content;
   max-width: 99%;
   opacity: 0.7;
