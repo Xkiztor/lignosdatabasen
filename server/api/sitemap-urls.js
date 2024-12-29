@@ -13,7 +13,9 @@ export default defineEventHandler(async (event) => {
   }
 
   return data.map((planta) => ({
-    loc: `/planta/${planta.slakte}/${planta.art}${planta.sortnamn ? '/' : ''}${planta.sortnamn}`,
+    loc: `/planta/${planta.slakte}/${planta.art.replace(/ /g, '+')}${
+      planta.sortnamn ? '/' : ''
+    }${planta.sortnamn.replace(/ /g, '+')}`,
     lastmod: planta.ändrad,
     changefreq: 'weekly',
     priority: 0.9,

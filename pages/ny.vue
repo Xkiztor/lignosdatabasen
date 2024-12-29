@@ -1,4 +1,4 @@
-<script setup lang='js'>
+<script setup lang="js">
 const runtimeConfig = useRuntimeConfig();
 const enteredPassword = useCookie('enteredPassword', { maxAge: 60604800 });
 
@@ -21,7 +21,7 @@ const addPlant = async () => {
   if (error) {
     console.error(error)
   } else {
-    navigateTo('/')
+    navigateTo(`/planta/${editablePlant.slakte}/${editablePlant.art}/${editablePlant.sortnamn}`)
   }
 }
 
@@ -30,26 +30,25 @@ definePageMeta({
 });
 </script>
 
-
 <template>
   <div class="page add plant">
     <div class="main-content add">
       <form @submit.prevent="">
         <div>
           <h2>Släkte</h2>
-          <input type="text" v-model="editablePlant.slakte">
+          <input type="text" v-model="editablePlant.slakte" />
         </div>
         <div>
           <h2>Art</h2>
-          <input type="text" v-model="editablePlant.art">
+          <input type="text" v-model="editablePlant.art" />
         </div>
         <div>
           <h2>Sortnamn</h2>
-          <input type="text" v-model="editablePlant.sortnamn">
+          <input type="text" v-model="editablePlant.sortnamn" />
         </div>
         <div>
           <h2>Svenskt Namn</h2>
-          <input type="text" v-model="editablePlant.svensktnamn">
+          <input type="text" v-model="editablePlant.svensktnamn" />
         </div>
         <div>
           <h2>Text</h2>
@@ -66,9 +65,11 @@ definePageMeta({
       <div class="forhandsgranskning-article">
         <div>
           <header>
-            <h1>{{ editablePlant.slakte }} {{ editablePlant.art === 'slakte' ? '' : editablePlant.art }} {{
-        editablePlant.sortnamn ? `'${editablePlant.sortnamn}'` :
-          '' }}</h1>
+            <h1>
+              {{ editablePlant.slakte }}
+              {{ editablePlant.art === 'slakte' ? '' : editablePlant.art }}
+              {{ editablePlant.sortnamn ? `'${editablePlant.sortnamn}'` : '' }}
+            </h1>
             <h2 class="subtitle">{{ editablePlant.svensktnamn }}</h2>
           </header>
           <article>
@@ -80,7 +81,6 @@ definePageMeta({
     </div>
   </div>
 </template>
-
 
 <style>
 .main-content.add {
@@ -95,7 +95,7 @@ definePageMeta({
   margin-bottom: 4rem;
 }
 
-.main-content.add form>div {
+.main-content.add form > div {
   display: grid;
   grid-template-columns: 1fr 4fr;
   gap: 1rem;
@@ -103,18 +103,17 @@ definePageMeta({
   place-items: center stretch;
 }
 
-.main-content.add form>div textarea {
+.main-content.add form > div textarea {
   min-height: 10rem;
   resize: vertical;
   transition: none;
 }
 
-.main-content.add form>div button {
+.main-content.add form > div button {
   margin-top: 1rem;
   margin-bottom: 3rem;
   /* grid-column: 1/3; */
 }
-
 
 @media screen and (min-width: 700px) {
   .forhandsgranskning-article {

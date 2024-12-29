@@ -60,8 +60,8 @@ const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async
       .from('lignosdatabasen')
       .select()
       .eq('slakte', `${route.params.slakte}`)
-      .eq('art', `${route.params.art === '-' ? '-' : route.params.art}`)
-      .eq('sortnamn', `${route.params.sortnamn}`)
+      .eq('art', `${route.params.art === '-' ? '-' : route.params.art.replace(/\+/g, ' ')}`)
+      .eq('sortnamn', `${route.params.sortnamn.replace(/\+/g, ' ')}`)
       .single();
 
     if (error) {
@@ -76,8 +76,8 @@ const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async
     ) {
       return {
         slakte: route.params.slakte,
-        art: route.params.art,
-        sortnamn: route.params.sortnamn + '- 404 - Existerar inte',
+        art: route.params.art.replace(/\+/g, ' '),
+        sortnamn: route.params.sortnamn.replace(/\+/g, ' ') + '- 404 - Existerar inte',
         text: 'Kontrollera adressen',
         hidden: true,
       };
@@ -95,7 +95,7 @@ const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async
       .from('lignosdatabasen')
       .select()
       .eq('slakte', `${route.params.slakte}`)
-      .eq('art', `${route.params.art}`)
+      .eq('art', `${route.params.art.replace(/\+/g, ' ')}`)
       .single();
     if (error) {
       console.error(error);
@@ -105,8 +105,8 @@ const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async
     if (data.hidden === true && runtimeConfig.public.ADMIN_PASSWORD !== enteredPassword.value) {
       return {
         slakte: route.params.slakte,
-        art: route.params.art,
-        sortnamn: route.params.sortnamn + '- 404 - Existerar inte',
+        art: route.params.art.replace(/\+/g, ' '),
+        sortnamn: route.params.sortnamn.replace(/\+/g, ' ') + '- 404 - Existerar inte',
         text: 'Kontrollera adressen',
         hidden: true,
       };
@@ -115,7 +115,7 @@ const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async
       return {
         slakte: route.params.slakte,
         art: 'slakte',
-        sortnamn: route.params.sortnamn,
+        sortnamn: route.params.sortnamn.replace(/\+/g, ' '),
         text: 'Ingen Info',
         hidden: false,
       };
@@ -234,9 +234,13 @@ useHead({
         ? ' släkte'
         : route.params.art === '-'
         ? ''
-        : ' ' + route.params.art
+        : ' ' + route.params.art.replace(/\+/g, ' ')
     }
-    ${route.params.sortnamn ? " '" + route.params.sortnamn + "'" : ''} - Ligonsdatabasen`;
+    ${
+      route.params.sortnamn.replace(/\+/g, ' ')
+        ? " '" + route.params.sortnamn.replace(/\+/g, ' ') + "'"
+        : ''
+    } - Ligonsdatabasen`;
   },
   scripts: [
     {
@@ -368,7 +372,13 @@ const extensions = [markdown(), oneDark];
     <!-- <div class="image-showcase" :style="{ gridTemplateColumns: `repeat(${plant.bilder.length}, 1fr)` }">
       <nuxt-img v-for="image in plant.bilder" :src="image" />
     </div> -->
-    <header class="top-bar" :class="{ 'no-image': images[0] == undefined }">
+    <header
+      class="top-bar"
+      :class="{
+        'no-image': images[0] == undefined,
+        'page-not-found': specificPlant.sortnamn.includes('404 - Existerar inte'),
+      }"
+    >
       <div class="content">
         <h1>
           {{ specificPlant.slakte }}
@@ -390,6 +400,15 @@ const extensions = [markdown(), oneDark];
           >
           <span v-if="specificPlant.synonymer"
             ><span class="label">Synonymer: </span> {{ specificPlant.synonymer }}</span
+          >
+          <span v-if="specificPlant.synonymtill"
+            ><span class="label">Synonym till: </span>
+            <NuxtLink class="link" :to="specificPlant.synonymtill">{{
+              specificPlant.synonymtill
+                .replace(/planta\//g, '')
+                .replace(/\+/g, ' ')
+                .replace(/\//g, ' ')
+            }}</NuxtLink></span
           >
         </h2>
         <h2 class="subtitle">{{ specificPlant.svensktnamn }}</h2>
@@ -440,7 +459,10 @@ const extensions = [markdown(), oneDark];
             <input type="text" v-model="editablePlant.synonymer" />
           </div>
           <div>
-            <h2>Syn. till <br />(lokal länk)</h2>
+            <h2>
+              Syn. till <br />(lokal länk) <br />
+              /planta/Acer/griseum
+            </h2>
             <input type="text" v-model="editablePlant.synonymtill" />
           </div>
           <div>
@@ -530,8 +552,8 @@ const extensions = [markdown(), oneDark];
                   <p></p>
                   <p>::</p>
                 </div>
-                <p><strong>Fifty fifty</strong></p>
-                <p>Två bilder</p>
+                <p><strong>Uppdelning</strong></p>
+                <p>2 kolumner</p>
               </div>
             </div>
           </div>
@@ -583,7 +605,12 @@ const extensions = [markdown(), oneDark];
               >
             </li>
             <li v-for="plant in plantsInSlakte" :class="{ muted: plant.text === 'Ingen info' }">
-              <nuxt-link :to="`/planta/${plant.slakte}/${plant.art}/${plant.sortnamn}`">
+              <nuxt-link
+                :to="`/planta/${plant.slakte}/${plant.art.replace(
+                  / /g,
+                  '+'
+                )}/${plant.sortnamn.replace(/ /g, '+')}`"
+              >
                 {{ plant.slakte }} {{ plant.art === '-' ? '' : plant.art }}
                 {{ plant.sortnamn ? `'${plant.sortnamn}'` : ''
                 }}{{
@@ -678,7 +705,7 @@ header .content h2.fakta .label {
 
 @media screen and (min-width: 700px) {
   .page.plant h1 {
-    font-size: var(--font-h1);
+    font-size: var(--font-h2);
   }
 
   .page.plant .main-content h1 {
@@ -738,6 +765,10 @@ header .content h2.fakta .label {
   .page .top-bar .content {
     grid-template-columns: 2fr 1fr;
   }
+  .page .top-bar .content:not(:has(.superlistan)) h1 {
+    grid-column: 1/3;
+    grid-row: 1;
+  }
 
   .content .finns-att-kopa {
     grid-column: 2/3;
@@ -770,6 +801,9 @@ header .content h2.fakta .label {
 
 .page .top-bar {
   background: var(--primary-green-light);
+}
+.page .top-bar.page-not-found {
+  background: var(--primary-red);
 }
 
 .sidebar {

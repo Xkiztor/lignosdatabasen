@@ -429,6 +429,11 @@ a {
   color: var(--text-color);
 }
 
+a.link {
+  color: var(--link);
+  text-decoration: underline;
+}
+
 h1 {
   font-weight: 800;
   letter-spacing: 0.02em;

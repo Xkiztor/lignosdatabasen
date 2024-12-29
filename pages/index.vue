@@ -199,6 +199,7 @@ useSeoMeta({
 
 .index .image-align .hero-image {
   border-radius: 0;
+  box-shadow: none;
   /* filter: brightness(0.8); */
 }
 
