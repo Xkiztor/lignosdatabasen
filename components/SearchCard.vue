@@ -26,7 +26,10 @@ const image = computed(() => {
         :to="
           plant.synonymtill
             ? plant.synonymtill
-            : `/planta/${plant.slakte}/${plant.art}/${plant.sortnamn}`
+            : `/planta/${plant.slakte}/${plant.art.replace(/ /g, '+')}/${plant.sortnamn.replace(
+                / /g,
+                '+'
+              )}`
         "
         @click="$emit('close')"
       >
@@ -43,6 +46,15 @@ const image = computed(() => {
         </span> -->
         <span>
           {{ plant.svensktnamn }}
+        </span>
+        <span v-if="plant.synonymtill">
+          Syn. till:
+          {{
+            plant.synonymtill
+              .replace(/planta\//g, '')
+              .replace(/\+/g, ' ')
+              .replace(/\//g, ' ')
+          }}
         </span>
       </NuxtLink>
       <p>{{ plant.ingress }}</p>

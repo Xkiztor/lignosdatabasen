@@ -55,7 +55,13 @@ const image = computed(() => {
 
 <template>
   <div class="card">
-    <NuxtLink class="image" :to="`/planta/${växt.slakte}/${växt.art}/${växt.sortnamn}`">
+    <NuxtLink
+      class="image"
+      :to="`/planta/${växt.slakte}/${växt.art.replace(/ /g, '+')}/${växt.sortnamn.replace(
+        / /g,
+        '+'
+      )}`"
+    >
       <NuxtImg v-if="image" loading="lazy" :src="image" alt="Laddar..." />
     </NuxtLink>
     <div class="faktarutan">
