@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     // { src: '@nuxtjs/device', ssr: false },
     '@nuxtjs/sitemap',
     '@nuxt/fonts',
+    '@nuxt/scripts',
   ],
 
   supabase: {
@@ -50,6 +51,14 @@ export default defineNuxtConfig({
         a: 'Anchor',
       },
     },
+  },
+
+  scripts: {
+    registry: {
+      googleAnalytics: {
+        id: 'G-1QX4VQH98Y',
+      }
+    }
   },
 
   site: {
