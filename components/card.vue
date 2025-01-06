@@ -72,7 +72,7 @@ const image = computed(() => {
         B: <span>{{ växt.bredd }}</span> m
       </div>
       <div v-if="växt.zon">
-        Z: <span>{{ växt.zon }}</span>
+        Z: <span class="slab-font">{{ växt.zon }}</span>
       </div>
     </div>
     <NuxtLink :to="`/planta/${växt.slakte}/${växt.art}/${växt.sortnamn}`">

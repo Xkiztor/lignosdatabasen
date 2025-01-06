@@ -1183,10 +1183,10 @@ img.backdrop {
 } */
 
 .center-content .grid-layout h1 {
-  margin: 1rem 0;
+  margin: 1.5rem 0 1.5rem;
   line-height: 1;
-  font-size: 2.25rem;
-  font-size: var(--font-h2);
+  /* font-size: 2.25rem; */
+  font-size: var(--font-h3);
 }
 
 .center-content .grid-layout .line-spacer {

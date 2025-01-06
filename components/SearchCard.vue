@@ -15,6 +15,25 @@ const image = computed(() => {
   return images;
   // return specificPlant.value.text.split(/[\[\]]/).filter(str => str !== '' && str.includes('http'))
 });
+
+const ingress = computed(() => {
+  if (props.plant.ingress) {
+    return props.plant.ingress;
+  } else {
+    let text = props.plant.text;
+    let textWithoutMarkdown = text
+      .replace(/!\[[^\]]*\]\([^)]*\)/g, '') // Remove images
+      .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1') // Remove links but keep the text
+      .replace(/`([^`]+)`/g, '$1') // Remove inline code
+      .replace(/#+\s/g, '') // Remove headers
+      .replace(/>\s/g, '') // Remove blockquotes
+      .replace(/[*_~]/g, '') // Remove emphasis
+      .replace(/::\s*\w+/g, '') // Remove :: followed by a word
+      .replace(/::/g, ''); // Remove ::
+
+    return textWithoutMarkdown.substring(0, 125) + '...'; // Return first 200 characters
+  }
+});
 </script>
 
 <template>
@@ -57,7 +76,7 @@ const image = computed(() => {
           }}
         </span>
       </NuxtLink>
-      <p>{{ plant.ingress }}</p>
+      <p>{{ ingress }}</p>
     </div>
   </li>
 </template>
@@ -78,8 +97,8 @@ const image = computed(() => {
 }
 
 .search-card a {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: var(--font-h4);
+  font-weight: 600;
   /* display: flex; */
   /* flex-direction: row; */
   /* flex-direction: row; */
@@ -92,17 +111,27 @@ const image = computed(() => {
 }
 
 .search-card a span:first-child {
-  font-size: 1.75rem;
-  font-family: var(--title-font);
+  font-size: var(--font-3xl);
+  font-weight: 700;
+}
+
+.search-card .text p {
+  margin-top: 0.2rem;
+  font-size: var(--font-md);
+  max-height: 100%;
+  overflow-y: clip;
 }
 
 @media screen and (max-width: 700px) {
   .search-card a {
-    font-size: 1.1rem;
+    font-size: var(--font-body);
   }
 
   .search-card a span:first-child {
-    font-size: 1.5rem;
+    font-size: var(--font-2xl);
+  }
+  .search-card p {
+    font-size: var(--font-base);
   }
 }
 
@@ -132,18 +161,5 @@ const image = computed(() => {
 }
 
 .search-card .text {
-}
-
-.search-card .text p {
-  margin-top: 0.2rem;
-  font-size: 1rem;
-  max-height: 100%;
-  overflow-y: clip;
-}
-
-@media screen and (min-width: 700px) {
-  .search-card .text p {
-    font-size: 1.1rem;
-  }
 }
 </style>

@@ -363,7 +363,7 @@ onClickOutside(sökContainer, () => (isSökOpen.value = false));
   box-sizing: border-box;
   /* font-family: 'Playpen Sans'; */
   /* font-family: Salsa; */
-  font-family: var(--slab-font);
+  /* font-family: var(--slab-font); */
   /* font-weight: 900; */
   word-spacing: 1px;
   letter-spacing: 0.1px;
@@ -373,7 +373,7 @@ onClickOutside(sökContainer, () => (isSökOpen.value = false));
 }
 
 h1 {
-  font-family: var(--title-font);
+  /* font-family: var(--title-font); */
 
   font-weight: 900;
 }
@@ -387,6 +387,10 @@ html {
 
 html:has(#image-screen-cover) {
   overflow: clip;
+}
+
+.slab-font {
+  font-family: 'Roboto Slab', 'Switzer', 'Roboto', sans-serif;
 }
 
 body {

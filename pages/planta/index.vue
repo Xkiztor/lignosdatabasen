@@ -212,10 +212,11 @@ useSeoMeta({
         </div>
         <div class="filter">
           <h2>
-            Zon: <span class="zon">{{ zonFormat(zon) }}</span>
+            Zon: <span class="zon slab-font">{{ zonFormat(zon) }}</span>
           </h2>
           <!-- <h2>Zon: {{ zon[0] }} - {{ zon[1] }}</h2> -->
           <Slider
+            class="slab-font"
             v-model="zon"
             :min="defaultSlider.zon.min"
             :max="defaultSlider.zon.max"
@@ -374,11 +375,11 @@ useSeoMeta({
 }
 
 .top-part .filter * {
-  font-family: var(--title-font);
+  /* font-family: var(--title-font); */
 }
 
 .filter .zon {
-  font-family: var(--slab-font);
+  /* font-family: var(--slab-font); */
 }
 
 html {
