@@ -3,7 +3,7 @@ const props = defineProps(['string', 'src', 'alt', 'text']);
 
 const route = useRoute();
 
-var source = props.src;
+const source = ref(props.src);
 const bildtext = ref(props.text);
 var index = 0;
 
@@ -19,23 +19,25 @@ const state = useGlobalState();
 
 const target = ref();
 
-onClickOutside(target, () => {
-  imageOpened.value = false;
+onClickOutside(target, (event) => {
+  if (!event.target.closest('.switch')) {
+    imageOpened.value = false;
+  }
 });
 
 const compressedUrl = computed(() => {
   if (props.alt.includes('hel')) {
-    return source.replace('/upload/', '/upload/t_1000bred,f_auto,q_auto/');
+    return props.src.replace('/upload/', '/upload/t_1000bred,f_auto,q_auto/');
   } else {
-    return source.replace('/upload/', '/upload/t_500bred,f_auto,q_auto/');
+    return props.src.replace('/upload/', '/upload/t_500bred,f_auto,q_auto/');
   }
 });
 const bigImageUrl = computed(() => {
-  return source.replace('/upload/', '/upload/t_2000bred,f_auto,q_auto/');
+  return source.value.replace('/upload/', '/upload/t_2000bred,f_auto,q_auto/');
 });
 
 const getImage = (i) => {
-  source = state.currentPageImages.value[i];
+  source.value = state.currentPageImages.value[i];
   bildtext.value = state.currentPageBildtexter.value[i].replace(/&quot;/g, '"');
 };
 
@@ -64,27 +66,31 @@ const previous = () => {
 </script>
 
 <template>
-  <div class="screen-cover" id="image-screen-cover" v-if="imageOpened">
-    <NuxtImg
-      :src="bigImageUrl"
-      :alt="`${route.params.slakte} ${route.params.art}${route.params.sortnamn ? ` '` : ''}${
-        route.params.sortnamn
-      }${route.params.sortnamn ? `'` : ''}${state.currentPagePlant.value.svensktnamn ? ' - ' : ''}${
-        state.currentPagePlant.value.svensktnamn ? state.currentPagePlant.value.svensktnamn : ''
-      }`"
-      ref="target"
-    />
-    <button class="switch previous" @click="previous()">
-      <Icon name="material-symbols:arrow-left-rounded" />
-    </button>
-    <button class="switch next" @click="next()">
-      <Icon name="material-symbols:arrow-right-rounded" />
-    </button>
-    <p v-if="bildtext" class="bildtext-big-image">{{ bildtext }}</p>
-    <NuxtLink :to="source" target="_blank">
-      <Icon name="material-symbols:open-in-new-rounded" />Öppna full bild
-    </NuxtLink>
-  </div>
+  <Transition name="bild">
+    <div class="screen-cover" id="image-screen-cover" v-if="imageOpened">
+      <NuxtImg
+        :src="bigImageUrl"
+        :alt="`${route.params.slakte} ${route.params.art}${route.params.sortnamn ? ` '` : ''}${
+          route.params.sortnamn
+        }${route.params.sortnamn ? `'` : ''}${
+          state.currentPagePlant.value.svensktnamn ? ' - ' : ''
+        }${
+          state.currentPagePlant.value.svensktnamn ? state.currentPagePlant.value.svensktnamn : ''
+        }`"
+        ref="target"
+      />
+      <button class="switch previous" @click="previous()">
+        <Icon name="material-symbols:arrow-left-rounded" />
+      </button>
+      <button class="switch next" @click="next()">
+        <Icon name="material-symbols:arrow-right-rounded" />
+      </button>
+      <p v-if="bildtext" class="bildtext-big-image">{{ bildtext }}</p>
+      <NuxtLink :to="source" target="_blank">
+        <Icon name="material-symbols:open-in-new-rounded" />Öppna full bild
+      </NuxtLink>
+    </div>
+  </Transition>
   <div class="img-div">
     <NuxtImg
       class="article-image"
@@ -178,5 +184,15 @@ article.main-content div.img-div:has(.bildtext) img.article-image {
   text-align: center;
   max-width: none;
   padding: 0 10%;
+}
+
+.bild-enter-active,
+.bild-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.bild-enter-from,
+.bild-leave-to {
+  opacity: 0;
 }
 </style>
