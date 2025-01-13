@@ -255,7 +255,10 @@ useHead({
             ? ''
             : specificPlant.value.art
         } ${specificPlant.value.sortnamn ? "'" + specificPlant.value.sortnamn + "'" : ''}`,
-        author: 'Peter Linder',
+        author: {
+          '@type': 'Person',
+          name: 'Peter Linder',
+        },
         image: images.value,
       },
     },
