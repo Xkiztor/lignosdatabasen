@@ -563,8 +563,8 @@ const resetFilters = () => {
   /* font-family: var(--title-font); */
 }
 
-.filter .zon {
-  /* font-family: var(--slab-font); */
+.filter .slider-connects {
+  cursor: pointer;
 }
 
 .top-part .rensa {

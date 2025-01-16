@@ -383,6 +383,7 @@ html {
   color: var(--text-color);
   overflow-x: hidden;
   font-family: 'Switzer', 'Roboto', sans-serif;
+  /* scrollbar-gutter: auto; */
 }
 
 html:has(#image-screen-cover) {
