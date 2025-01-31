@@ -417,7 +417,7 @@ const extensions = [markdown(), oneDark];
         <h2 class="subtitle">{{ specificPlant.svensktnamn }}</h2>
         <PlantApi v-if="!isSlakte && !specificPlant.sortnamn" :plant="specificPlant" />
         <div class="finns-att-kopa">
-          <!-- <KopaSuperlistan /> -->
+          <KopaSuperlistan />
         </div>
       </div>
       <img :src="compressedUrl" alt="" />

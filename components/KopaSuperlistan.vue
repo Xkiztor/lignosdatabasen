@@ -4,7 +4,7 @@ const client = useSupabaseClient();
 const route = useRoute();
 // const router = useRouter();
 
-const superlistYear = 2024;
+const superlistYear = 2025;
 
 const isOnSuperlistan = ref(false);
 const superlistan = ref();
@@ -15,10 +15,12 @@ const { data, error } = await client
   .select()
   .eq(
     'Namn',
-    `${route.params.slakte} ${route.params.art === '-' ? '' : route.params.art} ${
-      route.params.sortnamn ? "'" : ''
+    `${route.params.slakte} ${route.params.art === '-' ? '' : route.params.art}${
+      route.params.sortnamn ? " '" : ''
     }${route.params.sortnamn}${route.params.sortnamn ? "'" : ''}`
   );
+
+console.log(data);
 
 if (error) {
   console.error(error);
@@ -67,10 +69,14 @@ if (data && data.length > 0) {
   grid-template-columns: min-content 1fr;
   gap: 0.75rem;
   place-items: center start;
+  /* background: rgba(0, 0, 0, 0.2); */
+  backdrop-filter: blur(15px);
+  /* background: rgba(255, 255, 255, 0.1); */
 }
 
 .content .finns-att-kopa .superlistan > .icon {
   font-size: 2.5rem;
+  margin: 0 0.25rem;
 }
 
 .content .finns-att-kopa .superlistan h1 {
