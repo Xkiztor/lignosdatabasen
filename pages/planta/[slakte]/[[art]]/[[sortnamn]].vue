@@ -82,8 +82,8 @@ const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async
         hidden: true,
       };
     } else {
-      state.currentPagePlant.value = data;
       console.log(state.currentPagePlant.value);
+      state.currentPagePlant.value = data;
 
       return data;
     }
@@ -132,6 +132,7 @@ const editablePlant = reactive(specificPlant.value);
 
 const editPlant = async () => {
   editablePlant.ändrad = new Date().toISOString().replace('T', ' ').replace('Z', '+00');
+  editablePlant.tabell = JSON.stringify(plants.value);
 
   const { error } = await client
     .from('lignosdatabasen')
@@ -341,6 +342,42 @@ import { Codemirror } from 'vue-codemirror';
 import { markdown } from '@codemirror/lang-markdown';
 import { oneDark } from '@codemirror/theme-one-dark';
 const extensions = [markdown(), oneDark];
+
+// ----------- Tabell -----------
+
+const plants = ref([]);
+const properties = ref(['Namn', 'Bark', 'Blad']);
+const newPropertyName = ref('');
+
+const addPlant = () => {
+  const newPlant = {};
+  properties.value.forEach((prop) => {
+    newPlant[prop] = '';
+  });
+  plants.value.push(newPlant);
+};
+
+const removePlant = (index) => {
+  plants.value.splice(index, 1);
+};
+
+const addProperty = () => {
+  if (newPropertyName) {
+    properties.value.push(newPropertyName);
+    plants.value.forEach((plant) => {
+      plant[newPropertyName] = '';
+    });
+  }
+};
+
+const removeProperty = (property) => {
+  properties.value = properties.value.filter((prop) => prop !== property);
+  plants.value.forEach((plant) => {
+    delete plant[property];
+  });
+};
+
+// ----------------------
 </script>
 
 <template>
@@ -471,6 +508,43 @@ const extensions = [markdown(), oneDark];
           <div>
             <h2>Ingress <br />{{ editablePlant.ingress.length }} tecken. (150 max)</h2>
             <textarea class="y-size" type="text" v-model="editablePlant.ingress" />
+          </div>
+          <div>
+            <h2>Tabell</h2>
+            <div class="tabell-container">
+              <div class="actions">
+                <button @click="addPlant">Lägg till växt</button>
+                <div>
+                  <input type="text" placeholder="Egenskap" v-model="newPropertyName" />
+                  <button @click="addProperty">Lägg till egenskap</button>
+                </div>
+              </div>
+              <table v-if="plants.length">
+                <thead>
+                  <tr>
+                    <th v-for="property in properties" :key="property">
+                      {{ property }}
+                      <button @click="removeProperty(property)">
+                        <Icon name="material-symbols:delete-forever-outline-rounded" />
+                      </button>
+                    </th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(plant, index) in plants" :key="index">
+                    <td v-for="property in properties" :key="property">
+                      <textarea v-model="plant[property]" />
+                    </td>
+                    <td>
+                      <button @click="removePlant(index)">
+                        <Icon name="material-symbols:delete-forever-outline-rounded" />
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
           <!-- <div class="text">
             <h2>Text</h2>
@@ -1041,7 +1115,7 @@ img.backdrop {
   transition: none;
 }
 
-.plant .edit form > div button {
+.plant .edit form > div button.uppdatera {
   margin-top: 1rem;
   margin-bottom: 3rem;
   /* grid-column: 1/3; */
@@ -1152,6 +1226,53 @@ img.backdrop {
   /* max-width: 70ch; */
   /* grid-template-columns: 1fr; */
   /* gap: 2rem; */
+}
+
+.plant .edit .tabell-container {
+  width: 100%;
+  overflow-x: scroll;
+  padding-bottom: 0.5rem;
+}
+.plant .edit .tabell-container .actions {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.plant .edit .tabell-container .actions input {
+  margin-right: 1rem;
+}
+
+.plant .edit .tabell-container table {
+  /* width: 100%; */
+  border-collapse: collapse;
+}
+
+.plant .edit .tabell-container table,
+.plant .edit .tabell-container table * {
+  transition: none;
+}
+
+.plant .edit .tabell-container table tr td button,
+.plant .edit .tabell-container table tr th button {
+  margin: 0;
+}
+
+.plant .edit .tabell-container table thead button {
+  background: none;
+  padding: 0.2rem;
+}
+
+.tabell-container textarea {
+  /* width: 100%; */
+  resize: none;
+  min-width: 15rem;
+}
+.tabell-container table td {
+}
+
+.tabell-container table td button {
+  height: 100%;
+  background: none;
 }
 
 /* @media screen and (min-width: 700px) {

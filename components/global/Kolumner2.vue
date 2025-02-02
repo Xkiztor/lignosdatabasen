@@ -14,6 +14,7 @@ const props = defineProps(['del']);
 <style>
 @media (min-width: 700px) {
   .del-container {
+    margin-top: 0.5rem;
     display: grid;
     /* grid-template-columns: 80% 20%; */
     gap: 1.5rem;
