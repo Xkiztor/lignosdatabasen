@@ -57,6 +57,47 @@ useSeoMeta({
   description:
     'Samlad informationskälla om lignoser. Här kan du läsa om vedartade växter, dvs. träd, buskar och klätterväxter. Urvalet siktar på allt som är härdigt att odla utomhus i Sverige men även en del som är på gränsen mensom kan klara t.ex. innergårdar i städerna eller kallväxthus.',
 });
+
+const bildhav = computed(() => {
+  let list = fullPlantList.value;
+  let bildhavList = [];
+
+  list = list.sort((a, b) => new Date(b.ändrad) - new Date(a.ändrad));
+
+  list = list.filter((e) => e.text !== 'Ingen info' || e.text !== '');
+
+  list.forEach((item) => {
+    let images = item.text
+      .split(/!\[[^\]]*\]\(([^)]+)\)/g)
+      .filter((str) => str !== '' && str.includes('http') && !str.includes('['));
+
+    // console.log(images);
+
+    // if (images && images.lenght > 0) {
+    images.forEach((bild) => {
+      bildhavList.push({
+        växt: `${item.slakte} ${item.art}${item.sortnamn ? ` '` + item.sortnamn + `'` : ''}`,
+        src: bild.replace('/upload/', '/upload/t_500bred,f_auto,q_auto/'),
+        url: `/planta/${item.slakte}/${item.art.replace(/ /g, '+')}/${item.sortnamn.replace(
+          / /g,
+          '+'
+        )}`,
+        svensktnamn: item.svensktnamn,
+      });
+    });
+    // }
+  });
+
+  console.log(list);
+  console.log(bildhavList);
+
+  return bildhavList.slice(0, 25);
+
+  return [
+    'https://res.cloudinary.com/dxwhmugdr/image/upload/t_1000bred/v1732986145/Li_69394_gnk58o.jpg',
+    'https://res.cloudinary.com/dxwhmugdr/image/upload/t_1000bred/v1732985680/Li_54974_cpkjcz.jpg',
+  ];
+});
 </script>
 
 <template>
@@ -124,6 +165,24 @@ useSeoMeta({
       />
       <!-- <img src="https://res.cloudinary.com/dxwhmugdr/image/upload/t_1000bred/v1732985680/Li_54974_cpkjcz.jpg" alt=""> -->
     </header>
+
+    <section class="bildhav">
+      <div class="img-container">
+        <NuxtLink
+          :to="bild.url"
+          v-for="bild in bildhav"
+          class="img"
+          :style="{ backgroundImage: `url(${bild.src})` }"
+        >
+          <img :src="bild.src" alt="" loading="lazy" />
+          <div class="bildtext">
+            <p class="title">{{ bild.växt }}</p>
+            <p>{{ bild.svensktnamn }}</p>
+          </div>
+        </NuxtLink>
+      </div>
+      <div class="fade"></div>
+    </section>
   </div>
 </template>
 
@@ -537,5 +596,114 @@ header.about p.välkommen {
 
 header.about img {
   box-shadow: var(--shadow-2xl);
+}
+
+section.bildhav {
+  padding-top: 5rem;
+  position: relative;
+}
+
+section.bildhav .img-container {
+  display: flex;
+  gap: 1rem;
+  flex-direction: row;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  /* justify-content: space-between; */
+
+  margin: 1rem 0;
+  /* max-width: 110ch; */
+  /* max-width: 90vw; */
+  margin: 0 auto;
+  width: 100%;
+  padding: 1rem;
+}
+
+section.bildhav .img {
+  /* height: 15rem; */
+  /* width: auto; */
+  /* width: 100%; */
+  /* object-fit: cover; */
+  background-position: center center;
+  background-size: cover;
+  flex: auto;
+  height: 25vw;
+  min-height: 8rem;
+  /* margin: 0 0.5rem 1rem; */
+  max-height: 15rem;
+  border-radius: 0.5rem;
+
+  position: relative;
+}
+
+section.bildhav .img:hover {
+  /* opacity: 0.8; */
+}
+
+section.bildhav .img .bildtext {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1rem;
+  color: var(--title-color-dark);
+  text-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+section.bildhav .img:hover .bildtext {
+  opacity: 1;
+}
+
+section.bildhav .img .bildtext .title {
+  font-size: var(--font-md);
+  font-weight: 800;
+}
+
+section.bildhav .img img {
+  /* height: 15rem; */
+  /* width: 100%; */
+  /* object-fit: cover; */
+  /* width: 100%; */
+  /* height: 100%; */
+
+  height: 100%;
+  opacity: 0;
+}
+
+.bildhav .fade {
+  position: absolute;
+  /* color: white; */
+  /* height: 100%; */
+  height: 50%;
+  width: 100%;
+  bottom: 0;
+
+  pointer-events: none;
+
+  /* padding-top: 50%; */
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0) 1%,
+    var(--bg-color) 96%,
+    var(--bg-color) 100%
+  );
+}
+
+.dark .bildhav .fade {
+  color: white;
+  /* padding-top: 50%; */
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0) 5%,
+    var(--bg-color) 96%,
+    var(--bg-color) 100%
+  );
 }
 </style>
