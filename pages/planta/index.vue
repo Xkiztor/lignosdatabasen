@@ -207,13 +207,13 @@ useSeoMeta({
 
 const sortOptions = ref([
   { value: 'namn-a-z', text: 'Namn A-Z' },
-  { value: 'namn-z-a', text: 'Namn Z-A' },
-  { value: 'höjd-a-z', text: 'Höjd 1-9' },
-  { value: 'höjd-z-a', text: 'Höjd 9-1' },
-  { value: 'bredd-a-z', text: 'Bredd 1-9' },
-  { value: 'bredd-z-a', text: 'Bredd 9-1' },
-  { value: 'zon-a-z', text: 'Zon I-IV' },
-  { value: 'zon-z-a', text: 'Zon IV-I' },
+  // { value: 'namn-z-a', text: 'Namn Z-A' },
+  { value: 'höjd-a-z', text: 'Höjd - minst först' },
+  { value: 'höjd-z-a', text: 'Höjd - störst först' },
+  { value: 'bredd-a-z', text: 'Bredd - minst först' },
+  { value: 'bredd-z-a', text: 'Bredd - störst först' },
+  { value: 'zon-a-z', text: 'Zon - stigande' },
+  { value: 'zon-z-a', text: 'Zon - fallande' },
 ]);
 
 const defaultSortOption = 'namn-a-z';
@@ -279,7 +279,12 @@ const resetFilters = () => {
               <Icon name="material-symbols:keyboard-arrow-down-rounded" />
             </button>
             <ul v-if="toggleDropdown" class="dropdown-menu">
-              <li v-for="option in sortOptions" :key="option.value" @click="selectOption(option)">
+              <li
+                v-for="option in sortOptions"
+                :key="option.value"
+                @click="selectOption(option)"
+                :class="{ active: option.value === selectedSortOption }"
+              >
                 {{ option.text }}
               </li>
             </ul>
@@ -695,6 +700,14 @@ const resetFilters = () => {
 .dropdown-menu li:hover {
   background: var(--primary-green);
   color: var(--text-color-dark);
+}
+.dark .dropdown-menu li:hover {
+  color: var(--element-top-bg);
+}
+
+.dropdown-menu li.active {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .top-part .utility .sort select {

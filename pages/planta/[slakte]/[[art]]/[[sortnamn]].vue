@@ -12,6 +12,8 @@ const router = useRouter();
 
 const state = useGlobalState();
 
+const showGuide = ref(false);
+
 const isSlakte = ref(route.params.art === 'slakte');
 
 // console.log(isSlakte.value);
@@ -125,6 +127,8 @@ const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async
     }
   }
 });
+
+state.currentPagePlant.value = specificPlant.value;
 
 const isEditing = ref(false);
 
@@ -345,8 +349,18 @@ const extensions = [markdown(), oneDark];
 
 // ----------- Tabell -----------
 
-const plants = ref([]);
-const properties = ref(['Namn', 'Bark', 'Blad']);
+const plants = ref(specificPlant.value.tabell ? JSON.parse(specificPlant.value.tabell) : []);
+const properties = ref(
+  specificPlant.value.tabell
+    ? JSON.parse(specificPlant.value.tabell).length
+      ? Object.keys(JSON.parse(specificPlant.value.tabell)[0])
+      : ['Namn', 'Bark', 'Blad']
+    : []
+);
+// const properties = ref(
+//   specificPlant.value?.tabell.length ? JSON.parse(specificPlant.value.tabell) : ['Namn', 'Bark', 'Blad']
+// );
+// const properties = ref(['Namn', 'Bark', 'Blad']);
 const newPropertyName = ref('');
 
 const addPlant = () => {
@@ -363,11 +377,15 @@ const removePlant = (index) => {
 
 const addProperty = () => {
   if (newPropertyName) {
-    properties.value.push(newPropertyName);
+    properties.value.push(newPropertyName.value);
     plants.value.forEach((plant) => {
-      plant[newPropertyName] = '';
+      plant[newPropertyName.value] = '';
     });
+    // plants.value.forEach((plant) => {
+    //   plant[newPropertyName] = '';
+    // });
   }
+  newPropertyName.value = '';
 };
 
 const removeProperty = (property) => {
@@ -376,6 +394,13 @@ const removeProperty = (property) => {
     delete plant[property];
   });
 };
+
+watch(plants, () => {
+  console.log(plants.value);
+});
+watch(properties, () => {
+  console.log(properties.value);
+});
 
 // ----------------------
 </script>
@@ -454,7 +479,7 @@ const removeProperty = (property) => {
         <h2 class="subtitle">{{ specificPlant.svensktnamn }}</h2>
         <PlantApi v-if="!isSlakte && !specificPlant.sortnamn" :plant="specificPlant" />
         <div class="finns-att-kopa">
-          <KopaSuperlistan />
+          <!-- <KopaSuperlistan /> -->
         </div>
       </div>
       <img :src="compressedUrl" alt="" />
@@ -550,7 +575,7 @@ const removeProperty = (property) => {
             <h2>Text</h2>
             <textarea class="y-size" type="text" v-model="editablePlant.text" />
           </div> -->
-          <div>
+          <div class="text">
             <!-- <NuxtCodeMirror
               ref="editor"
               v-model="editorState"
@@ -579,10 +604,16 @@ const removeProperty = (property) => {
               :extensions="extensions"
             />
           </div>
+          <div>
+            <div></div>
+            <button @click="showGuide = !showGuide">
+              <span v-if="!showGuide">Visa guide</span><span v-else>Dölj guide</span>
+            </button>
+          </div>
 
           <div>
             <div></div>
-            <div class="guide">
+            <div class="guide" v-if="showGuide">
               <div>
                 <p class="copy" @click="copy(`![](){text=&quot;Foto: Peter Linder&quot;}`)">
                   ![](){text="Foto: Peter Linder"}
@@ -594,6 +625,14 @@ const removeProperty = (property) => {
               <div>
                 <p class="copy" @click="copy(`[]()`)">[]()</p>
                 <p><strong>Länk</strong></p>
+              </div>
+              <div>
+                <div class="copy" @click="copy(`<div>\n\n</div>`)">
+                  <p>&lt;div&gt;</p>
+                  <p>&lt;/div&gt;</p>
+                </div>
+                <p><strong>div</strong></p>
+                <p>För att dela upp</p>
               </div>
               <div>
                 <div class="copy" @click="copy(`::Fifty\n\n![halv]()\n\n<div>\n\n</div>\n::`)">
@@ -632,9 +671,19 @@ const removeProperty = (property) => {
                 <p><strong>Uppdelning</strong></p>
                 <p>2 kolumner</p>
               </div>
+              <div>
+                <div class="copy" @click="copy(`::Kolumner3\n\n::`)">
+                  <p>::Kolumner3</p>
+                  <p></p>
+                  <p>::</p>
+                </div>
+                <p><strong>Uppdelning</strong></p>
+                <p>3 kolumner (alltid 1/3)</p>
+                <p>Använd > ifall flera på rad</p>
+              </div>
             </div>
           </div>
-          <div>
+          <div v-if="showGuide">
             <div></div>
             <div>
               <p>&amp;quot&semi; = "</p>
@@ -1143,7 +1192,8 @@ img.backdrop {
   justify-content: space-between;
   /* display: grid; */
   /* grid-template-columns: 1fr 1fr 1fr; */
-  gap: 1rem;
+  gap: 2rem 1rem;
+  flex-wrap: wrap;
 }
 
 .edit .guide > div {

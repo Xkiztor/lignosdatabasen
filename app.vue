@@ -205,6 +205,24 @@ const searchResult = computed(() => {
 });
 const sökContainer = ref();
 onClickOutside(sökContainer, () => (isSökOpen.value = false));
+
+// onMounted(() => {
+//   const addGoogleTranslateScript = () => {
+//     const script = document.createElement('script');
+//     script.type = 'text/javascript';
+//     script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+//     document.head.appendChild(script);
+//   };
+
+//   window.googleTranslateElementInit = function () {
+//     new window.google.translate.TranslateElement(
+//       { pageLanguage: 'en', autoDisplay: false },
+//       'google_translate_element'
+//     );
+//   };
+
+//   addGoogleTranslateScript();
+// });
 </script>
 
 <template>
@@ -328,6 +346,8 @@ onClickOutside(sökContainer, () => (isSökOpen.value = false));
       </div>
 
       <div class="big-nav-side">
+        <!-- <div id="google_translate_element"></div> -->
+
         <button class="nav-search" @click="openSök()" v-if="windowSize.width > 700">
           <Icon name="material-symbols:search-rounded" />
         </button>
