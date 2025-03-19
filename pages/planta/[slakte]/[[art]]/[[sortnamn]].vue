@@ -455,25 +455,27 @@ watch(properties, () => {
             '' }}</h1> -->
         <h2 class="subtitle fakta">
           <span v-if="specificPlant.höjd"
-            ><span class="label">Höjd: </span> {{ specificPlant.höjd }} m</span
-          >
+            ><span class="label">Höjd: </span> {{ specificPlant.höjd }} m
+          </span>
           <span v-if="specificPlant.bredd"
-            ><span class="label">Bredd: </span> {{ specificPlant.bredd }} m</span
-          >
+            ><span class="label">Bredd: </span> {{ specificPlant.bredd }} m
+          </span>
           <span v-if="specificPlant.zon"
-            ><span class="label">Zon: </span> {{ specificPlant.zon }}</span
-          >
+            ><span class="label">Zon: </span> {{ specificPlant.zon }}
+          </span>
           <span v-if="specificPlant.synonymer"
-            ><span class="label">Synonymer: </span> {{ specificPlant.synonymer }}</span
-          >
+            ><span class="label">Synonymer: </span> {{ specificPlant.synonymer }}
+          </span>
           <span v-if="specificPlant.synonymtill"
             ><span class="label">Synonym till: </span>
-            <NuxtLink class="link" :to="specificPlant.synonymtill">{{
-              specificPlant.synonymtill
-                .replace(/planta\//g, '')
-                .replace(/\+/g, ' ')
-                .replace(/\//g, ' ')
-            }}</NuxtLink></span
+            <NuxtLink class="link" :to="specificPlant.synonymtill"
+              >{{
+                specificPlant.synonymtill
+                  .replace(/planta\//g, '')
+                  .replace(/\+/g, ' ')
+                  .replace(/\//g, ' ')
+              }}
+            </NuxtLink></span
           >
         </h2>
         <h2 class="subtitle">{{ specificPlant.svensktnamn }}</h2>
