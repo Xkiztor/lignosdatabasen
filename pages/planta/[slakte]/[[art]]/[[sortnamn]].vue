@@ -197,8 +197,9 @@ const images = computed(() => {
     .filter((str) => str !== '' && str.includes('http') && !str.includes('['));
 
   state.currentPageBildtexter.value = specificPlant.value.text
-    .split(/(!\[[^\]]*\]\([^\)]+\)(?:\{[^}]+\})?)/)
+    .split(/(!\[(?!.*omslag)[^\]]*\]\([^\)]+\)(?:\{[^}]+\})?)/)
     .filter((str) => str !== '' && str.includes('http') && str.includes('!['))
+    .slice(specificPlant.value.text.includes('![omslag]') ? 1 : 0)
     .map((str) => str.match(/\{[^}]*text="([^"]+)"[^}]*\}/)?.[1] || '');
 
   return specificPlant.value.text
