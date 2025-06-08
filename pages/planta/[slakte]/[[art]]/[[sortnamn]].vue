@@ -362,7 +362,10 @@ const properties = ref(
 //   specificPlant.value?.tabell.length ? JSON.parse(specificPlant.value.tabell) : ['Namn', 'Bark', 'Blad']
 // );
 // const properties = ref(['Namn', 'Bark', 'Blad']);
+const showTableEdit = ref(false);
 const newPropertyName = ref('');
+const editingProperty = ref(null);
+const editingPropertyName = ref('');
 
 const addPlant = () => {
   const newPlant = {};
@@ -396,11 +399,57 @@ const removeProperty = (property) => {
   });
 };
 
+const startEditingProperty = (property) => {
+  editingProperty.value = property;
+  editingPropertyName.value = property;
+};
+
+const savePropertyName = () => {
+  const oldProperty = editingProperty.value;
+  const newProperty = editingPropertyName.value.trim();
+
+  if (newProperty && newProperty !== oldProperty) {
+    // Update properties array
+    const index = properties.value.indexOf(oldProperty);
+    if (index !== -1) {
+      properties.value[index] = newProperty;
+    }
+
+    // Update all plants to use the new property name
+    plants.value.forEach((plant) => {
+      if (plant.hasOwnProperty(oldProperty)) {
+        plant[newProperty] = plant[oldProperty];
+        delete plant[oldProperty];
+      }
+    });
+  }
+
+  editingProperty.value = null;
+  editingPropertyName.value = '';
+};
+
+const cancelEditingProperty = () => {
+  editingProperty.value = null;
+  editingPropertyName.value = '';
+};
+
 watch(plants, () => {
   console.log(plants.value);
 });
 watch(properties, () => {
   console.log(properties.value);
+});
+
+// Auto-focus the input when editing starts
+watch(editingProperty, async (newVal) => {
+  if (newVal) {
+    await nextTick();
+    const input = document.querySelector('.property-input');
+    if (input) {
+      input.focus();
+      input.select();
+    }
+  }
 });
 
 // ----------------------
@@ -537,43 +586,6 @@ watch(properties, () => {
             <h2>Ingress <br />{{ editablePlant.ingress.length }} tecken. (150 max)</h2>
             <textarea class="y-size" type="text" v-model="editablePlant.ingress" />
           </div>
-          <div>
-            <h2>Tabell</h2>
-            <div class="tabell-container">
-              <div class="actions">
-                <button @click="addPlant">Lägg till växt</button>
-                <div>
-                  <input type="text" placeholder="Egenskap" v-model="newPropertyName" />
-                  <button @click="addProperty">Lägg till egenskap</button>
-                </div>
-              </div>
-              <table v-if="plants.length">
-                <thead>
-                  <tr>
-                    <th v-for="property in properties" :key="property">
-                      {{ property }}
-                      <button @click="removeProperty(property)">
-                        <Icon name="material-symbols:delete-forever-outline-rounded" />
-                      </button>
-                    </th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(plant, index) in plants" :key="index">
-                    <td v-for="property in properties" :key="property">
-                      <textarea v-model="plant[property]" />
-                    </td>
-                    <td>
-                      <button @click="removePlant(index)">
-                        <Icon name="material-symbols:delete-forever-outline-rounded" />
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
           <!-- <div class="text">
             <h2>Text</h2>
             <textarea class="y-size" type="text" v-model="editablePlant.text" />
@@ -684,12 +696,89 @@ watch(properties, () => {
                 <p>3 kolumner (alltid 1/3)</p>
                 <p>Använd > ifall flera på rad</p>
               </div>
+              <div>
+                <div class="copy" @click="copy(`:Tabell`)">
+                  <p>:Tabell</p>
+                </div>
+                <p><strong>Tabell</strong></p>
+              </div>
             </div>
           </div>
           <div v-if="showGuide">
             <div></div>
             <div>
               <p>&amp;quot&semi; = "</p>
+            </div>
+          </div>
+          <div>
+            <h2>
+              Tabell
+              <button class="ghost-button" @click="showTableEdit = !showTableEdit">
+                <Icon v-if="!showTableEdit" name="material-symbols:expand-circle-down-rounded" />
+                <Icon v-else name="material-symbols:expand-circle-up-rounded" />
+              </button>
+            </h2>
+            <div class="tabell-container" v-if="showTableEdit">
+              <div class="actions">
+                <button type="button" @click="addPlant">Lägg till växt</button>
+                <div>
+                  <input type="text" placeholder="Egenskap" v-model="newPropertyName" />
+                  <button type="button" @click="addProperty">Lägg till egenskap</button>
+                </div>
+              </div>
+              <div class="table-wrapper">
+                <table v-if="plants.length">
+                  <thead>
+                    <tr>
+                      <th v-for="property in properties" :key="property">
+                        <div v-if="editingProperty === property" class="property-edit">
+                          <input
+                            type="text"
+                            v-model="editingPropertyName"
+                            @keyup.enter="savePropertyName"
+                            @keyup.escape="cancelEditingProperty"
+                            @blur="savePropertyName"
+                            class="property-input"
+                            ref="propertyInput"
+                          />
+                        </div>
+                        <div v-else class="property-header">
+                          {{ property }}
+                          <div class="property-actions">
+                            <button
+                              type="button"
+                              @click="startEditingProperty(property)"
+                              class="edit-btn"
+                            >
+                              <Icon name="material-symbols:edit-outline-rounded" />
+                            </button>
+                            <button
+                              type="button"
+                              @click="removeProperty(property)"
+                              class="delete-btn"
+                            >
+                              <Icon name="material-symbols:delete-forever-outline-rounded" />
+                            </button>
+                          </div>
+                        </div>
+                      </th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(plant, index) in plants" :key="index">
+                      <td v-for="property in properties" :key="property">
+                        <textarea v-model="plant[property]" />
+                      </td>
+                      <td>
+                        <button type="button" @click="removePlant(index)">
+                          <Icon name="material-symbols:delete-forever-outline-rounded" />
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
           <div>
@@ -784,6 +873,13 @@ watch(properties, () => {
 }
 
 @media screen and (max-width: 1000px) {
+}
+
+.ghost-button {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
 }
 
 .page.plant {
@@ -920,6 +1016,56 @@ header .content h2.fakta .label {
 }
 
 /* .page .top-bar .content > h2, */
+
+.property-header {
+  display: flex;
+  /* align-items: center; */
+  /* justify-content: space-between; */
+  gap: 0.5rem;
+}
+
+.property-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.property-actions button {
+  padding: 0.25rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.property-actions .edit-btn:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: rgb(59, 130, 246);
+}
+
+.property-actions .delete-btn:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: rgb(239, 68, 68);
+}
+
+.property-edit {
+  width: 100%;
+}
+
+.property-input {
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.property-input:focus {
+  outline: none;
+  border-color: rgb(59, 130, 246);
+}
 .page .top-bar .content > h1 {
   margin: 0;
 }
@@ -1283,9 +1429,15 @@ img.backdrop {
 
 .plant .edit .tabell-container {
   width: 100%;
-  overflow-x: scroll;
   padding-bottom: 0.5rem;
+  display: grid;
 }
+
+.plant .edit .tabell-container .table-wrapper {
+  overflow-x: scroll;
+  width: 100%;
+}
+
 .plant .edit .tabell-container .actions {
   display: flex;
   justify-content: space-between;
@@ -1319,6 +1471,7 @@ img.backdrop {
   /* width: 100%; */
   resize: none;
   min-width: 15rem;
+  margin: 0 0.06rem;
 }
 .tabell-container table td {
 }

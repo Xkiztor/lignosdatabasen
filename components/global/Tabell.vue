@@ -15,6 +15,50 @@ const egenskaper = ref(
 );
 const aktivaEgenskaper = ref(egenskaper.value.slice(0, 3));
 
+// Column resizing functionality
+const isResizing = ref(false);
+const currentColumn = ref(null);
+const startX = ref(0);
+const startWidth = ref(0);
+const tableRef = ref(null);
+
+const startResize = (event, columnIndex) => {
+  isResizing.value = true;
+  currentColumn.value = columnIndex;
+  startX.value = event.clientX;
+
+  const table = tableRef.value;
+  const th = table.querySelector(`thead tr th:nth-child(${columnIndex + 1})`);
+  startWidth.value = th.offsetWidth;
+
+  document.addEventListener('mousemove', handleResize);
+  document.addEventListener('mouseup', stopResize);
+  event.preventDefault();
+};
+
+const handleResize = (event) => {
+  if (!isResizing.value) return;
+
+  const diff = event.clientX - startX.value;
+  const newWidth = Math.max(80, startWidth.value + diff); // Minimum width of 80px
+
+  const table = tableRef.value;
+  const th = table.querySelector(`thead tr th:nth-child(${currentColumn.value + 1})`);
+  th.style.width = newWidth + 'px';
+};
+
+const stopResize = () => {
+  isResizing.value = false;
+  currentColumn.value = null;
+  document.removeEventListener('mousemove', handleResize);
+  document.removeEventListener('mouseup', stopResize);
+};
+
+onUnmounted(() => {
+  document.removeEventListener('mousemove', handleResize);
+  document.removeEventListener('mouseup', stopResize);
+});
+
 console.log(egenskaper.value);
 
 const toggleEgenskap = (item) => {
@@ -32,6 +76,7 @@ const toggleEgenskap = (item) => {
 };
 
 const removeNumber = (item) => {
+  // Removes leading numbers and spaces from the property name
   return item.replace(/^\d+\s*/, '');
 };
 
@@ -55,12 +100,20 @@ const sortedAktiva = () => {
       </div>
     </div>
     <div class="table-container">
-      <table>
+      <table ref="tableRef">
         <thead>
           <tr>
-            <th>Namn</th>
-            <th v-for="egenskap in sortedAktiva()" :key="egenskap">
-              {{ removeNumber(egenskap) }}
+            <th class="resizable-column">
+              <span>Namn</span>
+              <div class="resize-handle" @mousedown="startResize($event, 0)"></div>
+            </th>
+            <th
+              v-for="(egenskap, index) in sortedAktiva()"
+              :key="egenskap"
+              class="resizable-column"
+            >
+              <span>{{ removeNumber(egenskap) }}</span>
+              <div class="resize-handle" @mousedown="startResize($event, index + 1)"></div>
             </th>
           </tr>
         </thead>
@@ -79,6 +132,10 @@ const sortedAktiva = () => {
 .center-content .tabell {
   width: 100%;
   display: block;
+}
+
+.center-content .tabell * {
+  transition: none;
 }
 
 .center-content .tabell h2 {
@@ -115,13 +172,39 @@ const sortedAktiva = () => {
   table-layout: fixed;
   width: 100%;
   border-collapse: collapse;
+  user-select: none;
 }
 
 .center-content .tabell th,
 .center-content .tabell td {
   min-width: 120px;
   padding: 0.5rem 1rem 0.5rem 0;
+  position: relative;
   /* word-break: break-word; */
+}
+
+.center-content .tabell .resizable-column {
+  position: relative;
+}
+
+.center-content .tabell .resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6px;
+  height: 100%;
+  background: transparent;
+  cursor: col-resize;
+  z-index: 1;
+  margin-right: 0.5rem;
+}
+
+.center-content .tabell .resize-handle:hover {
+  background: var(--primary-green);
+}
+
+.center-content .tabell .resize-handle:active {
+  background: var(--primary-green);
 }
 
 .center-content .tabell thead {
@@ -130,5 +213,13 @@ const sortedAktiva = () => {
 
 .center-content .tabell tbody tr:first-child td {
   padding-top: 0.25rem;
+}
+
+.center-content .tabell tbody tr td {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.center-content .tabell thead {
+  text-align: left;
 }
 </style>
