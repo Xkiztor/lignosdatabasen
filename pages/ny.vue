@@ -39,7 +39,11 @@ definePageMeta({
           <input type="text" v-model="editablePlant.slakte" />
         </div>
         <div>
-          <h2>Art</h2>
+          <div>
+            <h2>Art</h2>
+            <p class="note">"slakte" om du vill</p>
+            <p class="note">ha släktessidan</p>
+          </div>
           <input type="text" v-model="editablePlant.art" />
         </div>
         <div>
@@ -51,7 +55,11 @@ definePageMeta({
           <input type="text" v-model="editablePlant.svensktnamn" />
         </div>
         <div>
-          <h2>Text</h2>
+          <div>
+            <h2>Text</h2>
+            <p class="note">Bäst om du redigerar</p>
+            <p class="note">växten sen istället</p>
+          </div>
           <textarea type="text" v-model="editablePlant.text" />
         </div>
         <div>
@@ -121,5 +129,10 @@ definePageMeta({
     grid-template-columns: 70% 30%;
     gap: 2rem;
   }
+}
+
+.main-content.add .note {
+  font-size: 0.7rem;
+  opacity: 0.7;
 }
 </style>
