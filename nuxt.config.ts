@@ -74,6 +74,9 @@ export default defineNuxtConfig({
     defaults: {
       weights: [400,600,  700, 800,900],
     },
-  }
+  },
+    routeRules: {
+    '/': {swr: true},
+  },
   // compatibilityDate: '2024-11-28',
 });
