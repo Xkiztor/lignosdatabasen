@@ -4,16 +4,35 @@ const maxEgenskaperMobile = 2;
 
 const state = useGlobalState();
 
-const items = ref(JSON.parse(state.currentPagePlant.value.tabell));
-console.log(items.value);
-const egenskaper = ref(
-  items.value?.length
-    ? Object.keys(items.value[0])
-        .filter((item) => item !== 'Namn')
-        .sort()
-    : []
+// Use computed to safely access tabell data with fallbacks for SSR
+const items = computed(() => {
+  try {
+    const tabell = state.currentPagePlant.value?.tabell;
+    return tabell ? JSON.parse(tabell) : [];
+  } catch {
+    return [];
+  }
+});
+
+const egenskaper = computed(() => {
+  if (!items.value?.length) return [];
+  return Object.keys(items.value[0])
+    .filter((item) => item !== 'Namn')
+    .sort();
+});
+
+const aktivaEgenskaper = ref([]);
+
+// Initialize aktivaEgenskaper when egenskaper changes
+watch(
+  egenskaper,
+  (newVal) => {
+    if (newVal.length && !aktivaEgenskaper.value.length) {
+      aktivaEgenskaper.value = newVal.slice(0, 3);
+    }
+  },
+  { immediate: true }
 );
-const aktivaEgenskaper = ref(egenskaper.value.slice(0, 3));
 
 // Column resizing functionality
 const isResizing = ref(false);

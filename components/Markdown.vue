@@ -4,16 +4,26 @@ const props = defineProps(['plant']);
 // console.log(props.plant.text);
 
 const formattedText = computed(() => {
+  if (!props.plant?.text) return '';
+
   let text = props.plant.text;
 
   text = text.replace(/!\[omslag]\([^)]+\)/g, '');
 
   return text;
 });
+
+// Create a unique key based on plant id or content hash for forcing re-render
+const mdcKey = computed(() => {
+  if (!props.plant) return 'empty';
+  return `mdc-${props.plant.id || ''}-${props.plant.slakte || ''}-${props.plant.art || ''}-${
+    props.plant.sortnamn || ''
+  }`;
+});
 </script>
 
 <template>
-  <MDC v-if="formattedText" :value="formattedText" tag="div" />
+  <MDC v-if="formattedText" :key="mdcKey" :value="formattedText" tag="div" />
 </template>
 
 <style>

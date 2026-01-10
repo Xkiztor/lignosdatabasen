@@ -1,14 +1,15 @@
 <script setup>
-const isDark = useDark()
-const toggleDark = useToggle(isDark)
-
+const isDark = useDark();
+const toggleDark = useToggle(isDark);
 </script>
 
 <template>
-  <button @click="toggleDark()" class="theme-toggle">
-    <Icon v-if="isDark" size="18" name="lucide:sun-medium" />
-    <Icon v-else size="18" name="majesticons:moon" class="gray" />
-  </button>
+  <ClientOnly>
+    <button @click="toggleDark()" class="theme-toggle">
+      <Icon v-if="isDark" size="18" name="lucide:sun-medium" />
+      <Icon v-else size="18" name="majesticons:moon" class="gray" />
+    </button>
+  </ClientOnly>
   <!-- <button @click="toggleDark()" class="theme-toggle">
     <v-if v-if="!isDark">
       <Icon name="lucide:sun-medium" />
@@ -28,7 +29,7 @@ const toggleDark = useToggle(isDark)
   margin-left: auto;
 }
 
-.theme-toggle>* {
+.theme-toggle > * {
   display: grid;
   grid-template-columns: auto;
   place-items: center start;

@@ -93,10 +93,10 @@ const bildhav = computed(() => {
 
   return bildhavList.slice(0, 25);
 
-  return [
-    'https://res.cloudinary.com/dxwhmugdr/image/upload/t_1000bred/v1732986145/Li_69394_gnk58o.jpg',
-    'https://res.cloudinary.com/dxwhmugdr/image/upload/t_1000bred/v1732985680/Li_54974_cpkjcz.jpg',
-  ];
+  // return [
+  //   'https://res.cloudinary.com/dxwhmugdr/image/upload/t_1000bred/v1732986145/Li_69394_gnk58o.jpg',
+  //   'https://res.cloudinary.com/dxwhmugdr/image/upload/t_1000bred/v1732985680/Li_54974_cpkjcz.jpg',
+  // ];
 });
 </script>
 

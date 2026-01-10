@@ -9,13 +9,13 @@ var index = 0;
 
 const imageOpened = ref(false);
 
+const state = useGlobalState();
+
 const openImage = () => {
   imageOpened.value = !imageOpened.value;
-  index = state.currentPageImages.value.indexOf(props.src);
+  index = state.currentPageImages.value?.indexOf(props.src) ?? 0;
   getImage(index);
 };
-
-const state = useGlobalState();
 
 const target = ref();
 
@@ -26,7 +26,7 @@ onClickOutside(target, (event) => {
 });
 
 const compressedUrl = computed(() => {
-  if (props.alt.includes('hel')) {
+  if (props.alt?.includes('hel')) {
     return props.src.replace('/upload/', '/upload/t_1000bred,f_auto,q_auto/');
   } else {
     return props.src.replace('/upload/', '/upload/t_500bred,f_auto,q_auto/');
@@ -37,12 +37,14 @@ const bigImageUrl = computed(() => {
 });
 
 const getImage = (i) => {
-  source.value = state.currentPageImages.value[i];
-  bildtext.value = state.currentPageBildtexter.value[i].replace(/&quot;/g, '"');
+  source.value = state.currentPageImages.value?.[i] ?? props.src;
+  bildtext.value = state.currentPageBildtexter.value?.[i]?.replace(/&quot;/g, '"') ?? '';
 };
 
+const imagesLength = computed(() => state.currentPageImages.value?.length ?? 0);
+
 const next = () => {
-  if (state.currentPageImages.value.length !== index + 1) {
+  if (imagesLength.value !== index + 1) {
     imageOpened.value = true;
     getImage(index + 1);
     index = index + 1;
@@ -59,26 +61,25 @@ const previous = () => {
     index = index - 1;
   } else {
     imageOpened.value = true;
-    getImage(state.currentPageImages.value.length - 1);
-    index = state.currentPageImages.value.length - 1;
+    getImage(imagesLength.value - 1);
+    index = imagesLength.value - 1;
   }
 };
+
+// Computed for alt text to avoid SSR mismatch
+const imageAltText = computed(() => {
+  const plantName = state.currentPagePlant.value?.svensktnamn ?? '';
+  const base = `${route.params.slakte} ${route.params.art}${
+    route.params.sortnamn ? ` '${route.params.sortnamn}'` : ''
+  }`;
+  return plantName ? `${base} - ${plantName}` : base;
+});
 </script>
 
 <template>
   <Transition name="bild">
     <div class="screen-cover" id="image-screen-cover" v-if="imageOpened">
-      <NuxtImg
-        :src="bigImageUrl"
-        :alt="`${route.params.slakte} ${route.params.art}${route.params.sortnamn ? ` '` : ''}${
-          route.params.sortnamn
-        }${route.params.sortnamn ? `'` : ''}${
-          state.currentPagePlant.value.svensktnamn ? ' - ' : ''
-        }${
-          state.currentPagePlant.value.svensktnamn ? state.currentPagePlant.value.svensktnamn : ''
-        }`"
-        ref="target"
-      />
+      <NuxtImg :src="bigImageUrl" :alt="imageAltText" ref="target" />
       <button class="switch previous" @click="previous()">
         <Icon name="material-symbols:arrow-left-rounded" />
       </button>
@@ -96,18 +97,10 @@ const previous = () => {
       class="article-image"
       @click="openImage()"
       :src="compressedUrl"
-      :alt="`${route.params.slakte} ${route.params.art}${route.params.sortnamn ? ` '` : ''}${
-        route.params.sortnamn
-      }${route.params.sortnamn ? `'` : ''}${state.currentPagePlant.value.svensktnamn ? ' - ' : ''}${
-        state.currentPagePlant.value.svensktnamn ? state.currentPagePlant.value.svensktnamn : ''
-      }`"
+      :alt="imageAltText"
       :class="alt"
       loading="lazy"
-      :title="`${route.params.slakte} ${route.params.art}${route.params.sortnamn ? ` '` : ''}${
-        route.params.sortnamn
-      }${route.params.sortnamn ? `'` : ''}${state.currentPagePlant.value.svensktnamn ? ' - ' : ''}${
-        state.currentPagePlant.value.svensktnamn ? state.currentPagePlant.value.svensktnamn : ''
-      }`"
+      :title="imageAltText"
     />
     <p v-if="text" class="bildtext">{{ text }}</p>
   </div>

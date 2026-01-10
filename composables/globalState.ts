@@ -1,13 +1,12 @@
-import { ref } from 'vue';
-import { createGlobalState, useStorage } from '@vueuse/core';
-
-export const useGlobalState = createGlobalState(() => {
-  const currentPageImages = ref([]);
-  const currentPageBildtexter = ref([]);
-  const currentPagePlant = ref([]);
-
+// Use useState for SSR-compatible global state in Nuxt
+export const useGlobalState = () => {
+  const currentPageImages = useState<string[]>('currentPageImages', () => []);
+  const currentPageBildtexter = useState<string[]>('currentPageBildtexter', () => []);
+  const currentPagePlant = useState<any>('currentPagePlant', () => null);
 
   return {
-    currentPageImages, currentPageBildtexter, currentPagePlant
+    currentPageImages,
+    currentPageBildtexter,
+    currentPagePlant,
   };
-});
+};

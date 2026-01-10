@@ -14,34 +14,41 @@ const state = useGlobalState();
 
 const showGuide = ref(false);
 
-const isSlakte = ref(route.params.art === 'slakte');
+// Use computed instead of ref so it updates with route changes
+const isSlakte = computed(() => route.params.art === 'slakte');
 
 // console.log(isSlakte.value);
 
 const source = ref();
 const { text, copy, copied, isSupported } = useClipboard({ source });
 
-const { data: plantsInSlakte } = await useAsyncData('plants-fetch', async () => {
-  const { data, error } = await client
-    .from('lignosdatabasen')
-    .select()
-    .eq('slakte', `${route.params.slakte}`)
-    .neq('art', 'slakte');
-  // const { data, error } = await client.from('lignosdatabasen').select().eq('slakte', `${planta}`).single()
-  if (error) {
-    console.error(error);
-  }
-  let newList = data;
-  newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn));
-  newList = newList.sort((a, b) => a.art.localeCompare(b.art));
+const { data: plantsInSlakte } = await useAsyncData(
+  `plants-fetch-${route.params.slakte}`,
+  async () => {
+    const { data, error } = await client
+      .from('lignosdatabasen')
+      .select()
+      .eq('slakte', `${route.params.slakte}`)
+      .neq('art', 'slakte');
+    // const { data, error } = await client.from('lignosdatabasen').select().eq('slakte', `${planta}`).single()
+    if (error) {
+      console.error(error);
+    }
+    let newList = data;
+    newList = newList.sort((a, b) => a.sortnamn.localeCompare(b.sortnamn));
+    newList = newList.sort((a, b) => a.art.localeCompare(b.art));
 
-  if (runtimeConfig.public.ADMIN_PASSWORD === enteredPassword.value) {
-    return newList;
-  } else {
-    // return data
-    return newList.filter((e) => e.hidden !== true);
+    if (runtimeConfig.public.ADMIN_PASSWORD === enteredPassword.value) {
+      return newList;
+    } else {
+      // return data
+      return newList.filter((e) => e.hidden !== true);
+    }
+  },
+  {
+    watch: [() => route.params.slakte],
   }
-});
+);
 
 // const sortedPlantsInSlakte = computed(() => {
 //   let newList = plantsInSlakte.value
@@ -54,85 +61,99 @@ const { data: plantsInSlakte } = await useAsyncData('plants-fetch', async () => 
 // })
 
 // console.log(plantsInSlakte.value);
-const { data: specificPlant } = await useAsyncData('specific-plant-fetch', async () => {
-  // ? Inte släkte
-  if (!isSlakte.value) {
-    console.log('inte släkte');
-    const { data, error } = await client
-      .from('lignosdatabasen')
-      .select()
-      .eq('slakte', `${route.params.slakte}`)
-      .eq('art', `${route.params.art === '-' ? '-' : route.params.art.replace(/\+/g, ' ')}`)
-      .eq('sortnamn', `${route.params.sortnamn.replace(/\+/g, ' ')}`)
-      .single();
+const { data: specificPlant, refresh: refreshSpecificPlant } = await useAsyncData(
+  `specific-plant-fetch-${route.params.slakte}-${route.params.art}-${route.params.sortnamn}`,
+  async () => {
+    // Use route params directly instead of isSlakte to avoid reactivity issues during SSR
+    const isSlakteCheck = route.params.art === 'slakte';
 
-    if (error) {
-      console.error(error);
-    }
+    // ? Inte släkte
+    if (!isSlakteCheck) {
+      const { data, error } = await client
+        .from('lignosdatabasen')
+        .select()
+        .eq('slakte', `${route.params.slakte}`)
+        .eq('art', `${route.params.art === '-' ? '-' : route.params.art.replace(/\+/g, ' ')}`)
+        .eq('sortnamn', `${route.params.sortnamn.replace(/\+/g, ' ')}`)
+        .single();
 
-    // If no data:
-    if (
-      error ||
-      !data ||
-      (data.hidden === true && runtimeConfig.public.ADMIN_PASSWORD !== enteredPassword.value)
-    ) {
-      return {
-        slakte: route.params.slakte,
-        art: route.params.art.replace(/\+/g, ' '),
-        sortnamn: route.params.sortnamn.replace(/\+/g, ' ') + '- 404 - Existerar inte',
-        text: 'Kontrollera adressen',
-        hidden: true,
-      };
+      if (error) {
+        console.error(error);
+      }
+
+      // If no data:
+      if (
+        error ||
+        !data ||
+        (data.hidden === true && runtimeConfig.public.ADMIN_PASSWORD !== enteredPassword.value)
+      ) {
+        return {
+          slakte: route.params.slakte,
+          art: route.params.art.replace(/\+/g, ' '),
+          sortnamn: route.params.sortnamn.replace(/\+/g, ' ') + '- 404 - Existerar inte',
+          text: 'Kontrollera adressen',
+          hidden: true,
+        };
+      } else {
+        return data;
+      }
+
+      // ? Släkte
     } else {
-      console.log(state.currentPagePlant.value);
-      state.currentPagePlant.value = data;
+      const { data, error } = await client
+        .from('lignosdatabasen')
+        .select()
+        .eq('slakte', `${route.params.slakte}`)
+        .eq('art', `${route.params.art.replace(/\+/g, ' ')}`)
+        .single();
+      if (error) {
+        console.error(error);
+      }
 
-      return data;
+      // If no data:
+      if (data.hidden === true && runtimeConfig.public.ADMIN_PASSWORD !== enteredPassword.value) {
+        return {
+          slakte: route.params.slakte,
+          art: route.params.art.replace(/\+/g, ' '),
+          sortnamn: route.params.sortnamn.replace(/\+/g, ' ') + '- 404 - Existerar inte',
+          text: 'Kontrollera adressen',
+          hidden: true,
+        };
+        // return{ slakte: route.params.slakte, art: 'slakte', sortnamn: route.params.sortnamn, text: 'Ingen Info', hidden: true }
+      } else if (error || !data) {
+        return {
+          slakte: route.params.slakte,
+          art: 'slakte',
+          sortnamn: route.params.sortnamn.replace(/\+/g, ' '),
+          text: 'Ingen Info',
+          hidden: false,
+        };
+      } else {
+        return data;
+      }
     }
-
-    // ? Släkte
-  } else {
-    console.log('släkte');
-    const { data, error } = await client
-      .from('lignosdatabasen')
-      .select()
-      .eq('slakte', `${route.params.slakte}`)
-      .eq('art', `${route.params.art.replace(/\+/g, ' ')}`)
-      .single();
-    if (error) {
-      console.error(error);
-    }
-
-    // If no data:
-    if (data.hidden === true && runtimeConfig.public.ADMIN_PASSWORD !== enteredPassword.value) {
-      return {
-        slakte: route.params.slakte,
-        art: route.params.art.replace(/\+/g, ' '),
-        sortnamn: route.params.sortnamn.replace(/\+/g, ' ') + '- 404 - Existerar inte',
-        text: 'Kontrollera adressen',
-        hidden: true,
-      };
-      // return{ slakte: route.params.slakte, art: 'slakte', sortnamn: route.params.sortnamn, text: 'Ingen Info', hidden: true }
-    } else if (error || !data) {
-      return {
-        slakte: route.params.slakte,
-        art: 'slakte',
-        sortnamn: route.params.sortnamn.replace(/\+/g, ' '),
-        text: 'Ingen Info',
-        hidden: false,
-      };
-    } else {
-      state.currentPagePlant.value = data;
-      return data;
-    }
+  },
+  {
+    watch: [() => route.params.slakte, () => route.params.art, () => route.params.sortnamn],
   }
-});
-
-state.currentPagePlant.value = specificPlant.value;
+);
 
 const isEditing = ref(false);
 
-const editablePlant = reactive(specificPlant.value);
+const editablePlant = reactive(specificPlant.value || {});
+
+// Update state when specificPlant changes
+watch(
+  specificPlant,
+  (newVal) => {
+    if (newVal) {
+      state.currentPagePlant.value = newVal;
+      // Update editablePlant when specificPlant changes
+      Object.assign(editablePlant, newVal);
+    }
+  },
+  { immediate: true }
+);
 
 const editPlant = async () => {
   editablePlant.ändrad = new Date().toISOString().replace('T', ' ').replace('Z', '+00');
@@ -161,19 +182,19 @@ const deletePlant = async () => {
   const { error } = await client
     .from('lignosdatabasen')
     .delete()
-    .eq('id', `${specificPlant.value.id}`);
+    .eq('id', `${specificPlant.value?.id}`);
   if (error) {
     console.error(error);
   }
 };
 
-const showHide = ref(!specificPlant.value.hidden);
+const showHide = ref(!specificPlant.value?.hidden);
 
 const hide = async () => {
   const { error } = await client
     .from('lignosdatabasen')
     .update({ hidden: 'TRUE' })
-    .eq('id', `${specificPlant.value.id}`);
+    .eq('id', `${specificPlant.value?.id}`);
   if (error) {
     console.error(error);
   }
@@ -184,7 +205,7 @@ const unHide = async () => {
   const { error } = await client
     .from('lignosdatabasen')
     .update({ hidden: 'FALSE' })
-    .eq('id', `${specificPlant.value.id}`);
+    .eq('id', `${specificPlant.value?.id}`);
   if (error) {
     console.error(error);
   }
@@ -192,6 +213,12 @@ const unHide = async () => {
 };
 
 const images = computed(() => {
+  if (!specificPlant.value?.text) {
+    state.currentPageImages.value = [];
+    state.currentPageBildtexter.value = [];
+    return [];
+  }
+
   state.currentPageImages.value = specificPlant.value.text
     .split(/!\[(?!omslag\])[^]*?\]\(([^)]+)\)/g)
     .filter((str) => str !== '' && str.includes('http') && !str.includes('['));
@@ -219,6 +246,8 @@ const compressedUrl = computed(() => {
 });
 
 const computedList = computed(() => {
+  if (!plantsInSlakte.value) return [];
+
   let newList = plantsInSlakte.value;
 
   newList = newList.filter((e) => e.text !== 'Ingen info');
@@ -254,13 +283,13 @@ useHead({
       innerHTML: {
         '@context': 'https://schema.org',
         '@type': 'Article',
-        headline: `${specificPlant.value.slakte} ${
-          specificPlant.value.art === 'slakte'
+        headline: `${specificPlant.value?.slakte || ''} ${
+          specificPlant.value?.art === 'slakte'
             ? 'släkte'
-            : specificPlant.value.art === '-'
+            : specificPlant.value?.art === '-'
             ? ''
-            : specificPlant.value.art
-        } ${specificPlant.value.sortnamn ? "'" + specificPlant.value.sortnamn + "'" : ''}`,
+            : specificPlant.value?.art || ''
+        } ${specificPlant.value?.sortnamn ? "'" + specificPlant.value.sortnamn + "'" : ''}`,
         author: {
           '@type': 'Person',
           name: 'Peter Linder',
@@ -271,7 +300,7 @@ useHead({
   ],
 });
 useSeoMeta({
-  description: specificPlant.value.ingress,
+  description: specificPlant.value?.ingress || '',
 });
 
 // ? Close / refresh
@@ -350,9 +379,9 @@ const extensions = [markdown(), oneDark];
 
 // ----------- Tabell -----------
 
-const plants = ref(specificPlant.value.tabell ? JSON.parse(specificPlant.value.tabell) : []);
+const plants = ref(specificPlant.value?.tabell ? JSON.parse(specificPlant.value.tabell) : []);
 const properties = ref(
-  specificPlant.value.tabell
+  specificPlant.value?.tabell
     ? JSON.parse(specificPlant.value.tabell).length
       ? Object.keys(JSON.parse(specificPlant.value.tabell)[0])
       : ['Namn', 'Bark', 'Blad']
@@ -467,22 +496,25 @@ watch(editingProperty, async (newVal) => {
         </div>
       </div>
     </div>
-    <div class="admin-panel" v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword">
-      <button v-if="!isEditing" @click="isEditing = true">
-        <Icon name="material-symbols:edit-outline-rounded" />Ändra
-      </button>
-      <button v-else @click="isEditing = false">
-        <Icon name="material-symbols:cancel-outline-rounded" />Avbryt
-      </button>
-      <button @click="showDeleteModel = true" v-if="!isSlakte">
-        <Icon name="material-symbols:delete-forever-outline-rounded" />Ta bort
-      </button>
-      <!-- <button @click="duplicate()">Dublicera</button> -->
-      <button v-if="showHide === false" @click="unHide()" class="visa">
-        <Icon name="zondicons:view-show" />Visa växt
-      </button>
-      <button v-else @click="hide()"><Icon name="zondicons:view-hide" />Dölj växt</button>
-    </div>
+    <!-- Wrap admin panel in ClientOnly to prevent hydration mismatch from cookie -->
+    <ClientOnly>
+      <div class="admin-panel" v-if="runtimeConfig.public.ADMIN_PASSWORD === enteredPassword">
+        <button v-if="!isEditing" @click="isEditing = true">
+          <Icon name="material-symbols:edit-outline-rounded" />Ändra
+        </button>
+        <button v-else @click="isEditing = false">
+          <Icon name="material-symbols:cancel-outline-rounded" />Avbryt
+        </button>
+        <button @click="showDeleteModel = true" v-if="!isSlakte">
+          <Icon name="material-symbols:delete-forever-outline-rounded" />Ta bort
+        </button>
+        <!-- <button @click="duplicate()">Dublicera</button> -->
+        <button v-if="showHide === false" @click="unHide()" class="visa">
+          <Icon name="zondicons:view-show" />Visa växt
+        </button>
+        <button v-else @click="hide()"><Icon name="zondicons:view-hide" />Dölj växt</button>
+      </div>
+    </ClientOnly>
 
     <!-- <div class="image-showcase" :style="{ gridTemplateColumns: `repeat(${plant.bilder.length}, 1fr)` }">
       <nuxt-img v-for="image in plant.bilder" :src="image" />
@@ -491,32 +523,34 @@ watch(editingProperty, async (newVal) => {
       class="top-bar"
       :class="{
         'no-image': images[0] == undefined,
-        'page-not-found': specificPlant.sortnamn.includes('404 - Existerar inte'),
+        'page-not-found': specificPlant?.sortnamn?.includes('404 - Existerar inte'),
       }"
     >
       <div class="content">
         <h1>
-          {{ specificPlant.slakte }}
-          {{ specificPlant.art === 'slakte' || specificPlant.art === '-' ? '' : specificPlant.art }}
-          {{ specificPlant.sortnamn ? `'${specificPlant.sortnamn}'` : '' }}
+          {{ specificPlant?.slakte }}
+          {{
+            specificPlant?.art === 'slakte' || specificPlant?.art === '-' ? '' : specificPlant?.art
+          }}
+          {{ specificPlant?.sortnamn ? `'${specificPlant.sortnamn}'` : '' }}
         </h1>
         <!-- <h1>{{ $route.params.slakte }} {{ $route.params.art === 'slakte' ? '' : $route.params.art }} {{
             $route.params.sortnamn ? `'${$route.params.sortnamn}'` :
             '' }}</h1> -->
         <h2 class="subtitle fakta">
-          <span v-if="specificPlant.höjd"
+          <span v-if="specificPlant?.höjd"
             ><span class="label">Höjd: </span> {{ specificPlant.höjd }} m
           </span>
-          <span v-if="specificPlant.bredd"
+          <span v-if="specificPlant?.bredd"
             ><span class="label">Bredd: </span> {{ specificPlant.bredd }} m
           </span>
-          <span v-if="specificPlant.zon"
+          <span v-if="specificPlant?.zon"
             ><span class="label">Zon: </span> {{ specificPlant.zon }}
           </span>
-          <span v-if="specificPlant.synonymer"
+          <span v-if="specificPlant?.synonymer"
             ><span class="label">Synonymer: </span> {{ specificPlant.synonymer }}
           </span>
-          <span v-if="specificPlant.synonymtill"
+          <span v-if="specificPlant?.synonymtill"
             ><span class="label">Synonym till: </span>
             <NuxtLink class="link" :to="specificPlant.synonymtill"
               >{{
@@ -528,8 +562,8 @@ watch(editingProperty, async (newVal) => {
             </NuxtLink></span
           >
         </h2>
-        <h2 class="subtitle">{{ specificPlant.svensktnamn }}</h2>
-        <PlantApi v-if="!isSlakte && !specificPlant.sortnamn" :plant="specificPlant" />
+        <h2 class="subtitle">{{ specificPlant?.svensktnamn }}</h2>
+        <PlantApi v-if="!isSlakte && !specificPlant?.sortnamn" :plant="specificPlant" />
         <div class="finns-att-kopa">
           <!-- <KopaSuperlistan /> -->
         </div>
@@ -583,7 +617,7 @@ watch(editingProperty, async (newVal) => {
             <input type="text" v-model="editablePlant.synonymtill" />
           </div>
           <div>
-            <h2>Ingress <br />{{ editablePlant.ingress.length }} tecken. (150 max)</h2>
+            <h2>Ingress <br />{{ editablePlant.ingress?.length || 0 }} tecken. (150 max)</h2>
             <textarea class="y-size" type="text" v-model="editablePlant.ingress" />
           </div>
           <!-- <div class="text">
@@ -787,26 +821,24 @@ watch(editingProperty, async (newVal) => {
           </div>
         </form>
         <article class="main-content">
-          <p class="ingress">{{ specificPlant.ingress }}</p>
+          <p class="ingress">{{ specificPlant?.ingress }}</p>
           <Markdown :plant="specificPlant" />
         </article>
       </div>
       <div class="center-content" v-else>
         <main>
           <article class="main-content">
-            <h2 class="ingress" v-if="specificPlant.ingress">{{ specificPlant.ingress }}</h2>
+            <h2 class="ingress" v-if="specificPlant?.ingress">{{ specificPlant.ingress }}</h2>
             <Markdown :plant="specificPlant" />
           </article>
 
-          <div
-            class="grid-layout"
-            v-if="(specificPlant.art === 'slakte' || false) && windowSize.width > 700"
-          >
-            <div v-if="specificPlant.text !== 'Ingen info'" class="line-spacer"></div>
+          <!-- Use CSS media query for responsive hiding instead of JS check to avoid hydration mismatch -->
+          <div class="grid-layout desktop-only" v-if="specificPlant?.art === 'slakte'">
+            <div v-if="specificPlant?.text !== 'Ingen info'" class="line-spacer"></div>
             <h1
               v-if="
-                (specificPlant.text !== 'Ingen info' &&
-                  specificPlant.text !== 'Kontrollera adressen') ||
+                (specificPlant?.text !== 'Ingen info' &&
+                  specificPlant?.text !== 'Kontrollera adressen') ||
                 computedList.length
               "
             >
@@ -815,14 +847,18 @@ watch(editingProperty, async (newVal) => {
             <SearchCard v-for="växt in computedList" :key="växt.id" :plant="växt" />
           </div>
         </main>
-        <aside class="sidebar">
+        <aside class="sidebar" v-if="plantsInSlakte">
           <ul>
             <li class="slakte">
               <nuxt-link :to="`/planta/${$route.params.slakte}/slakte`"
                 >Släkte: {{ $route.params.slakte }}</nuxt-link
               >
             </li>
-            <li v-for="plant in plantsInSlakte" :class="{ muted: plant.text === 'Ingen info' }">
+            <li
+              v-for="plant in plantsInSlakte"
+              :key="plant.id"
+              :class="{ muted: plant.text === 'Ingen info' }"
+            >
               <nuxt-link
                 :to="`/planta/${plant.slakte}/${plant.art.replace(
                   / /g,
@@ -873,6 +909,17 @@ watch(editingProperty, async (newVal) => {
 }
 
 @media screen and (max-width: 1000px) {
+}
+
+/* Hide desktop-only elements on mobile using CSS media query to avoid hydration mismatch */
+.desktop-only {
+  display: none;
+}
+
+@media screen and (min-width: 700px) {
+  .desktop-only {
+    display: block;
+  }
 }
 
 .ghost-button {
