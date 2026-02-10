@@ -7,7 +7,7 @@ const currentYear = new Date().getFullYear();
     <div class="grid-align">
       <div>
         <p>© {{ currentYear }} Lignosdatabasen.</p>
-        <p>Hemsida utvecklad av Ugo Linder</p>
+        <!-- <p>Hemsida utvecklad av Ugo Linder</p> -->
         <p>Material från denna sida får ej användas utan tillåtelse.</p>
         <p class="mobile-line-break">
           <span>Peter Linder</span><span class="dash"> - </span
